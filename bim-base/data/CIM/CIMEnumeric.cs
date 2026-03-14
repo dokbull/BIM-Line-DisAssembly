@@ -10,26 +10,58 @@ namespace bim_base.data.CIM
     {
         public enum EnumAvailabilityState
         {
+            /// <summary>
+            /// 고장. 설비 운영이 불가능한 상태. Alarm ID를 함께 보고해야 한다.
+            /// </summary>
             Down = 1,
+            /// <summary>
+            /// 설비가 가동 가능한 상태
+            /// </summary>
             Up = 2,
         }
 
         public enum EnumInterlockState
         {
+            /// <summary>
+            /// 인터락 명령에 의해 인터락이 된 경우
+            /// </summary>
             On = 1,
+            /// <summary>
+            /// 설비가 인터락 상태가 아닌 경우
+            /// </summary>
             Off = 2,
         }
 
         public enum EnumMoveState
         {
+            /// <summary>
+            /// 설비가 외부 요인(인터락, 자체 에러, 작업자에 의한 정지 등)에 의해 동작하지 않고 정지중인 상태
+            /// </summary>
             Pause = 1,
+            /// <summary>
+            /// 설비가 동작 가능한 상태
+            /// </summary>
             Runnning = 2,
         }
 
         public enum EnumRunState
         {
+            /// <summary>
+            /// 설비에 샘플(CELL)이 없는 상태
+            /// </summary>
             Idle = 1,
+            /// <summary>
+            /// 설비에 샘플(CELL)이 있는 상태
+            /// </summary>
             Run = 2,
+        }
+
+        public enum EnumInterlockRCMD
+        {
+            TransferStop = 11,
+            LoadingStop = 12,
+            StepStop = 13,
+            OWNStop = 14,
         }
     }
 }

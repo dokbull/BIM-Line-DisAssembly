@@ -112,7 +112,7 @@ namespace bim_base
 
             Conf.load();
 
-            Automation.Instance.Initialize();
+            Automation.Instance.InitializeCIM();
 
             //m_ccLink = new MelsecCCLink();
             //m_ccLink.NetworkNo = 1;

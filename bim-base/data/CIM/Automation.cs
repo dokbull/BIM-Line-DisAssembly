@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static bim_base.CSTATION;
+using static bim_base.data.CIM.CIMEnumeric;
 using static CIMWrite;
 
 namespace bim_base.data.CIM
@@ -23,6 +24,7 @@ namespace bim_base.data.CIM
 
         public delegate void OnReceivedTerminalDisplayEventHandler(int _MessageNum, string _MessageText);
         public delegate void OnReceivedOperatorCallEventHandler(int _OpCallNum, string _OpCallText);
+        public delegate bool OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
 
         #endregion
 
@@ -70,6 +72,10 @@ namespace bim_base.data.CIM
 
         public event OnReceivedTerminalDisplayEventHandler ReceivedTerminalDisplayEvent;
         public event OnReceivedOperatorCallEventHandler ReceivedOperatorCallEvent;
+        /// <summary>
+        /// 설비 가동 정지
+        /// </summary>
+        public event OnReceivedInterlockEventHandler ReceivedInterlockEvent;
 
         #endregion
 
@@ -260,102 +266,60 @@ namespace bim_base.data.CIM
             }
         }
 
-
-        #endregion
-
-        #region Public Method : CCIE Comm
-
-
-        public void WriteBit(CIMWrite.WRITE_B addr, bool value)
+        private void RequestInterlcokState()
         {
-            m_Writer.setBit(addr, value);
-        }
-
-        public bool ReadBit(CIMWrite.WRITE_B addr)
-        {
-            return m_Writer.bit(addr);
-        }
-
-        public bool ReadBit(CIMRead.READ_B addr)
-        {
-            return m_Reader.readBit(addr);
-        }
-
-        public string ReadWord(CIMRead.READ_W addr)
-        {
-            CIMRead.WORD_DATA data = m_Reader.wordData(addr);
-
-            string text = "";
-
-            if (data.type == CIMRead.READ_TYPE.DEC)
-                text = data.value.ToString();
-
-            if (data.type == CIMRead.READ_TYPE.ASCII)
-                text = data.text;
-
-            return text;
-        }
-
-        public string ReadWord(CIMWrite.WRITE_W addr)
-        {
-            CIMWrite.WORD_DATA data = m_Writer.wordData(addr);
-
-            string text = "";
-
-            if (data.type == CIMWrite.WRITE_TYPE.DEC)
-                text = data.value.ToString();
-
-            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
-                text = data.text;
-
-            return text;
-        }
-
-        public void WriteWord(CIMWrite.WRITE_W addr, string text)
-        {
-            CIMWrite.WORD_DATA data = m_Writer.wordData(addr);
-
-            if (data.type == CIMWrite.WRITE_TYPE.DEC)
-                data.value = Util.toInt32(text);
-
-            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
-                data.text = text;
-        }
-
-        public bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
-        {
-            bool function()
+            try
             {
-                // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
-                try
-                {
-                    this.WriteBit(_addrWrite, _writeValue);
-                    this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
+                if (this.ReadBit(CIMRead.READ_B.INTERLOCK_5) == false)
+                    return;
 
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    if (_isOnError)
-                    {
-                        throw new Exception($"HandShakeSignal Error Occurred. {ex.ToString()}");
-                    }
+                string strID = this.ReadWord(CIMRead.READ_W.ASCII_10_D09E_InterlockID);
+                string strMessage = this.ReadWord(CIMRead.READ_W.ASCII_60_D0A8_InterlockMessage);
+                string strRCMD = this.ReadWord(CIMRead.READ_W.ASCII_1_D0E4_InterlockRCMD);
 
-                    return false;
-                }
+                if (int.TryParse(strID, out int interlockID) == false)
+                    return;
+
+                if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
+                    return;
+
+                bool isValid = ReceivedInterlockEvent?.Invoke(interlockID, strMessage, rcmd);
+
+                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
+                Task.Run(() => this.SleepWithDoEvent(1)).Wait();
+                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
+
+                if (isValid == false) return;
+
+                this.SetEqState(EnumInterlockState.On);
+                this.SetEqState(EnumMoveState.Pause);
             }
-            ;
-
-            Task<bool> asyncHS = Task.Run(() => function());
-            asyncHS.Wait(_timeoutSeconds * 1000);
-
-
-            return asyncHS.Result;
+            catch
+            {
+            }
         }
+
 
         #endregion
 
         #region Public Method
+
+        public void Run()
+        {
+            if (this.IsRun) return;
+
+            this.IsRun = true;
+
+            Task.Run(() => this.TerminalDisplay());
+            Task.Run(() => this.OperatorCall());
+
+
+            this.IsRun = false;
+        }
+
+        #endregion
+
+        #region Public Method : CCIE Comm
 
 
         public bool OpenCCIE()
@@ -415,17 +379,114 @@ namespace bim_base.data.CIM
                 this.InitializeSignals();
             }
             else
-            { 
+            {
                 throw new Exception("failed to run cclink write failed");
             }
         }
 
+        public void WriteBit(CIMWrite.WRITE_B addr, bool value)
+        {
+            m_Writer.setBit(addr, value);
+        }
+
+        public bool ReadBit(CIMWrite.WRITE_B addr)
+        {
+            return m_Writer.bit(addr);
+        }
+
+        public bool ReadBit(CIMRead.READ_B addr)
+        {
+            return m_Reader.readBit(addr);
+        }
+
+        public string ReadWord(CIMRead.READ_W addr)
+        {
+            CIMRead.WORD_DATA data = m_Reader.wordData(addr);
+
+            string text = "";
+
+            if (data.type == CIMRead.READ_TYPE.DEC)
+                text = data.value.ToString();
+
+            if (data.type == CIMRead.READ_TYPE.ASCII)
+                text = data.text;
+
+            return text;
+        }
+
+        public string ReadWord(CIMWrite.WRITE_W addr)
+        {
+            CIMWrite.WORD_DATA data = m_Writer.wordData(addr);
+
+            string text = "";
+
+            if (data.type == CIMWrite.WRITE_TYPE.DEC)
+                text = data.value.ToString();
+
+            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
+                text = data.text;
+
+            return text;
+        }
+
+        public void WriteWord(CIMWrite.WRITE_W _addr, string _val)
+        {
+            CIMWrite.WORD_DATA data = m_Writer.wordData(_addr);
+
+            switch (data.type)
+            {
+                case WRITE_TYPE.ASCII:
+                    data.text = _val;
+                    break;
+                case WRITE_TYPE.DEC:
+                    data.value = Util.toInt32(_val);
+                    break;
+                case WRITE_TYPE.NONE:
+                default:
+                    break;
+            }
+
+        }
+
+
+        public bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
+        {
+            bool function()
+            {
+                // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
+                try
+                {
+                    this.WriteBit(_addrWrite, _writeValue);
+                    this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    if (_isOnError)
+                    {
+                        throw new Exception($"HandShakeSignal Error Occurred. {ex.ToString()}");
+                    }
+
+                    return false;
+                }
+            }
+            ;
+
+            Task<bool> asyncHS = Task.Run(() => function());
+            asyncHS.Wait(_timeoutSeconds * 1000);
+
+
+            return asyncHS.Result;
+        }
+
         #endregion
 
-        #region Public Method : CIM 대응
+
+        #region Public Method : CIM Initialize
 
 
-        public bool Initialize()
+        public bool InitializeCIM()
         {
             if (this.IsInitialized) return false;
 
@@ -493,40 +554,36 @@ namespace bim_base.data.CIM
             return true;
         }
 
-        public void Run()
-        {
-            if (this.IsRun) return;
+        #endregion
 
-            this.IsRun = true;
+        #region Public Method : CIM Equipment State
 
-            Task.Run(() => this.TerminalDisplay());
-            Task.Run(() => this.OperatorCall());
-
-
-            this.IsRun = false;
-        }
 
         public void SetEqState(CIMEnumeric.EnumAvailabilityState _state)
         {
-            //this.CCIE_Writer.
+            this.WriteWord(WRITE_W.ASCII_1_002C_EQPAvailability, $"{_state}")
         }
 
         public void SetEqState(CIMEnumeric.EnumInterlockState _state)
         {
-
+            this.WriteWord(WRITE_W.ASCII_1_002D_EQPInterlock, $"{_state}")
         }
         public void SetEqState(CIMEnumeric.EnumMoveState _state)
         {
-
+            this.WriteWord(WRITE_W.ASCII_1_002E_EQPMove, $"{_state}")
         }
         public void SetEqState(CIMEnumeric.EnumRunState _state)
         {
-
+            this.WriteWord(WRITE_W.ASCII_1_002F_EQPRun, $"{_state}")
         }
+
+
+
         #endregion
 
 
-        #region RMS 관련 펑션
+        #region Public Method : CIM RMS
+
         //상시 대기
         public void PpidListRequest()
         {
