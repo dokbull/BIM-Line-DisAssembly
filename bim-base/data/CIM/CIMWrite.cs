@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using static CIMRead;
 
 public class CIMWrite
-{   
+{
     public enum WRITE_B
     {
         ALIVEBIT_1,
@@ -2051,6 +2052,8 @@ public class CIMWrite
     WORD_DATA[] m_wordData = new WORD_DATA[(int)WRITE_W.MAX];
 
     DateTime m_cimDateTime = new DateTime();
+
+    public static CIMWrite Instance = new CIMWrite();
 
     public CIMWrite()
     {

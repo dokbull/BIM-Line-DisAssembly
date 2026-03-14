@@ -1310,6 +1310,8 @@ public class CIMRead
 
     WORD_DATA[] m_wordData = new WORD_DATA[(int)READ_W.MAX];
 
+    public static CIMRead Instance = new CIMRead();
+
     public CIMRead()
     {
         m_path = pathUtil.savePath();

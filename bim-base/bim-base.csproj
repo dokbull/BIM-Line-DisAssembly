@@ -203,6 +203,7 @@
     <Compile Include="CommonEnum.cs" />
     <Compile Include="CSerialMES.cs" />
     <Compile Include="CserialTP.cs" />
+    <Compile Include="data\CIM\Automation.cs" />
     <Compile Include="data\CIM\CIMRead.cs" />
     <Compile Include="data\CIM\CIMWrite.cs" />
     <Compile Include="FormAuto\FormSimMonitor.cs">
