@@ -21,7 +21,6 @@ namespace bim_base
 
         CSerialFRENIC m_frenic = null;
 
-        Automation m_cim = null;
 
         // AXIS LIST
         List<ExtAxis> m_axis = new List<ExtAxis>();
@@ -129,9 +128,7 @@ namespace bim_base
             m_mesLogMgr = new CLogManager("mes", Common.LOG_PATH);
             m_mcStatusLog = new CLogManager("Error Stop Time", "C:\\FA\\", "", "Error Stop Time");
 
-            m_cim = new Automation();
-            m_cim.OpenCCIE();
-            m_cim.Initialize();
+            Automation.Instance.OpenCCIE();
 
             IN_PP_Y = new ExtAxis(this, (int)AXIS.IN_PP_Y, "IN PP Y");
             IN_PP_Z = new ExtAxis(this, (int)AXIS.IN_PP_Z, "IN PP Z");
@@ -514,7 +511,7 @@ namespace bim_base
 
                     commDIO();
                     commAIO();
-                    commSIM();
+                    Automation.Instance.Run();
 
                     foreach (ExtAxis axis in m_axis)
                     {
@@ -550,10 +547,6 @@ namespace bim_base
             Debug.debug("ProcessMain::run END");
         }
 
-        void commSIM()
-        {
-            m_cim.InitializeCCIE();
-        }
 
         void commDIO()
         {
@@ -1061,32 +1054,32 @@ namespace bim_base
 
         public void setCimBit(CIMWrite.WRITE_B addr, bool value)
         {
-            m_cim.WriteBit(addr, value);
+            Automation.Instance.WriteBit(addr, value);
         }
 
         public bool readCimBit(CIMWrite.WRITE_B addr)
         {
-            return m_cim.ReadBit(addr);
+            return Automation.Instance.ReadBit(addr);
         }
 
         public bool readCimBit(CIMRead.READ_B addr)
         {
-            return m_cim.ReadBit(addr);
+            return Automation.Instance.ReadBit(addr);
         }
 
         public string readCimWord(CIMRead.READ_W addr)
         {
-            return m_cim.ReadWord(addr);
+            return Automation.Instance.ReadWord(addr);
         }
 
         public string readCimWord(CIMWrite.WRITE_W addr)
         {
-            return m_cim.ReadWord(addr);
+            return Automation.Instance.ReadWord(addr);
         }
 
         public void writeCimWord(CIMWrite.WRITE_W addr, string text)
         {
-            m_cim.WriteWord(addr, text);
+            Automation.Instance.WriteWord(addr, text);
         }
 
         public CSTATION station(CSTATION.STATION station)
