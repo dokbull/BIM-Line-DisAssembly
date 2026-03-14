@@ -69,6 +69,7 @@ namespace bim_base.data.CIM
             private set { this.m_Writer = value; }
         }
 
+
         #endregion
 
         #region Event
@@ -76,7 +77,7 @@ namespace bim_base.data.CIM
         public event OnReceivedTerminalDisplayEventHandler ReceivedTerminalDisplayEvent;
         public event OnReceivedOperatorCallEventHandler ReceivedOperatorCallEvent;
         /// <summary>
-        /// 설비 가동 정지
+        /// 설비 가동 정지, 인터락 메세지 팝업
         /// </summary>
         public event OnReceivedInterlockEventHandler ReceivedInterlockEvent;
 
@@ -309,6 +310,8 @@ namespace bim_base.data.CIM
                 if (int.TryParse(strOpCallNum, out int opCallNum) == false)
                     return;
 
+                // TODO CHECK LHJ : OP CALL 시그널타워 Yellow Blink, Buzzor 발생 필요. 설비 정지 필요, 터치판넬에서 메세지 팝업
+                // TODO CHECK LHJ : OP Call 팝업 메세지 확인 시 SendOperatorCall 호출, 팝업/시그널타워/부저 초기화
                 ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
 
                 this.WriteBit(WRITE_B.OPCALLCONFIRM_41, true);
@@ -338,14 +341,15 @@ namespace bim_base.data.CIM
                 if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
                     return;
 
+                // TODO CHECK LHJ : 인터락 요청 발생 이력 관리 필요. 인터락 메세지 팝업, 시그널타워 red/yellow blink, 부저 발생
                 if (this.ReceivedInterlockEvent == null) 
                     return;
 
                 bool isValid = ReceivedInterlockEvent.Invoke(interlockID, strMessage, rcmd);
 
-                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
+                this.WriteBit(WRITE_B.INTERLOCK_5, true);
                 Task.Run(() => this.SleepWithDoEvent(1)).Wait();
-                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
+                this.WriteBit(WRITE_B.INTERLOCK_5, false);
 
                 if (isValid == false) return;
 
@@ -536,7 +540,6 @@ namespace bim_base.data.CIM
 
         #endregion
 
-
         #region Public Method : CIM Initialize
 
 
@@ -626,14 +629,17 @@ namespace bim_base.data.CIM
         {
             try
             {
-                this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
-                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, 5000);
+                // TODO CHECK LHJ : Operator Call은 ID가 존재하는데, ID는 어떻게 관리할지? 일단은 메시지만 전달하는 형태로 구현
+
+                this.WriteWord(WRITE_W.ASCII_60_259C_UnitOPCallConfirmOPCallMessage, _message);
+                this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, 5000);
 
             }
             catch
             {
             }
         }
+
         #endregion
 
         #region Public Method : CIM Equipment State
@@ -660,7 +666,6 @@ namespace bim_base.data.CIM
 
 
         #endregion
-
 
         #region Public Method : CIM RMS
 
