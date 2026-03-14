@@ -368,7 +368,7 @@ namespace bim_base
 
         private void simCommButton_Click(object sender, EventArgs e)
         {
-            FormSimMonitor form = new FormSimMonitor(main);
+            FormCimMonitor form = new FormCimMonitor(main);
 
             form.ShowDialog();
         }
