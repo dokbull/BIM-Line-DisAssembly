@@ -79,6 +79,7 @@
             // 
             this.BT_EXIT.BackColor = System.Drawing.Color.Transparent;
             this.BT_EXIT.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_EXIT.BorderThickness = 0F;
             this.BT_EXIT.Checked = false;
             this.BT_EXIT.CheckedButtonColor = System.Drawing.Color.Black;
             this.BT_EXIT.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -102,6 +103,7 @@
             // 
             this.BT_HIDE.BackColor = System.Drawing.Color.Transparent;
             this.BT_HIDE.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_HIDE.BorderThickness = 0F;
             this.BT_HIDE.Checked = false;
             this.BT_HIDE.CheckedButtonColor = System.Drawing.Color.Black;
             this.BT_HIDE.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -124,6 +126,7 @@
             // 
             this.BT_ALARM.BackColor = System.Drawing.Color.Transparent;
             this.BT_ALARM.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_ALARM.BorderThickness = 0F;
             this.BT_ALARM.Checked = false;
             this.BT_ALARM.CheckedButtonColor = System.Drawing.Color.Black;
             this.BT_ALARM.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -146,6 +149,7 @@
             // 
             this.BT_MONITOR.BackColor = System.Drawing.Color.Transparent;
             this.BT_MONITOR.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_MONITOR.BorderThickness = 0F;
             this.BT_MONITOR.Checked = false;
             this.BT_MONITOR.CheckedButtonColor = System.Drawing.Color.Black;
             this.BT_MONITOR.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -168,6 +172,7 @@
             // 
             this.BT_DATA.BackColor = System.Drawing.Color.Transparent;
             this.BT_DATA.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_DATA.BorderThickness = 0F;
             this.BT_DATA.Checked = false;
             this.BT_DATA.CheckedButtonColor = System.Drawing.Color.Black;
             this.BT_DATA.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -185,11 +190,13 @@
             this.BT_DATA.TabIndex = 1149;
             this.BT_DATA.Text = "Data";
             this.BT_DATA.UseVisualStyleBackColor = false;
+            this.BT_DATA.Click += new System.EventHandler(this.BT_DATA_Click);
             // 
             // BT_TEACH
             // 
             this.BT_TEACH.BackColor = System.Drawing.Color.Transparent;
             this.BT_TEACH.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_TEACH.BorderThickness = 0F;
             this.BT_TEACH.Checked = false;
             this.BT_TEACH.CheckedButtonColor = System.Drawing.Color.Black;
             this.BT_TEACH.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -212,6 +219,7 @@
             // 
             this.BT_MANUAL.BackColor = System.Drawing.Color.Transparent;
             this.BT_MANUAL.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_MANUAL.BorderThickness = 0F;
             this.BT_MANUAL.Checked = false;
             this.BT_MANUAL.CheckedButtonColor = System.Drawing.Color.Black;
             this.BT_MANUAL.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -234,6 +242,7 @@
             // 
             this.BT_AUTO.BackColor = System.Drawing.Color.Transparent;
             this.BT_AUTO.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_AUTO.BorderThickness = 0F;
             this.BT_AUTO.Checked = false;
             this.BT_AUTO.CheckedButtonColor = System.Drawing.Color.Black;
             this.BT_AUTO.Dock = System.Windows.Forms.DockStyle.Fill;

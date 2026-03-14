@@ -110,7 +110,6 @@ namespace bim_base
         bool m_forceCheckIF = false;
 
         // MODE
-        public bool m_bSetup = false;
         public TimerDelay _TimSetup = new TimerDelay();
         public bool m_bSetupVS = false;
         public TimerDelay _TimSetupVS = new TimerDelay();

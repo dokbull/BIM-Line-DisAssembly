@@ -51,7 +51,7 @@ class Conf
         m_productInfoVisible = m_setting.getValue("SETTING", "PRODUCT_INFO_VISIBLE", true);
         
         // ADMIN
-        m_password = m_setting.getValue("SYSTEM", "PASSWORD", "KNK1234");
+        m_password = m_setting.getValue("SYSTEM", "PASSWORD", "1234");
 
         // STATION
         for (int i = 0; i < (int)STATION.MAX; i++)

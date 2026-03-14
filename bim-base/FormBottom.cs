@@ -92,7 +92,7 @@ namespace bim_base
             SUserControls.ColorButton btn = (SUserControls.ColorButton)sender;
             int idx = Convert.ToInt32(btn.Tag);
 
-            if ((idx == 1 || idx == 2 || idx == 3) && !main.m_bSetup)
+            if ((idx == 1 || idx == 2 || idx == 3) && main.isAdmin() == false)
             {
                 string _Password = "";
                 FormKeyboard dlg = new FormKeyboard();
@@ -104,7 +104,7 @@ namespace bim_base
                     _Password = dlg.getKeyword();
                     if (_Password != Conf.PASSWORD) return;
                     main._TimSetup.StartTimer();
-                    main.m_bSetup = true;
+                    main.setAdmin(true);
                 }
                 else
                 {
@@ -201,6 +201,11 @@ namespace bim_base
         private void FormBottom_Load(object sender, EventArgs e)
         {
             ui_timer.Enabled = true;
+        }
+
+        private void BT_DATA_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
