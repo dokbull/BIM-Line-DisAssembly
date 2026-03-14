@@ -258,8 +258,14 @@ namespace bim_base
         private void simCommButton_Click(object sender, EventArgs e)
         {
             FormSimMonitor form = new FormSimMonitor(main);
+            FormAutomationTester form2 = new FormAutomationTester();
 
-            form.ShowDialog();
+            form2.Show();
+            form.Show();
+
+            // TODO : 테스트   용도로 만든 폼이므로, 나중에 적용할 것
+            //form.ShowDialog();
+
         }
     }//class
 }//namespace
