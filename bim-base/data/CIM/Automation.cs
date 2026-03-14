@@ -591,7 +591,7 @@ namespace bim_base.data.CIM
                  {
                      alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
-                     this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, timeoutSeconds);
+                     this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
                  }
              });
 
@@ -719,8 +719,20 @@ namespace bim_base.data.CIM
         {
             //const int BIT_COUNT = 16;
             //int idx = (int)_alarmID;
-            //if (idx < 0 || idx >= BIT_COUNT) throw new ArgumentOutOfRangeException(nameof(_alarmID));
 
+            //try
+            //{
+            //    if (idx < 0 || idx > Enum.GetNames(typeof(ALARM)).Length) 
+            //        throw new ArgumentOutOfRangeException($"Failed to report alarm. Becauese Invalid AlarmID {_alarmID}.{nameof(_alarmID)}");
+
+            //    this.WriteWord(WRITE_W.alarm)
+            //}
+            //catch
+            //{
+
+            //}
+
+           
             //// 연속된 WRITE_B 열거값의 시작값(실제 이름으로 교체)
             //int baseWriteB = (int)WRITE_B.ALARMBIT_0;
 

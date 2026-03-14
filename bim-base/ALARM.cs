@@ -4,7 +4,8 @@ namespace bim_base
 {
     public enum ALARM
     {
-        NONE = 0,
+        NONE = -1,
+        CIM_DISCONNECTION = 0,
 
         // DOOR :DO
         DO_MAIN_DOOR_FRONT_LEFT_OPEN,
@@ -142,6 +143,7 @@ namespace bim_base
 
         // COMMUNICATION : CO
         CO_MAIN_SYSTEM_PC_ECAT_DISCONNECT,
+
 
     }
 
