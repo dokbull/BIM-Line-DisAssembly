@@ -15,9 +15,23 @@ namespace bim_base.data.CIM
     {
 
         private bool m_IsRun = false;
-        
+        private CIMRead m_Reader = new CIMRead();
+        private CIMWrite m_Writer = new CIMWrite();
+
+
 
         public static Automation Instance = new Automation();
+
+        public CIMRead CCIE_Reader
+        {
+            get { return this.m_Reader; }
+        }
+
+        public CIMWrite CCIE_Writer
+        {
+            get { return this.m_Writer; }
+        }
+
 
         private void SleepWithDoEvent(int _seconds)
         {
