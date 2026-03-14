@@ -1,6 +1,6 @@
 ﻿namespace bim_base
 {
-    partial class FormSimMonitor
+    partial class FormCimMonitor
     {
         /// <summary>
         /// Required designer variable.

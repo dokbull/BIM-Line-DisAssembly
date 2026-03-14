@@ -226,11 +226,11 @@
     <Compile Include="FormAuto\FormInterface.Designer.cs">
       <DependentUpon>FormInterface.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAuto\FormSimMonitor.cs">
+    <Compile Include="FormAuto\FormCimMonitor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAuto\FormSimMonitor.Designer.cs">
-      <DependentUpon>FormSimMonitor.cs</DependentUpon>
+    <Compile Include="FormAuto\FormCimMonitor.Designer.cs">
+      <DependentUpon>FormCimMonitor.cs</DependentUpon>
     </Compile>
     <Compile Include="FormAuto\FormProductInfo.cs">
       <SubType>Form</SubType>
@@ -826,8 +826,8 @@
     <EmbeddedResource Include="FormAuto\FormInterface.resx">
       <DependentUpon>FormInterface.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAuto\FormSimMonitor.resx">
-      <DependentUpon>FormSimMonitor.cs</DependentUpon>
+    <EmbeddedResource Include="FormAuto\FormCimMonitor.resx">
+      <DependentUpon>FormCimMonitor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormAuto\FormProductInfo.resx">
       <DependentUpon>FormProductInfo.cs</DependentUpon>

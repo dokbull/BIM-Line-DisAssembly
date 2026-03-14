@@ -14,8 +14,7 @@ namespace bim_base
     public partial class FormInverterSetting : Form
     {
         ProcessMain main;
-        double m_InveterSpeed = 0;
-        double m_InveterDirection = 0;
+
         public List<double> m_inverterSpeeds = new List<double>();
         public List<string> m_inverterDirections = new List<string>();
         public List<Button> m_inverterApplyButtons = new List<Button>();
@@ -26,6 +25,11 @@ namespace bim_base
         public FormInverterSetting(ProcessMain procMain)
         {
             InitializeComponent();
+
+            for (int i = 0; i < 11; i++)
+            { 
+                m_inverterSpeeds.Add(0.0d);
+            }
 
             m_inverterApplyButtons.Add(btnApplyInput);
             m_inverterApplyButtons.Add(btnApplyLoader);
@@ -250,8 +254,6 @@ namespace bim_base
             lblSpeedF21Tar.Text = main.frenic().setFreq(8).ToString();
             lblSpeedF22Tar.Text = main.frenic().setFreq(9).ToString();
             lblSpeedF11Tar.Text = main.frenic().setFreq(10).ToString();
-            lblSpeedF12Tar.Text = main.frenic().setFreq(11).ToString();
-
 
             lblSpeedLoader.Text = m_inverterSpeeds[0].ToString();
             lblSpeedTransfer.Text = m_inverterSpeeds[1].ToString();
@@ -264,9 +266,7 @@ namespace bim_base
             lblSpeedF21.Text = m_inverterSpeeds[8].ToString();
             lblSpeedF22.Text = m_inverterSpeeds[9].ToString();
             lblSpeedF11.Text = m_inverterSpeeds[10].ToString();
-            lblSpeedF12.Text = m_inverterSpeeds[11].ToString();
-            lblSpeedUnloaderTransfer.Text = m_inverterSpeeds[12].ToString();
-            lblSpeedUnloader.Text = m_inverterSpeeds[13].ToString();
+
             // ******************** Inverter Direction **************************** //
             int dirLoad = main.frenic().status(0);
             int dirTransfer = main.frenic().status(1);
@@ -279,7 +279,6 @@ namespace bim_base
             int dirF21 = main.frenic().status(8);
             int dirF22 = main.frenic().status(9);
             int dirF11 = main.frenic().status(10);
-            int dirF12 = main.frenic().status(11);
 
             lblDirectionInput.Text = (dirLoad == 1) ? "CCW" : "CW";
             lblDirectionLoader.Text = (dirTransfer == 1) ? "CCW" : "CW";
@@ -292,7 +291,6 @@ namespace bim_base
             lblDirectionF21.Text = (dirF21 == 1) ? "CCW" : "CW";
             lblDirectionF22.Text = (dirF22 == 1) ? "CCW" : "CW";
             lblDirectionF11.Text = (dirF11 == 1) ? "CCW" : "CW";
-            lblDirectionF12.Text = (dirF12 == 1) ? "CCW" : "CW";
             
         }
 

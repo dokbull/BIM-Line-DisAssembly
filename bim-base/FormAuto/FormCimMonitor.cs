@@ -12,11 +12,11 @@ using System.Windows.Forms;
 
 namespace bim_base
 {
-    public partial class FormSimMonitor : Form
+    public partial class FormCimMonitor : Form
     {
         ProcessMain main = null;
 
-        public FormSimMonitor(ProcessMain procMain)
+        public FormCimMonitor(ProcessMain procMain)
         {
             InitializeComponent();
 

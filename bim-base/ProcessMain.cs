@@ -1121,9 +1121,9 @@ namespace bim_base
                 case DOOR_ID.FR_RIGHT:
                     return !input(INPUT.FRONT_RIGHT_UPPER_DOOR_SW);
                 case DOOR_ID.RR_LEFT:
-                    return input(INPUT.REAR_LEFT_UPPER_DOOR_SW);
+                    return !input(INPUT.REAR_LEFT_UPPER_DOOR_SW);
                 case DOOR_ID.RR_RIGHT:
-                    return input(INPUT.REAR_RIGHT_UPPER_DOOR_SW);
+                    return !input(INPUT.REAR_RIGHT_UPPER_DOOR_SW);
                 case DOOR_ID.C_BOX_1_LEFT:
                     return !input(INPUT.BOX_1_LEFT_LOWER_DOOR_SW);
                 case DOOR_ID.C_BOX_1_RIGHT:
@@ -1139,7 +1139,7 @@ namespace bim_base
 
         public bool isDetectEMC()
         {
-            return input(INPUT.EMERGENCY_LOOP);
+            return !input(INPUT.EMERGENCY_LOOP);
         }
         public bool isDetectSafetyMC()
         {

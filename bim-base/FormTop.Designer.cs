@@ -35,6 +35,7 @@
             this.lbVersion = new System.Windows.Forms.Label();
             this.lbStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.BT_BUZZER = new SUserControls.ColorButton();
             this.lbMessage1 = new System.Windows.Forms.Label();
             this.lbScreenName = new System.Windows.Forms.Label();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
@@ -52,7 +53,6 @@
             this.lbCurrentDate = new System.Windows.Forms.Label();
             this.lbMessage2 = new System.Windows.Forms.Label();
             this.lbMessage3 = new System.Windows.Forms.Label();
-            this.BT_BUZZER = new SUserControls.ColorButton();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -143,6 +143,30 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1024, 70);
             this.tableLayoutPanel1.TabIndex = 1139;
             // 
+            // BT_BUZZER
+            // 
+            this.BT_BUZZER.BackColor = System.Drawing.Color.Transparent;
+            this.BT_BUZZER.BorderLineColor = System.Drawing.Color.Black;
+            this.BT_BUZZER.BorderThickness = 0F;
+            this.BT_BUZZER.Checked = false;
+            this.BT_BUZZER.CheckedButtonColor = System.Drawing.Color.Black;
+            this.BT_BUZZER.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.BT_BUZZER.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.BT_BUZZER.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BT_BUZZER.ForeColor = System.Drawing.Color.Black;
+            this.BT_BUZZER.GradientBottom = System.Drawing.Color.LightSkyBlue;
+            this.BT_BUZZER.GradientTop = System.Drawing.Color.LightSkyBlue;
+            this.BT_BUZZER.Image = ((System.Drawing.Image)(resources.GetObject("BT_BUZZER.Image")));
+            this.BT_BUZZER.Location = new System.Drawing.Point(901, 0);
+            this.BT_BUZZER.Margin = new System.Windows.Forms.Padding(0);
+            this.BT_BUZZER.Name = "BT_BUZZER";
+            this.BT_BUZZER.RectCornerRadius = 2;
+            this.tableLayoutPanel1.SetRowSpan(this.BT_BUZZER, 3);
+            this.BT_BUZZER.Size = new System.Drawing.Size(123, 70);
+            this.BT_BUZZER.TabIndex = 1148;
+            this.BT_BUZZER.Text = "BUZZER";
+            this.BT_BUZZER.UseVisualStyleBackColor = false;
+            // 
             // lbMessage1
             // 
             this.lbMessage1.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -153,7 +177,7 @@
             this.lbMessage1.Name = "lbMessage1";
             this.lbMessage1.Size = new System.Drawing.Size(106, 23);
             this.lbMessage1.TabIndex = 1141;
-            this.lbMessage1.Text = "스크린 단독으로";
+            this.lbMessage1.Text = "삼성디스플레이";
             this.lbMessage1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lbScreenName
@@ -367,7 +391,6 @@
             this.lbMessage2.Name = "lbMessage2";
             this.lbMessage2.Size = new System.Drawing.Size(106, 23);
             this.lbMessage2.TabIndex = 1141;
-            this.lbMessage2.Text = "스크린 단독으로";
             this.lbMessage2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbMessage2.Visible = false;
             // 
@@ -381,32 +404,8 @@
             this.lbMessage3.Name = "lbMessage3";
             this.lbMessage3.Size = new System.Drawing.Size(106, 23);
             this.lbMessage3.TabIndex = 1141;
-            this.lbMessage3.Text = "스크린 단독으로";
             this.lbMessage3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbMessage3.Visible = false;
-            // 
-            // BT_BUZZER
-            // 
-            this.BT_BUZZER.BackColor = System.Drawing.Color.Transparent;
-            this.BT_BUZZER.BorderLineColor = System.Drawing.Color.Black;
-            this.BT_BUZZER.Checked = false;
-            this.BT_BUZZER.CheckedButtonColor = System.Drawing.Color.Black;
-            this.BT_BUZZER.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.BT_BUZZER.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.BT_BUZZER.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BT_BUZZER.ForeColor = System.Drawing.Color.Black;
-            this.BT_BUZZER.GradientBottom = System.Drawing.Color.LightSkyBlue;
-            this.BT_BUZZER.GradientTop = System.Drawing.Color.LightSkyBlue;
-            this.BT_BUZZER.Image = ((System.Drawing.Image)(resources.GetObject("BT_BUZZER.Image")));
-            this.BT_BUZZER.Location = new System.Drawing.Point(901, 0);
-            this.BT_BUZZER.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            this.BT_BUZZER.Name = "BT_BUZZER";
-            this.BT_BUZZER.RectCornerRadius = 2;
-            this.tableLayoutPanel1.SetRowSpan(this.BT_BUZZER, 3);
-            this.BT_BUZZER.Size = new System.Drawing.Size(123, 70);
-            this.BT_BUZZER.TabIndex = 1148;
-            this.BT_BUZZER.Text = "BUZZER";
-            this.BT_BUZZER.UseVisualStyleBackColor = false;
             // 
             // FormTop
             // 
