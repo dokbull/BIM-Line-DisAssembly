@@ -1,47 +1,47 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace bim_base
 {
     public partial class FormMain : Form
     {
+        FormMain m_form;
+        public static Point P_Pos = new Point();
         Form[] m_formMainArg = null;
         Form[] m_formCenterPageArg = null;
 
         ProcessMain main = null;
+        CElaspedTimer timershowAlarm = new CElaspedTimer(5000);
 
         static FormMain m_inst = null;
 
         FormTop m_formTop = null;
-        FormBottom m_formBottom = null;
+        public readonly FormBottom m_formBottom = null;
 
-        FormAuto m_formAuto = null;
+        static FormAuto m_formAuto = null;
+        FormManual m_formManual = null;
         FormTeach m_formTeach = null;
-
-        FormTeachInPP m_formTeach_IN_PP = null;
-        FormTeachTrayPP m_formTeach_TRAY_PP = null; 
-        FormTeachOutPP m_formTeach_OUT_PP = null; 
-
         FormData m_formData = null;
-
-        FormDataModel m_formData_Model = null;
-        FormDataSystem m_formData_System = null;
-        FormDataMotorVel m_formData_MotorVel = null;
-        FormDataJogVelocity m_formData_JogVel = null;
-        FormDataPort m_formData_Port = null;
-
+        FormMonitor m_formMonitor = null;
         FormLog m_formLog = null;
 
         Form m_nowForm = null;
+
+
 
         bool m_showAlarm = false;
         bool m_showWarnning = false;
 
         int m_currPageIdx = 0;
-
+        public static FormMain getForm()
+        {
+            return m_inst;
+        }
+        static public FormAuto GetformAuto()
+        {
+            return m_formAuto;
+        }
         public FormMain()
         {
             if (m_inst != null)
@@ -50,12 +50,9 @@ namespace bim_base
             m_inst = this;
 
             InitializeComponent();
+            Control.CheckForIllegalCrossThreadCalls = false;
 
-            Conf.load();
-            Common.init();
-
-            Alarm.load();
-            PopupMessage.load();
+            Common.inst();
 
             main = new ProcessMain();
             main.start();
@@ -64,87 +61,29 @@ namespace bim_base
             m_formBottom = new FormBottom(main);
 
             m_formAuto = new FormAuto(main);
+            m_formManual = new FormManual(main);
             m_formTeach = new FormTeach(main);
-
-            m_formTeach.button0_Click += M_formTeach_button0_Click;
-            m_formTeach.button1_Click += M_formTeach_button1_Click; 
-            m_formTeach.button2_Click += M_formTeach_button2_Click;
-
-            m_formTeach_IN_PP = new FormTeachInPP(main);
-            m_formTeach_TRAY_PP = new FormTeachTrayPP(main);
-            m_formTeach_OUT_PP = new FormTeachOutPP(main);
-
             m_formData = new FormData(main);
-
-            m_formData_Model = new FormDataModel(main);
-            m_formData_System = new FormDataSystem(main);
-            m_formData_MotorVel = new FormDataMotorVel(main);
-            m_formData_JogVel = new FormDataJogVelocity(main);
-            m_formData_Port = new FormDataPort(main);
-
-            m_formData.modelButton_Clicked += M_formData_modelButton_Clicked;
-            m_formData.systemManagerButton_Clicked += M_formData_systemManagerButton_Clicked;
-            m_formData.motorVelButton_Clicked += M_formData_motorVelButton_Clicked;
-            m_formData.jogVelButton_Clicked += M_formData_jogVelButton_Clicked;
-            m_formData.portSettingButton_Clicked += M_formData_portSettingButton_Clicked;
-
+            m_formMonitor = new FormMonitor(main);
             m_formLog = new FormLog(main);
 
             m_formMainArg = new Form[] { m_formTop, null, m_formBottom };
+            m_formCenterPageArg = new Form[] { m_formAuto, m_formManual, m_formTeach, m_formData, m_formMonitor, m_formLog };
+            P_Pos.X = this.Top;
+            P_Pos.X = this.Left;
+            m_form = this;
 
-            m_formCenterPageArg = new Form[] { m_formAuto, 
-                m_formTeach, m_formTeach_IN_PP, m_formTeach_TRAY_PP, m_formTeach_OUT_PP,
-                m_formData, m_formData_Model, m_formData_System, m_formData_MotorVel, m_formData_JogVel, m_formData_Port,
-                m_formLog };
-
-            Common.MODEL_INFO.changedModel += currModelChange;
-        }
-
-        private void M_formData_modelButton_Clicked(object sender, EventArgs e)
-        {
-            showPage(PAGE.DATA_MODEL);
-        }
-
-        private void M_formData_systemManagerButton_Clicked(object sender, EventArgs e)
-        {
-            showPage(PAGE.DATA_SYSTEM);
-        }
-
-        private void M_formData_motorVelButton_Clicked(object sender, EventArgs e)
-        {
-            showPage(PAGE.DATA_MOTOR_VEL);
-        }
-
-        private void M_formData_jogVelButton_Clicked(object sender, EventArgs e)
-        {
-            showPage(PAGE.DATA_JOG_VEL);
-        }
-
-        private void M_formData_portSettingButton_Clicked(object sender, EventArgs e)
-        {
-            showPage(PAGE.DATA_PORT);
-        }
-
-        private void M_formTeach_button0_Click(object sender, EventArgs e)
-        {
-            showPage(PAGE.TEACH_IN_PP);
-        }
-
-        private void M_formTeach_button1_Click(object sender, EventArgs e)
-        {
-            showPage(PAGE.TEACH_TRAY_PP);
-        }
-
-        private void M_formTeach_button2_Click(object sender, EventArgs e)
-        {
-            showPage(PAGE.TEACH_OUT_PP);
         }
 
         public static FormMain inst()
         {
             return m_inst;
         }
-
+        public static Point GetLocation()
+        {
+            Point T = new Point(P_Pos.X, P_Pos.Y);
+            return T;
+        }
         private void FormMain_Load(object sender, EventArgs e)
         {
             this.IsMdiContainer = true;
@@ -173,12 +112,11 @@ namespace bim_base
 
                 form.Margin = new Padding(0);
                 form.MdiParent = this;
-
+                form.Padding = new Padding(1, 1, 1, 1);
                 form.FormBorderStyle = FormBorderStyle.None;
                 form.Dock = DockStyle.Fill;
                 mainTableLayout.Controls.Add(form, 0, cnt);
                 form.Show();
-
                 cnt++;
             }
 
@@ -189,9 +127,10 @@ namespace bim_base
 
                 form.Margin = new Padding(0);
                 form.MdiParent = this;
-
+                form.Padding = new Padding(1, 1, 1, 1);
                 form.FormBorderStyle = FormBorderStyle.None;
                 form.Dock = DockStyle.Fill;
+                form.AutoScaleMode = AutoScaleMode.None;
             }
 
             m_formBottom.bottomButtonClick += new EventHandler(bottomButtonClick);
@@ -199,6 +138,8 @@ namespace bim_base
             mainTableLayout.Dock = DockStyle.Fill;
             mainTableLayout.CellBorderStyle = TableLayoutPanelCellBorderStyle.Single;
 
+            //showPage(PAGE.VISION); // 폼 타이머 로드
+            showPage(PAGE.TEACH); // 폼 타이머 로드
             showPage(PAGE.AUTO); // 폼 타이머 로드
 
             uiTimer.Enabled = true;
@@ -206,23 +147,12 @@ namespace bim_base
 
         private void bottomButtonClick(object sender, EventArgs e)
         {
-            PAGE p = (PAGE)sender;
-
-            switch ((int)p)
-            {
-                case 0: showPage(PAGE.AUTO); break;
-                case 1: showPage(PAGE.TEACH); break;
-                case 2: showPage(PAGE.DATA); break;
-                case 3: showPage(PAGE.LOG); break;
-                default:
-                    return;
-            }
+            showPage((PAGE)sender);
         }
 
-        public  void showPage(PAGE page)
+        private void showPage(PAGE page)
         {
             int pageIndex = (int)page;
-
             if (pageIndex < 0 || pageIndex > (int)PAGE.MAX - 1)
                 return;
 
@@ -271,40 +201,53 @@ namespace bim_base
 
         private void uiTimer_Tick(object sender, EventArgs e)
         {
-            if (main == null)
-                return;
-
-            if (main.isAlarm() == true && m_showAlarm == false)
+            try
             {
-                m_showAlarm = true;
-                int code = main.lastAlarmCode();
-                string desc = main.lastAlarmDesc();
-
-                if (code < 0)
+                if (main == null)
                     return;
 
-                FormAlarm dlg = new FormAlarm(main);
-                dlg.addAlarmInfo(code, desc);
-                dlg.ShowDialog();
-                m_showAlarm = false;
+                if (main.isAlarm() == true && m_showAlarm == false)
+                {
+                    m_showAlarm = true;
+                    int code = main.lastAlarmCode();
+                    string desc = main.lastAlarmDesc();
+
+                    if (code < 0)
+                        return;
+
+                    FormAlarm dlg = new FormAlarm(main);
+                    dlg.addAlarmInfo(code, desc);
+                    dlg.ShowDialog();
+                    m_showAlarm = false;
+                }
+
+                if (main.isShowInitCheckMsg() == true && m_showWarnning == false)
+                {
+                    m_showWarnning = true;
+                    string msg = "";
+
+                    CMessageBox msgBox = new CMessageBox(Common.TITLE, msg, MessageBoxButtons.OK);
+                    msgBox.showDialog();
+
+                    main.setShowInitCheckMsg(false);
+                    m_showWarnning = false;
+                }
             }
-
-            if (main.isShowInitCheckMsg() == true && m_showWarnning == false)
+            catch (Exception ex)
             {
-                m_showWarnning = true;
-                string msg = "";
-
-                CMessageBox msgBox = new CMessageBox(Common.TITLE, msg, MessageBoxButtons.OK);
-                msgBox.showDialog();
-
-                main.setShowInitCheckMsg(false);
-                m_showWarnning = false;
+                Debug.debug($"{ex}");
+                Debug.debug("Exit Fail");
             }
         }
 
         public void clearAlarm()
         {
             m_showAlarm = false;
+        }
+
+        public void setAlarm()
+        {
+            m_showAlarm = true;
         }
 
         public void addAlarmLog(AlarmData data)
@@ -319,7 +262,7 @@ namespace bim_base
                 m_formBottom.addHistory(text);
         }
 
-        public void currModelChange(object sender, EventArgs e)
+        public void currModelChange()
         {
             if (m_formTeach == null)
                 return;
@@ -333,6 +276,11 @@ namespace bim_base
                 this.FormBorderStyle = FormBorderStyle.FixedSingle;
             else
                 this.FormBorderStyle = FormBorderStyle.None;
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
         }
     }//class
 }//namespace

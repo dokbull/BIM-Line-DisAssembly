@@ -84,7 +84,6 @@ namespace bim_base
             IN_PP = main.procInPP();
             REVERSE = main.procMoldReverseWork();
 
-
             CSTATION ST_ALIGN_CV = main.station(CSTATION.STATION.ALIGN_CV);
             CSTATION ST_IN_PP = main.station(CSTATION.STATION.IN_PP);
             CSTATION ST_REVERSE = main.station(CSTATION.STATION.MOLD_REVERSE);

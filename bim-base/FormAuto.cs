@@ -1,18 +1,29 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace bim_base
-{    public partial class FormAuto : Form, IForm
-    {
-        ProcessMain main = null;
 
+namespace bim_base
+{
+    public partial class FormAuto : Form, IForm
+    {
+        private static System.Threading.Timer dailyTimer;
+        ProcessMain main = null;
+        bool m_bBufferFull = false;
+        TimerDelay m_iCheckBufferNG = new TimerDelay();
+        bool m_clearProductCounter = false;
+        public int m_floorCoolingSelect = 0;
         public FormAuto(ProcessMain procMain)
         {
             InitializeComponent();
 
             main = procMain;
+
+            SetDailyTimer();
         }
 
         private void FormAuto_Load(object sender, EventArgs e)
@@ -35,11 +46,7 @@ namespace bim_base
 
         private void ioMonitoringButton_Click(object sender, EventArgs e)
         {
-            FormIOMonitor dlg = new FormIOMonitor(main);
 
-            main.setManualTestIO(true);
-
-            dlg.ShowDialog(this);
         }
 
         private void axisOriginButton_Click(object sender, EventArgs e)
@@ -77,9 +84,9 @@ namespace bim_base
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-            if (main.axisOriComplete() == false)
+            if (main.procOrg().isComplete() == false)
             {
-                CMessageBox msgBox = new CMessageBox(Common.TITLE, PopupMessage.message(POPUP.AXIS_NOT_READY), MessageBoxButtons.OK);
+                CMessageBox msgBox = new CMessageBox(Common.TITLE, "AXIS NOT READY", MessageBoxButtons.OK);
                 msgBox.ShowDialog(this);
 
                 main.setAuto(false);
@@ -88,9 +95,20 @@ namespace bim_base
 
             if (main.isOutOfPPlan() == true)
                 main.setOutOfPPlan(false);
+            /****************************************************************************************/
+            string _tmpError = "";
+            ALARM _tmpAlm = ALARM.NONE;
 
+            //if (!main.CheckSafetyMove(ref _tmpError, ref _tmpAlm, ref _tmpIO))
+            //{
+            //    CMessageBox msgBox = new CMessageBox(Common.TITLE, _tmpError, MessageBoxButtons.OK);
+            //    msgBox.ShowDialog();
+            //    return;
+            //}
+            /****************************************************************************************/
             if (main.isAuto() == false)
             {
+                main.resume();
                 main.setAuto(true);
             }
         }
@@ -103,18 +121,38 @@ namespace bim_base
             if (main.isOutOfPPlan() == true)
             {
                 main.setOutOfPPlan(false);
+                main.lampControl(LAMP_STATE.RED);
             }
         }
 
         private void productInfoButton_VisibleChanged(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
-            cycleTimeLayout.Visible = btn.Visible;
+            TacTimeLayout.Visible = btn.Visible;
             setCountLayout.Visible = btn.Visible;
+        }
+        private void clearProductCounter()
+        {
+
+            string dateNow = DateTime.Now.ToString("HHmm");
+            if (dateNow == "0800" || dateNow == "2000")
+            {
+                if (m_clearProductCounter == false)
+                {
+                    main.outputCountReset();
+                }
+                m_clearProductCounter = true;
+            }
+            else if (m_clearProductCounter == true)
+            {
+                m_clearProductCounter = false;
+            }
         }
 
         private void uiTimer_Tick(object sender, EventArgs e)
         {
+            clearProductCounter();
+
             StartButton.BackColor = (main.isAuto() == true) ? Color.Lime : Color.White;
             StopButton.BackColor = (main.isAuto() == false) ? Color.Red : Color.White;
 
@@ -130,34 +168,40 @@ namespace bim_base
             outOfPPlanCheckBox.FlatAppearance.MouseOverBackColor = outOfPPlanCheckBox.Checked ? Color.Orange : Color.White;
             outOfPPlanCheckBox.FlatAppearance.MouseDownBackColor = outOfPPlanCheckBox.Checked ? Color.Orange : Color.White;
 
-            cycleTimeLayout.Visible = Conf.PRODUCT_INFO_VISIBLE;
+            TacTimeLayout.Visible = Conf.PRODUCT_INFO_VISIBLE;
             setCountLayout.Visible = Conf.PRODUCT_INFO_VISIBLE;
 
+            ngCountLabel.Text = main.outputCount().ToString();
             totalCountLabel.Text = main.outputCount().ToString();
-
-            if (main.isCycleTimeUpdate() == true)
-                cycleTimeLabel.Text = (main.getLastCycleTime() / 1000.0d).ToString("0.0") + " s";
+            lastTactLabel.Text = (main.getLastCycleTime()).ToString("0.0") + " s";
+            avgTactLabel.Text = (main.getAvgCycleTime()).ToString("0.0") + " s";
 
             // TOWER LAMP
             towerR.BackColor = main.output(OUTPUT.TOWER_R) ? Color.DarkRed : Color.White;
             towerR.ForeColor = main.output(OUTPUT.TOWER_R) ? Color.White : Color.Black;
 
-            towerY.BackColor = main.output(OUTPUT.TOWER_Y) ? Color.Yellow: Color.White;
+            towerY.BackColor = main.output(OUTPUT.TOWER_Y) ? Color.Yellow : Color.White;
             towerY.ForeColor = main.output(OUTPUT.TOWER_Y) ? Color.Black : Color.Black;
 
             towerG.BackColor = main.output(OUTPUT.TOWER_G) ? Color.DarkGreen : Color.White;
             towerG.ForeColor = main.output(OUTPUT.TOWER_G) ? Color.White : Color.Black;
 
-            towerBuzz.BackColor = main.output(OUTPUT.BUZZER_1) ? Color.Pink : Color.White;
-            towerBuzz.ForeColor = main.output(OUTPUT.BUZZER_1) ? Color.Black : Color.Black;
+            //DOOR & MC
+            mcLabel.BackColor = main.isDetectSafetyMC() ? Color.DarkRed : Color.Lime;
+            lbFrontLeftDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.FR_LEFT) ? Color.DarkRed : Color.Lime;
+            lbFrontRightDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.FR_RIGHT) ? Color.DarkRed : Color.Lime;
+            lbRearLeftDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.RR_LEFT) ? Color.DarkRed : Color.Lime;
+            lbRearRightDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.RR_RIGHT) ? Color.DarkRed : Color.Lime;
+            lbCBOX1LeftDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.C_BOX_1_LEFT) ? Color.DarkRed : Color.Lime;
+            lbCBOX1RightDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.C_BOX_2_LEFT) ? Color.DarkRed : Color.Lime;
 
             lastWorkButton.BackColor = main.isLastWork() ? Color.LightBlue : Color.White;
 
-            // DOOR & MC
-
-
             readFRENIC();
+
+            updateLabelState();
         }
+
 
         void readFRENIC()
         {
@@ -170,12 +214,17 @@ namespace bim_base
             if (FRENIC.isConnect() == false)
                 return;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 11; i++)
             {
                 freq[i].Text = FRENIC.freq(i).ToString("0.0");
                 setFreq[i].Text = FRENIC.setFreq(i).ToString("0.0");
                 status[i].Text = FRENIC.status(i).ToString();
             }
+        }
+
+        public void updateLabelState()
+        {
+           
         }
 
         private void tackTimeButton_Click(object sender, EventArgs e)
@@ -185,7 +234,7 @@ namespace bim_base
             if (res == DialogResult.Yes)
             {
                 main.lastCycleTimeClear();
-                cycleTimeLabel.Text = "0.0";
+                avgTactLabel.Text = "0.0";
             }
         }
 
@@ -202,46 +251,107 @@ namespace bim_base
 
         private void unitInitButton_Click(object sender, EventArgs e)
         {
+            if (main.isAuto() == true)
+                return;
+
             FormUnitInit form = new FormUnitInit(main);
             form.ShowDialog();
         }
 
         private void tower_DoubleClick(object sender, EventArgs e)
         {
+            FormStep dlg = new FormStep(main);
+            dlg.ShowDialog();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void bufferClearButton_Click(object sender, EventArgs e)
         {
-        }
+            CMessageBox msgBox = new CMessageBox(Common.TITLE, "Do you want clear of buffer?", MessageBoxButtons.OKCancel);
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-        }
+            bool ret = msgBox.showDialog();
 
-        private void button3_Click(object sender, EventArgs e)
+            if (ret == false)
+                return;
+        }
+        private void currentSetNGCountButton_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < 11; i++)
+            CMessageBox msgBox = new CMessageBox(Common.TITLE, "NG count reset?", MessageBoxButtons.YesNo);
+            DialogResult res = msgBox.ShowDialog(this);
+            if (res == DialogResult.Yes)
             {
-                main.frenic().setFrequency(i + 1, 30.0);
+                main.outputCountReset();
+                totalCountLabel.Text = "0";
             }
+
+        }
+        #region DELETE IMAGE
+        private void SetDailyTimer()
+        {
+            DateTime now = DateTime.Now;
+            DateTime nextRunTime = now.Date.AddDays(1);
+            double timeToNextRun = (nextRunTime - now).TotalMilliseconds;
+            dailyTimer = new System.Threading.Timer(_ => OnTimedEvent(), null, (long)timeToNextRun, Timeout.Infinite);
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void OnTimedEvent()
         {
-            for (int i = 0; i < 11; i++)
+            SetDailyTimer();
+        }
+        private void DeleteOldDateFolders(string folderPath, DateTime selectedDate)
+        {
+            Task.Run(() =>
             {
-                main.frenic().setFrequency(i + 1, 60);
-            }
-        }
+                try
+                {
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
+                    var directories = Directory.GetDirectories(folderPath);
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-        }
+                    foreach (var directory in directories)
+                    {
+                        var dirName = Path.GetFileName(directory);
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
+                        if (DateTime.TryParseExact(dirName, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime folderDate))
+                        {
+                            if (folderDate < selectedDate)
+                            {
+                                try
+                                {
+                                    Directory.Delete(directory, true);
+                                    main.writeBottomHistory($"Đã xóa thư mục: {directory}");
+                                }
+                                catch (Exception ex)
+                                {
+                                    main.writeBottomHistory($"Không thể xóa thư mục: {directory}. Lỗi: {ex.Message}");
+                                }
+                            }
+                        }
+                        if (DateTime.TryParseExact(dirName, "yyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime folderDate1))
+                        {
+                            if (folderDate1 < selectedDate)
+                            {
+                                try
+                                {
+                                    Directory.Delete(directory, true);
+                                    main.writeBottomHistory($"Đã xóa thư mục: {directory}");
+                                }
+                                catch (Exception ex)
+                                {
+                                    main.writeBottomHistory($"Không thể xóa thư mục: {directory}. Lỗi: {ex.Message}");
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    main.writeBottomHistory("Delete Image Fail");
+                    Debug.debug(ex.ToString());
+                }
+            });
 
         }
+        #endregion
 
         private void lastWorkButton_Click(object sender, EventArgs e)
         {
@@ -258,14 +368,13 @@ namespace bim_base
         private void simCommButton_Click(object sender, EventArgs e)
         {
             FormSimMonitor form = new FormSimMonitor(main);
-            FormAutomationTester form2 = new FormAutomationTester();
 
-            form2.Show();
-            form.Show();
+            form.ShowDialog();
+        }
 
-            // TODO : 테스트   용도로 만든 폼이므로, 나중에 적용할 것
-            //form.ShowDialog();
+        private void button3_Click(object sender, EventArgs e)
+        {
 
         }
-    }//class
-}//namespace
+    }
+}

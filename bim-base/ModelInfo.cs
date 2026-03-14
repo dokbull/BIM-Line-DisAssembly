@@ -47,6 +47,7 @@ public class POS
 
 public class ModelInfo
 {
+    int m_index = 0;
     string m_modelName = "DEFAULT_MODEL";
 
     CSettings m_setting = null;
@@ -55,8 +56,13 @@ public class ModelInfo
 
     public event EventHandler changedModel;
 
-    public ModelInfo(string name)
+    public ModelInfo(int index, string name = "NONE")
     {
+        m_index = index;
+
+        if (m_index >= 90 && name.Contains("TT_") == false)
+            name = "TT_" + name;
+
         m_modelName = name;
         init();
     }
@@ -68,8 +74,6 @@ public class ModelInfo
             m_teachPos[i] = new POS();
             m_teachPos[i].name = ((TEACH_POS)i).ToString();
         }
-
-        modelChange(m_modelName);
     }
 
     public string teachPosString(int teachPos)
@@ -86,62 +90,6 @@ public class ModelInfo
             retn = teachPos.ToString();
 
         return retn;
-    }
-
-    public void modelChange(string modelName)
-    {
-        if (m_setting != null)
-            m_setting = null;
-
-        m_setting = new CSettings(Common.MODEL_PATH + modelName);
-        Conf.CURR_MODEL = modelName;
-        m_modelName = modelName;
-
-        load();
-
-        if (changedModel != null)
-            changedModel(modelName, null);
-    }
-
-    public List<string> loadModelList()
-    {
-        List<string> list = new List<string>();
-        DirectoryInfo dirInfo = new DirectoryInfo(Common.MODEL_PATH);
-
-        FileInfo[] fileInfo = dirInfo.GetFiles();
-        if (fileInfo.Length == 0)
-        {
-            addModel(m_modelName);
-            fileInfo = dirInfo.GetFiles();
-        }
-
-        for (int i = 0; i < fileInfo.Length; i++)
-        {
-            Debug.debug("Name :  " + fileInfo[i].Name + " | " + fileInfo[i].FullName);
-            list.Add(fileInfo[i].Name);
-        }
-
-        return list;
-    }
-
-    public bool addModel(string name)
-    {
-        if (name == "")
-            return false;
-
-        FileInfo fileInfo = new FileInfo(Common.MODEL_PATH + name);
-        bool exist = existModelCheck(name);
-        if (exist)
-            return false;
-
-        if (fileInfo.Directory.Exists == false)
-            fileInfo.Directory.Create();
-
-        fileInfo.Create().Close();
-
-        CSettings settings = new CSettings(Common.MODEL_PATH + name);
-
-        return true;
     }
 
     public bool existModelCheck(string name)
@@ -225,7 +173,7 @@ public class ModelInfo
         return true;
     }
 
-    public string currentModelName()
+    public string modelName()
     {
         return m_modelName;
     }

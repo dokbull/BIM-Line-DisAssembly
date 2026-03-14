@@ -286,6 +286,12 @@ namespace bim_base
 
                 case STEP.WAIT_REVERSE:
                     {
+                        if (ST_STAGE_2.type() == CSTATION.TYPE.BASE)
+                        {
+                            // TESTCODE
+                            main.setLastWork(true);
+                        }
+
                         if (REVERSE.isWaitMold() == true && main.isLastWork() == true)
                         {
                             m_step = STEP.UP_STAGE;

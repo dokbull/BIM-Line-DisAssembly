@@ -310,6 +310,7 @@ namespace bim_base
                         if (MOLD_PP.isRun() == true)
                             return;
 
+                        ST_LEFT_PP.clear();                        
                         ST_RIGHT_PP.move(ST_OUT_CV);
                         OUT_CV.setLock(false);
 

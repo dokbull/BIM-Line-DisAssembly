@@ -63,6 +63,9 @@ public class CSerialFRENIC
 
             for (int i = 0; i < m_count; i++)
             {
+                if (m_simulation)
+                    continue;
+
                 try
                 { 
                     ushort[] data = m_master.ReadHoldingRegisters((byte)(i + 1), 0x0801, 6);

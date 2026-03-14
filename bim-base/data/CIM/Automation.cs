@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static bim_base.CSTATION;
 using static bim_base.data.CIM.CIMEnumeric;
+using static CIMRead;
 using static CIMWrite;
 
 namespace bim_base.data.CIM
@@ -672,7 +673,14 @@ namespace bim_base.data.CIM
             //ModelInfo
             if (m_Reader.readBit(CIMRead.READ_B.CURRENTEQUIPPPIDLISTREQUEST_56) == true)
             {
-                List<string> items = Common.MODEL_INFO.loadModelList();
+                List<string> items = new List<string>();
+
+                for (int i = 0; i < Common.MODEL.Count; i++)
+                {
+                    ModelInfo INFO = Common.MODEL[i];
+
+                    items.Add(INFO.modelName());
+                }
 
                 for (int i = 0; i < items.Count; i++)
                 {

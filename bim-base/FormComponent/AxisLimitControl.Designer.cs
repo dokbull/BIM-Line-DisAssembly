@@ -132,7 +132,7 @@
             // axisMinusButton
             // 
             this.axisMinusButton.BackColor = System.Drawing.Color.Transparent;
-            this.axisMinusButton.BackgroundImage = global::bim_base.Properties.Resources.jog_left;
+            this.axisMinusButton.BackgroundImage = bim_base.Properties.Resources.jog_left;
             this.axisMinusButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.axisMinusButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.axisMinusButton.ForeColor = System.Drawing.Color.Black;
@@ -149,7 +149,7 @@
             // axisPlusButton
             // 
             this.axisPlusButton.BackColor = System.Drawing.Color.Transparent;
-            this.axisPlusButton.BackgroundImage = global::bim_base.Properties.Resources.jog_right;
+            this.axisPlusButton.BackgroundImage = bim_base.Properties.Resources.jog_right;
             this.axisPlusButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.axisPlusButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.axisPlusButton.ForeColor = System.Drawing.Color.Black;

@@ -12,7 +12,6 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>false</Deterministic>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,6 +24,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -91,6 +91,9 @@
     <Reference Include="MySqlConnector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d33d3e53aa5f8c92, processorArchitecture=MSIL">
       <HintPath>..\packages\MySqlConnector.2.4.0\lib\net48\MySqlConnector.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NModbus4, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
     </Reference>
@@ -99,6 +102,9 @@
     </Reference>
     <Reference Include="SuperSocket.ClientEngine, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
       <HintPath>..\packages\SuperSocket.ClientEngine.0.10.0\lib\net45\SuperSocket.ClientEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SUserControls">
+      <HintPath>.\SUserControls.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -204,14 +210,15 @@
     <Compile Include="CSerialMES.cs" />
     <Compile Include="CserialTP.cs" />
     <Compile Include="data\CIM\Automation.cs" />
+    <Compile Include="data\CIM\CIMEnumeric.cs" />
     <Compile Include="data\CIM\CIMRead.cs" />
     <Compile Include="data\CIM\CIMWrite.cs" />
-    <Compile Include="data\CIM\CIMEnumeric.cs" />
-    <Compile Include="FormAuto\FormAutomationTester.cs">
+    <Compile Include="data\CIM\RMS.cs" />
+    <Compile Include="FormAuto\FormInterface.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAuto\FormAutomationTester.Designer.cs">
-      <DependentUpon>FormAutomationTester.cs</DependentUpon>
+    <Compile Include="FormAuto\FormInterface.Designer.cs">
+      <DependentUpon>FormInterface.cs</DependentUpon>
     </Compile>
     <Compile Include="FormAuto\FormSimMonitor.cs">
       <SubType>Form</SubType>
@@ -231,6 +238,12 @@
     <Compile Include="FormAuto\FormStep.Designer.cs">
       <DependentUpon>FormStep.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAuto\FormTactTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormTactTime.Designer.cs">
+      <DependentUpon>FormTactTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormCommon\FormPassWord.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -242,6 +255,60 @@
     </Compile>
     <Compile Include="FormComponent\AxisLimitControl.Designer.cs">
       <DependentUpon>AxisLimitControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UBPPControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UBPPControl.Designer.cs">
+      <DependentUpon>UBPPControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UCCooling.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UCCooling.Designer.cs">
+      <DependentUpon>UCCooling.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UCLoader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UCLoader.Designer.cs">
+      <DependentUpon>UCLoader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UCTransferLD.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UCTransferLD.Designer.cs">
+      <DependentUpon>UCTransferLD.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UCTransferUD.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UCTransferUD.Designer.cs">
+      <DependentUpon>UCTransferUD.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UCUnloader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UCUnloader.Designer.cs">
+      <DependentUpon>UCUnloader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UnitDisplayControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UnitDisplayControl.Designer.cs">
+      <DependentUpon>UnitDisplayControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UnitPPOut.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UnitPPOut.Designer.cs">
+      <DependentUpon>UnitPPOut.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\UnitPPTray.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\UnitPPTray.Designer.cs">
+      <DependentUpon>UnitPPTray.cs</DependentUpon>
     </Compile>
     <Compile Include="FormData\FormDataModel.cs">
       <SubType>Form</SubType>
@@ -273,17 +340,77 @@
     <Compile Include="FormData\FormDataSystem.Designer.cs">
       <DependentUpon>FormDataSystem.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormTeach\FormTeachTrayPP.cs">
+    <Compile Include="FormData\FormInverterSetting.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTeach\FormTeachTrayPP.Designer.cs">
-      <DependentUpon>FormTeachTrayPP.cs</DependentUpon>
+    <Compile Include="FormData\FormInverterSetting.Designer.cs">
+      <DependentUpon>FormInverterSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormJogVelocity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormJogVelocity.Designer.cs">
+      <DependentUpon>FormJogVelocity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormMotorVelocity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormMotorVelocity.Designer.cs">
+      <DependentUpon>FormMotorVelocity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormPortSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormPortSetting.Designer.cs">
+      <DependentUpon>FormPortSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormSetLimit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormSetLimit.Designer.cs">
+      <DependentUpon>FormSetLimit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormTimer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormTimer.Designer.cs">
+      <DependentUpon>FormTimer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormManual.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormManual.Designer.cs">
+      <DependentUpon>FormManual.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMonitor.Designer.cs">
+      <DependentUpon>FormMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachPP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachPP.Designer.cs">
+      <DependentUpon>FormTeachPP.cs</DependentUpon>
     </Compile>
     <Compile Include="FormTeach\FormTeachOutPP.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormTeach\FormTeachOutPP.Designer.cs">
       <DependentUpon>FormTeachOutPP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachTrayPP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachTrayPP.Designer.cs">
+      <DependentUpon>FormTeachTrayPP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\extControl\CIOButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\extControl\CIOButton.Designer.cs">
+      <DependentUpon>CIOButton.cs</DependentUpon>
     </Compile>
     <Compile Include="lib\IO\AjinAIO.cs" />
     <Compile Include="lib\IO\AjinRtexDIO.cs" />
@@ -310,6 +437,7 @@
     </Compile>
     <Compile Include="data\CSTATION.cs" />
     <Compile Include="data\CInterlock.cs" />
+    <Compile Include="lib\TimerDelay.cs" />
     <Compile Include="Process\ProcessLoaderCvWork.cs" />
     <Compile Include="Process\ProcessOutUbCvWork.cs" />
     <Compile Include="Process\ProcessOutMoldCvWork.cs" />
@@ -554,12 +682,6 @@
     <Compile Include="lib\extControl\CImageButton.Designer.cs">
       <DependentUpon>CImageButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="lib\extControl\CIOButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="lib\extControl\CIOButton.Designer.cs">
-      <DependentUpon>CIOButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="lib\extControl\CPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -692,6 +814,9 @@
     <Compile Include="PopupMessage.cs" />
     <Compile Include="TeachingPendant.cs" />
     <Compile Include="TPSerial.cs" />
+    <EmbeddedResource Include="FormAuto\FormInterface.resx">
+      <DependentUpon>FormInterface.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormAuto\FormSimMonitor.resx">
       <DependentUpon>FormSimMonitor.cs</DependentUpon>
     </EmbeddedResource>
@@ -701,6 +826,9 @@
     <EmbeddedResource Include="FormAuto\FormStep.resx">
       <DependentUpon>FormStep.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto\FormTactTime.resx">
+      <DependentUpon>FormTactTime.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormAuto\FormUnitInit.resx">
       <DependentUpon>FormUnitInit.cs</DependentUpon>
     </EmbeddedResource>
@@ -709,6 +837,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormComponent\AxisLimitControl.resx">
       <DependentUpon>AxisLimitControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UBPPControl.resx">
+      <DependentUpon>UBPPControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UCCooling.resx">
+      <DependentUpon>UCCooling.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UCLoader.resx">
+      <DependentUpon>UCLoader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UCTransferLD.resx">
+      <DependentUpon>UCTransferLD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UCTransferUD.resx">
+      <DependentUpon>UCTransferUD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UCUnloader.resx">
+      <DependentUpon>UCUnloader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UnitDisplayControl.resx">
+      <DependentUpon>UnitDisplayControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UnitPPOut.resx">
+      <DependentUpon>UnitPPOut.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\UnitPPTray.resx">
+      <DependentUpon>UnitPPTray.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormDataModel.resx">
       <DependentUpon>FormDataModel.cs</DependentUpon>
@@ -724,6 +879,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormDataSystem.resx">
       <DependentUpon>FormDataSystem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormInverterSetting.resx">
+      <DependentUpon>FormInverterSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormJogVelocity.resx">
+      <DependentUpon>FormJogVelocity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormMotorVelocity.resx">
+      <DependentUpon>FormMotorVelocity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormPortSetting.resx">
+      <DependentUpon>FormPortSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormSetLimit.resx">
+      <DependentUpon>FormSetLimit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormTimer.resx">
+      <DependentUpon>FormTimer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
@@ -743,6 +916,12 @@
     <EmbeddedResource Include="FormAuto\FormIOMonitor.resx">
       <DependentUpon>FormIOMonitor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormManual.resx">
+      <DependentUpon>FormManual.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMonitor.resx">
+      <DependentUpon>FormMonitor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormTeach.resx">
       <DependentUpon>FormTeach.cs</DependentUpon>
     </EmbeddedResource>
@@ -758,14 +937,17 @@
     <EmbeddedResource Include="FormBottom.resx">
       <DependentUpon>FormBottom.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormTeach\FormTeachTrayPP.resx">
-      <DependentUpon>FormTeachTrayPP.cs</DependentUpon>
+    <EmbeddedResource Include="FormTeach\FormTeachPP.resx">
+      <DependentUpon>FormTeachPP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTeach\FormTeachOutPP.resx">
       <DependentUpon>FormTeachOutPP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTeach\FormTeachInPP.resx">
       <DependentUpon>FormTeachInPP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTeach\FormTeachTrayPP.resx">
+      <DependentUpon>FormTeachTrayPP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTop.resx">
       <DependentUpon>FormTop.cs</DependentUpon>
@@ -1158,7 +1340,7 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.8%28x86 및 x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -1166,6 +1348,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

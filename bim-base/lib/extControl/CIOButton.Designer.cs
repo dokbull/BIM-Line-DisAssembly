@@ -26,11 +26,11 @@
     /// </summary>
     private void InitializeComponent()
     {
-            // 
-            // CIOButton
-            // 
-            this.Size = new System.Drawing.Size(227, 86);
-            this.ResumeLayout(false);
+        // 
+        // CIOButton
+        // 
+        this.Size = new System.Drawing.Size(227, 86);
+        this.ResumeLayout(false);
 
     }
 

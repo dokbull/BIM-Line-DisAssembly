@@ -105,7 +105,11 @@ namespace bim_base
 
             m_agoStep = m_step;
 
-            ModelInfo model = Common.MODEL_INFO;
+            ModelInfo mc = Common.MC;
+            ModelInfo model = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
+
+            POS mc_readyPos = mc.teachPos(TEACH_POS.MOLD_PP_WAIT);
+            POS mc_teachPos = mc.teachPos(TEACH_POS.NONE);
 
             POS readyPos = model.teachPos(TEACH_POS.MOLD_PP_WAIT);
             POS teachPos = model.teachPos(TEACH_POS.NONE);
@@ -115,14 +119,17 @@ namespace bim_base
             switch (m_target)
             {
                 case TARGET.READY:
+                    mc_teachPos = mc.teachPos(TEACH_POS.MOLD_PP_WAIT);
                     teachPos = model.teachPos(TEACH_POS.MOLD_PP_WAIT);
                     break;
 
                 case TARGET.LEFT:
+                    mc_teachPos = mc.teachPos(TEACH_POS.MOLD_PP_LEFT);
                     teachPos = model.teachPos(TEACH_POS.MOLD_PP_LEFT);
                     break;
 
                 case TARGET.RIGHT:
+                    mc_teachPos = mc.teachPos(TEACH_POS.MOLD_PP_RIGHT);
                     teachPos = model.teachPos(TEACH_POS.MOLD_PP_RIGHT);
                     break;
             }
@@ -150,8 +157,8 @@ namespace bim_base
                 case STEP.MOVE_Z_READY:
                     {
                         bool ret = true;
-                        ret &= ZL.absMove(readyPos.zL);
-                        ret &= ZR.absMove(readyPos.zR);
+                        ret &= ZL.absMove(mc_readyPos.zL + readyPos.zL);
+                        ret &= ZR.absMove(mc_readyPos.zR + readyPos.zR);
 
                         if (ret == false)
                             return;
@@ -171,7 +178,7 @@ namespace bim_base
 
                 case STEP.MOVE_X_TARGET:
                     {
-                        bool ret = X.absMove(teachPos.x);
+                        bool ret = X.absMove(mc_teachPos.x + teachPos.x);
 
                         if (ret == false)
                             return;
@@ -200,10 +207,10 @@ namespace bim_base
                         bool ret = true;
 
                         if (m_action == ACTION.PLACE_LEFT || m_action == ACTION.PLACE_BOTH || m_action == ACTION.PICK_LEFT || m_action == ACTION.PICK_BOTH)
-                            ret &= ZL.absMove(teachPos.zL);
+                            ret &= ZL.absMove(mc_teachPos.zL + teachPos.zL);
 
                         if (m_action == ACTION.PLACE_RIGHT || m_action == ACTION.PLACE_BOTH || m_action == ACTION.PICK_RIGHT || m_action == ACTION.PICK_BOTH)
-                            ret &= ZR.absMove(teachPos.zR);
+                            ret &= ZR.absMove(mc_teachPos.zR + teachPos.zR);
 
                         if (ret == false)
                             return;
@@ -379,8 +386,8 @@ namespace bim_base
                 case STEP.MOVE_Z_AFTER_READY:
                     {
                         bool ret = true;
-                        ret &= ZL.absMove(readyPos.zL);
-                        ret &= ZR.absMove(readyPos.zR);
+                        ret &= ZL.absMove(mc_readyPos.zL + readyPos.zL);
+                        ret &= ZR.absMove(mc_readyPos.zR + readyPos.zR);
 
                         if (ret == false)
                             return;

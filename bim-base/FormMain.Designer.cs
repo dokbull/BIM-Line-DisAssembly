@@ -33,6 +33,7 @@
             this.uiTimer = new System.Windows.Forms.Timer(this.components);
             this.serialMES = new System.IO.Ports.SerialPort(this.components);
             this.serialFRENIC = new System.IO.Ports.SerialPort(this.components);
+            this.serialFENIC2 = new System.IO.Ports.SerialPort(this.components);
             this.SuspendLayout();
             // 
             // mainTableLayout
@@ -41,12 +42,12 @@
             this.mainTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.mainTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainTableLayout.Location = new System.Drawing.Point(0, 0);
-            this.mainTableLayout.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.mainTableLayout.Margin = new System.Windows.Forms.Padding(0);
             this.mainTableLayout.Name = "mainTableLayout";
             this.mainTableLayout.RowCount = 3;
-            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 65F));
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 65F));
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
             this.mainTableLayout.Size = new System.Drawing.Size(1024, 768);
             this.mainTableLayout.TabIndex = 0;
             // 
@@ -55,16 +56,27 @@
             this.uiTimer.Interval = 1000;
             this.uiTimer.Tick += new System.EventHandler(this.uiTimer_Tick);
             // 
+            // serialMES
+            // 
+            this.serialMES.PortName = "COM4";
+            // 
             // serialFRENIC
             // 
             this.serialFRENIC.BaudRate = 19200;
-            this.serialFRENIC.PortName = "COM8";
+            this.serialFRENIC.PortName = "COM7";
             this.serialFRENIC.StopBits = System.IO.Ports.StopBits.Two;
+            this.serialFRENIC.WriteBufferSize = 4096;
+            // 
+            // serialFENIC2
+            // 
+            this.serialFENIC2.BaudRate = 19200;
+            this.serialFENIC2.PortName = "COM8";
+            this.serialFENIC2.StopBits = System.IO.Ports.StopBits.Two;
+            this.serialFENIC2.WriteBufferSize = 4096;
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1024, 768);
             this.Controls.Add(this.mainTableLayout);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -72,9 +84,11 @@
             this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "DISASSEMBLY";
+            this.Text = "MeterialAttach_Vision_V1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.ResumeLayout(false);
 
@@ -86,6 +100,7 @@
         private System.Windows.Forms.Timer uiTimer;
         public System.IO.Ports.SerialPort serialMES;
         public System.IO.Ports.SerialPort serialFRENIC;
+        public System.IO.Ports.SerialPort serialFENIC2;
     }
 }
 

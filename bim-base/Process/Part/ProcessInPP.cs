@@ -98,7 +98,11 @@ namespace bim_base
 
             m_agoStep = m_step;
 
-            ModelInfo model = Common.MODEL_INFO;
+            ModelInfo mc = Common.MC;
+            ModelInfo model = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
+
+            POS mc_readyPos = mc.teachPos(TEACH_POS.PICK_PP_WAIT);
+            POS mc_teachPos = mc.teachPos(TEACH_POS.NONE);
 
             POS readyPos = model.teachPos(TEACH_POS.PICK_PP_WAIT);
             POS teachPos = model.teachPos(TEACH_POS.NONE);
@@ -108,14 +112,17 @@ namespace bim_base
             switch (m_target)
             {
                 case TARGET.READY:
+                    mc_teachPos = mc.teachPos(TEACH_POS.PICK_PP_WAIT);
                     teachPos = model.teachPos(TEACH_POS.PICK_PP_WAIT);
                     break;
 
                 case TARGET.PICK:
+                    mc_teachPos = mc.teachPos(TEACH_POS.PICK_PP_PICK);
                     teachPos = model.teachPos(TEACH_POS.PICK_PP_PICK);
                     break;
 
                 case TARGET.PLACE:
+                    mc_teachPos = mc.teachPos(TEACH_POS.PICK_PP_PLACE);
                     teachPos = model.teachPos(TEACH_POS.PICK_PP_PLACE);
                     break;
             }
@@ -142,7 +149,7 @@ namespace bim_base
 
                 case STEP.MOVE_Z_READY:
                     {
-                        bool ret = Z.absMove(readyPos.z);
+                        bool ret = Z.absMove(mc_readyPos.z + readyPos.z);
 
                         if (ret == false)
                             return;
@@ -171,7 +178,7 @@ namespace bim_base
                             }
                         }
 
-                        bool ret = Y.absMove(teachPos.y);
+                        bool ret = Y.absMove(mc_teachPos.y + teachPos.y);
 
                         if (ret == false)
                             return;
@@ -220,7 +227,7 @@ namespace bim_base
                             }
                         }
 
-                        bool ret = Z.absMove(teachPos.z);
+                        bool ret = Z.absMove(mc_teachPos.z + teachPos.z);
 
                         if (ret == false)
                             return;
@@ -307,7 +314,7 @@ namespace bim_base
 
                 case STEP.MOVE_Z_AFTER_READY:
                     {
-                        bool ret = Z.absMove(readyPos.z);
+                        bool ret = Z.absMove(mc_readyPos.z + readyPos.z);
 
                         if (ret == false)
                             return;

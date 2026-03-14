@@ -24,7 +24,9 @@ public partial class CIOButton : Button
     private StringAlignment m_vAlign = StringAlignment.Center;
 
     private bool m_ioState = false;
+    private bool m_ioState2 = false;
     private bool m_setOutputState = false;
+
     private Color m_trueColor = Color.Green; 
     private Color m_setOutColor = Color.Orange; // 출력 신호 발생중일때 사용
     private Color m_falseColor = Color.Red;
@@ -66,6 +68,16 @@ public partial class CIOButton : Button
         }
     }
 
+    public bool _IO_STATE_EXTRA
+    {
+        get { return m_ioState2; }
+        set
+        {
+            m_ioState2 = value;
+            Refresh();
+        }
+    }
+
     public bool _OUT_STATE
     {
         get { return m_setOutputState; }
@@ -90,6 +102,16 @@ public partial class CIOButton : Button
         set
         {
             m_falseColor = value;
+            Refresh();
+        }
+    }
+
+    public Size _IO_SIZE
+    {
+        get { return m_ioSize; }
+        set
+        {
+            m_ioSize = value;
             Refresh();
         }
     }
@@ -153,27 +175,41 @@ public partial class CIOButton : Button
         Rectangle textRect = ClientRectangle;
         Pen borderPen = new Pen(Color.Black, 2);
 
-        Color color = m_falseColor;
+        Color color1 = m_falseColor;
+        Color color2 = m_falseColor;
 
-        if (m_ioState == true)
-            color = m_trueColor;
-        else if (m_setOutputState == true)
-            color = m_setOutColor;
-
-        using (Brush brush = new SolidBrush(color))
+        if (m_setOutputState == true)
+            color1 = m_setOutColor;
+        else
         {
-            if (m_ioPos == CBUTTON_POS.Left)
-            {
-                graphics.FillEllipse(brush, m_margin.Left, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
-                graphics.DrawEllipse(borderPen, m_margin.Left, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
-                textRect.X += m_ioSize.Width + m_margin.Left + m_margin.Right;
-            }
-            else if (m_ioPos == CBUTTON_POS.Right)
-            {
-                graphics.FillEllipse(brush, Width - m_ioSize.Width - m_margin.Right, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
-                graphics.DrawEllipse(borderPen, Width - m_ioSize.Width - m_margin.Right, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
-                textRect.Width -= m_ioSize.Width + m_margin.Left + m_margin.Right;
-            }
+            if (m_ioState == true)
+                color1 = m_trueColor;
+
+            if (m_ioState2 == true)
+                color2 = m_trueColor;
+        }
+
+        Brush brush1 = new SolidBrush(color1);
+        Brush brush2 = new SolidBrush(color2);
+
+        if (m_ioPos == CBUTTON_POS.Left)
+        {
+            graphics.FillEllipse(brush1, m_margin.Left, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
+            graphics.DrawEllipse(borderPen, m_margin.Left, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
+
+        }
+        else if (m_ioPos == CBUTTON_POS.Right)
+        {
+            graphics.FillEllipse(brush1, Width - m_ioSize.Width - m_margin.Right, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
+            graphics.DrawEllipse(borderPen, Width - m_ioSize.Width - m_margin.Right, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
+        }
+        else if (m_ioPos == CBUTTON_POS.Both)
+        {
+            graphics.FillEllipse(brush1, m_margin.Left, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
+            graphics.DrawEllipse(borderPen, m_margin.Left, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
+
+            graphics.FillEllipse(brush2, Width - m_ioSize.Width - m_margin.Right, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
+            graphics.DrawEllipse(borderPen, Width - m_ioSize.Width - m_margin.Right, ((Height - m_ioSize.Height) / 2) + m_margin.Top, m_ioSize.Width, m_ioSize.Height);
         }
 
         StringFormat stringFormat = new StringFormat
@@ -181,6 +217,17 @@ public partial class CIOButton : Button
             Alignment = m_hAlign,
             LineAlignment = m_vAlign
         };
+
+        if (m_hAlign == StringAlignment.Near)
+        {
+            textRect.X += m_ioSize.Width + m_margin.Left + m_margin.Right;
+            textRect.Width -= m_ioSize.Width + m_margin.Left + m_margin.Right;
+        }
+        if (m_hAlign == StringAlignment.Far)
+        {
+            textRect.X += m_ioSize.Width - m_margin.Left - m_margin.Right;
+            textRect.Width -= m_ioSize.Width + m_margin.Left + m_margin.Right;
+        }
 
         graphics.DrawString(m_text, Font, Brushes.Black, textRect, stringFormat);
         borderPen.Dispose();

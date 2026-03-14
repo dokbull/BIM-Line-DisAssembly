@@ -222,6 +222,11 @@ namespace bim_base
 
                 case STEP.WAIT_UB:
                     {
+                        if (main.isLastWork() == true)
+                        {
+                            m_step = STEP.CHECK_STAGE;
+                            return;
+                        }
                         // WAIT MOLD
                     }
                     break;
@@ -230,6 +235,15 @@ namespace bim_base
                     {
                         if (isDry == false)
                         {
+                            if (main.isLastWork() == true)
+                            {
+                                if (input(INPUT.UB_OUT_REVERSE_DETECT_1) == true || input(INPUT.UB_OUT_REVERSE_DETECT_2) == true)
+                                {
+                                    m_step = STEP.TURN_UB;
+                                    return;
+                                }
+                            }
+
                             if (input(INPUT.UB_OUT_REVERSE_DETECT_1) == false || input(INPUT.UB_OUT_REVERSE_DETECT_2) == false)
                             {
                                 m_step = STEP.WAIT_UB;
@@ -286,6 +300,9 @@ namespace bim_base
 
                 case STEP.TURN_UB:
                     {
+                        if (UB_PP.isRun() == true)
+                            return;
+
                         setTurn();
 
                         m_cylTimeout.start();

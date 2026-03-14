@@ -1,4 +1,5 @@
-﻿using System;
+﻿using bim_base;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,6 +8,8 @@ using System.Reflection;
 
 public class Common
 {
+    static Common m_instance = null;
+
     public static string TITLE = "BASE-S-V1"; 
     public static string MC_NAME = "TOPM00";
 
@@ -14,20 +17,64 @@ public class Common
     public static string MES_PATH = "C:\\FA\\MES\\mesConverter.exe";
 
     public static string VERSION = TITLE + "_1." + getBuildDate().ToString("yyyyMMdd") + ".01";
+    public static string SHOT_VERSION = "(Ver 1." + getBuildDate().ToString("yyyyMMdd") + ".01)";
 
     public static string MODEL_PATH = PATH + "\\models\\";
 
-    public static ModelInfo MC_INFO = null;
-    public static ModelInfo MODEL_INFO = null;
+    public static ModelInfo MC = null;
+    public static List<ModelInfo> MODEL = new List<ModelInfo>();
 
     public static string LOG_PATH = PATH + "\\log";
     public static string PRODUCT_PATH = LOG_PATH + "\\product_log\\";
     public static CLogManager ALARM_MANAGER = new CLogManager("alarm", LOG_PATH, "", "alarm");
 
-    static public void init()
+    public Common()
     {
-        MC_INFO = new ModelInfo("MACHINE");
-        MODEL_INFO = new ModelInfo(Conf.CURR_MODEL);
+        m_instance = this;
+    }
+
+    public static Common inst()
+    {
+        if (m_instance == null)
+            m_instance = new Common();
+
+        PATH = pathUtil.savePath();
+
+        Conf.load();
+        Alarm.load();
+
+        MC = new ModelInfo(1000, "MACHINE");
+
+        for (int i = 0; i < 100; i++)
+        {
+            ModelInfo data = new ModelInfo(i);
+            data.load(i.ToString());
+
+            MODEL.Add(data);
+        }
+
+        return m_instance;
+    }
+
+    public static ModelInfo MODEL_INFO(string name)
+    {
+        for (int i = 0; i < MODEL.Count; i++)
+        {
+            ModelInfo INFO = MODEL[i];
+
+            if (INFO.modelName() ==  name)
+                return MODEL[i];
+        }
+
+        return null;
+    }
+
+    public static ModelInfo MODEL_INFO(int index)
+    {
+        if (index < 0 || index > (MODEL.Count - 1))
+            return null;
+
+        return MODEL[index];
     }
 
     public static void setCustomPath(string path)
