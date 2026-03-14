@@ -59,6 +59,10 @@ public class ModelInfo
     public ModelInfo(int index, string name = "NONE")
     {
         m_index = index;
+
+        if (m_index >= 90 && name.Contains("TT_") == false)
+            name = "TT_" + name;
+
         m_modelName = name;
         init();
     }
@@ -70,8 +74,6 @@ public class ModelInfo
             m_teachPos[i] = new POS();
             m_teachPos[i].name = ((TEACH_POS)i).ToString();
         }
-
-        modelChange(m_modelName);
     }
 
     public string teachPosString(int teachPos)
@@ -88,41 +90,6 @@ public class ModelInfo
             retn = teachPos.ToString();
 
         return retn;
-    }
-
-    public void modelChange(string modelName)
-    {
-        if (m_setting != null)
-            m_setting = null;
-
-        m_setting = new CSettings(Common.MODEL_PATH + modelName);
-        Conf.CURR_MODEL = modelName;
-        m_modelName = modelName;
-
-        load();
-
-        if (changedModel != null)
-            changedModel(modelName, null);
-    }
-
-    public bool addModel(string name)
-    {
-        if (name == "")
-            return false;
-
-        FileInfo fileInfo = new FileInfo(Common.MODEL_PATH + name);
-        bool exist = existModelCheck(name);
-        if (exist)
-            return false;
-
-        if (fileInfo.Directory.Exists == false)
-            fileInfo.Directory.Create();
-
-        fileInfo.Create().Close();
-
-        CSettings settings = new CSettings(Common.MODEL_PATH + name);
-
-        return true;
     }
 
     public bool existModelCheck(string name)

@@ -47,7 +47,10 @@ public class Common
 
         for (int i = 0; i < 100; i++)
         {
-            MODEL[i] = new ModelInfo(i);
+            ModelInfo data = new ModelInfo(i);
+            data.load(i.ToString());
+
+            MODEL.Add(data);
         }
 
         return m_instance;

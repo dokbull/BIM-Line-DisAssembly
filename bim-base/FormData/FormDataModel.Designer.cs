@@ -207,6 +207,7 @@
             this.createButton.TabIndex = 3;
             this.createButton.Text = "Create";
             this.createButton.UseVisualStyleBackColor = true;
+            this.createButton.Visible = false;
             this.createButton.Click += new System.EventHandler(this.createButton_Click);
             // 
             // deleteButton
@@ -218,6 +219,7 @@
             this.deleteButton.TabIndex = 4;
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Visible = false;
             this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
             // changeButton

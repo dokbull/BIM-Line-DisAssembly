@@ -107,7 +107,7 @@ namespace bim_base
             m_agoStep = m_step;
 
             ModelInfo mc = Common.MC;
-            ModelInfo model = Common.MODEL_INFO(Conf.CURR_MODEL);
+            ModelInfo model = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
 
             POS mc_readyPos = mc.teachPos(TEACH_POS.UB_PP_WAIT);
             POS mc_teachPos = mc.teachPos(TEACH_POS.NONE);

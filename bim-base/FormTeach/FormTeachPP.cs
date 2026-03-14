@@ -30,7 +30,7 @@ namespace bim_base
         {
             InitializeComponent();
             main = procMain;
-            m_model = Common.MODEL_INFO(Conf.CURR_MODEL);
+            m_model = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
         }
 
         private void FormTeachPP_Load(object sender, EventArgs e)

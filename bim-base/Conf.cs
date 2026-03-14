@@ -9,7 +9,7 @@ class Conf
     static string m_db_ip = "127.0.0.1";
     static string m_db_scheme = "knk-se-base";
 
-    static string m_currModel = "";
+    static int m_currModelIdx = 0;
 
     static int MAX_AXIS = 255;
 
@@ -46,7 +46,7 @@ class Conf
         m_db_ip = m_setting.getValue("DB", "IP", "127.0.0.1");
         m_db_scheme = m_setting.getValue("DB", "SCHEME", "knk-se-base");
 
-        m_currModel = m_setting.getValue("MODELS", "CURR_MODEL_NAME", "DEFAULT_MODEL");
+        m_currModelIdx = m_setting.getValue("MODELS", "CURR_MODEL_IDX", 0);
 
         m_productInfoVisible = m_setting.getValue("SETTING", "PRODUCT_INFO_VISIBLE", true);
         
@@ -108,10 +108,10 @@ class Conf
     }
     #endregion
 
-    static public string CURR_MODEL
+    static public int CURR_MODEL_IDX
     {
-        get { return m_currModel; }
-        set { m_setting.setValue("MODELS", "CURR_MODEL_NAME", value); m_currModel = value; }
+        get { return m_currModelIdx; }
+        set { m_setting.setValue("MODELS", "CURR_MODEL_IDX", value); m_currModelIdx = value; }
     }
 
     #region MOTOR_VARIABLE

@@ -41,7 +41,7 @@ namespace bim_base
                 {
                     string name = modelList.Items[i].ToString();
 
-                    if (Conf.CURR_MODEL == name)
+                    if (Conf.CURR_MODEL_IDX == i)
                     {
                         index = i;
                         break;
@@ -49,7 +49,7 @@ namespace bim_base
                 }
 
                 modelList.SelectedIndex = index;
-                currentModelLabel.Text = Conf.CURR_MODEL;
+                currentModelLabel.Text = Common.MODEL_INFO(Conf.CURR_MODEL_IDX).modelName();
 
                 uiTimer.Enabled = true;
             }
@@ -65,9 +65,10 @@ namespace bim_base
 
         private void changeButton_Click(object sender, EventArgs e)
         {
-            string name = modelList.SelectedItem.ToString();
-            string curName = Conf.CURR_MODEL;
-            if (name == curName)
+            int idx = modelList.SelectedIndex;
+            int modelIdx = Conf.CURR_MODEL_IDX;
+
+            if (idx == modelIdx)
             {
                 CMessageBox errMsg = new CMessageBox(Common.TITLE, "SAME NAME." , MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
                 errMsg.ShowDialog();
@@ -78,13 +79,13 @@ namespace bim_base
             if (msgBox.ShowDialog() != DialogResult.OK)
                 return;
 
-            Conf.CURR_MODEL = curName;
-            currentModelLabel.Text = Conf.CURR_MODEL;
+            Conf.CURR_MODEL_IDX = idx;
+            currentModelLabel.Text = Common.MODEL_INFO(idx).modelName();
 
-            CMessageBox resMsg = new CMessageBox(Common.TITLE, "SUCCESS " + name, MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
+            CMessageBox resMsg = new CMessageBox(Common.TITLE, "SUCCESS " + idx, MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
             resMsg.ShowDialog();
 
-            main.writeSetupLog("FormSubDataModel::changeButton_Click name:" + name + " bfModel:" + curName);
+            main.writeSetupLog("FormSubDataModel::changeButton_Click name:" + idx + " bfModel:" + modelIdx);
             
         }
 
