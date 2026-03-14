@@ -18,9 +18,9 @@ namespace bim_base
             InitializeComponent();
         }
 
-        private void btnHandShake_Click(object sender, EventArgs e)
+        private async void btnHandShake_Click(object sender, EventArgs e)
         {
-            Automation.Instance.HandShakeSignal(CIMWrite.WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, 5);
+            await Automation.Instance.HandShakeSignal(CIMWrite.WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, 5);
 
         }
 

@@ -514,7 +514,7 @@ namespace bim_base.data.CIM
         }
 
 
-        public bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
+        public async Task<bool> HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
         {
             bool function()
             {
@@ -528,11 +528,6 @@ namespace bim_base.data.CIM
                 }
                 catch (Exception ex)
                 {
-                    if (_isOnError)
-                    {
-                        throw new Exception($"HandShakeSignal Error Occurred. {ex.ToString()}");
-                    }
-
                     return false;
                 }
                 finally
@@ -542,11 +537,14 @@ namespace bim_base.data.CIM
             }
             ;
 
-            Task<bool> asyncHS = Task.Run(() => function());
-            asyncHS.Wait(_timeoutSeconds * 1000);
+            bool asyncResult = await Task.Run(() => function());
 
+            if (_isOnError && asyncResult == false)
+            {
+                throw new Exception($"HandShakeSignal Error Occurred");
+            }
 
-            return asyncHS.Result;
+            return asyncResult;
         }
 
         #endregion
@@ -586,19 +584,19 @@ namespace bim_base.data.CIM
             }
 
             this.IsInitialized = true;
-            Task.Run(() =>
-             {
-                 bool alive = false;
-                 while (this.IsInitialized)
-                 {
-                     alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
-                     this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
-                 }
-             });
+            bool alive = false;
+            
+            while (this.IsInitialized)
+            {
+                alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
+                Task<bool> asyncAlive = Task.Run(() => this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS));
+                asyncAlive.Wait();
+            }
             return true;
-        }
+        }    
+        
 
         public bool SetDateTime()
         {
@@ -650,12 +648,12 @@ namespace bim_base.data.CIM
         /// <summary>
         /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
         /// </summary>
-        public void SendTerminalDisplay(string _message)
+        public async void SendTerminalDisplay(string _message)
         {
             try
             {
                 this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
-                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_SECONDS);
+                await this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_SECONDS);
 
             }
             catch
@@ -666,14 +664,14 @@ namespace bim_base.data.CIM
         /// <summary>
         /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
         /// </summary>
-        public void SendOperatorCall(string _message)
+        public async void SendOperatorCall(string _message)
         {
             try
             {
                 // TODO CHECK LHJ : Operator Call은 ID가 존재하는데, ID는 어떻게 관리할지? 일단은 메시지만 전달하는 형태로 구현
 
                 this.WriteWord(WRITE_W.ASCII_60_259C_UnitOPCallConfirmOPCallMessage, _message);
-                this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_SECONDS);
+                await this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_SECONDS);
 
             }
             catch
