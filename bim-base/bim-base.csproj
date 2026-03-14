@@ -1,0 +1,1163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{86222940-80A5-4824-AD28-F37406EF0039}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>bim_base</RootNamespace>
+    <AssemblyName>bim-base</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>false</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;USE_CSOURCEGRID, USE_SE_TP, USE_SUPERSOCKET, USE_SEC_FONT, USE_CCLINK</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;USE_CSOURCEGRID, USE_SE_TP, USE_SEC_FONT, USE_SUPERSOCKET, USE_CCLINK</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MelsecLibrary">
+      <HintPath>..\MelsecLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.9.0.0\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.9.0.0\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="MySqlConnector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d33d3e53aa5f8c92, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySqlConnector.2.4.0\lib\net48\MySqlConnector.dll</HintPath>
+    </Reference>
+    <Reference Include="NModbus4, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NModbus4.2.1.0\lib\net40\NModbus4.dll</HintPath>
+    </Reference>
+    <Reference Include="SourceGrid, Version=4.40.4580.29115, Culture=neutral, PublicKeyToken=df6f5e538749e85d, processorArchitecture=MSIL">
+      <HintPath>..\packages\SourceGrid.4.4.0\lib\net35\SourceGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperSocket.ClientEngine, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.ClientEngine.0.10.0\lib\net45\SuperSocket.ClientEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Specialized, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Specialized.4.3.0\lib\net46\System.Collections.Specialized.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.9.0.0\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.0\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.NameResolution, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.NameResolution.4.3.0\lib\net46\System.Net.NameResolution.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Security, Version=4.0.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Security.4.3.2\lib\net46\System.Net.Security.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.0\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.0\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Extensions.4.3.1\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.2\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.0\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommonEnum.cs" />
+    <Compile Include="CSerialMES.cs" />
+    <Compile Include="CserialTP.cs" />
+    <Compile Include="data\CIM\CIMRead.cs" />
+    <Compile Include="data\CIM\CIMWrite.cs" />
+    <Compile Include="FormAuto\FormSimMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormSimMonitor.Designer.cs">
+      <DependentUpon>FormSimMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAuto\FormProductInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormProductInfo.Designer.cs">
+      <DependentUpon>FormProductInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAuto\FormStep.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormStep.Designer.cs">
+      <DependentUpon>FormStep.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCommon\FormPassWord.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCommon\FormPassWord.Designer.cs">
+      <DependentUpon>FormPassWord.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\AxisLimitControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\AxisLimitControl.Designer.cs">
+      <DependentUpon>AxisLimitControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormDataModel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormDataModel.Designer.cs">
+      <DependentUpon>FormDataModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormDataJogVel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormDataJogVel.Designer.cs">
+      <DependentUpon>FormDataJogVel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormDataMotorVel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormDataMotorVel.Designer.cs">
+      <DependentUpon>FormDataMotorVel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormDataPort.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormDataPort.Designer.cs">
+      <DependentUpon>FormDataPort.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormDataSystem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormDataSystem.Designer.cs">
+      <DependentUpon>FormDataSystem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachTrayPP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachTrayPP.Designer.cs">
+      <DependentUpon>FormTeachTrayPP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachOutPP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachOutPP.Designer.cs">
+      <DependentUpon>FormTeachOutPP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\IO\AjinAIO.cs" />
+    <Compile Include="lib\IO\AjinRtexDIO.cs" />
+    <Compile Include="lib\IO\CrevisModbusIO.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXA.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXC.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXD.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXDev.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXHD.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXHS.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXL.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXM.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXP.cs" />
+    <Compile Include="lib\motion\ajin\3rdparty_eCat\AXS.cs" />
+    <Compile Include="lib\motion\ajin\AjinEcatLib.cs" />
+    <Compile Include="lib\network\CModbus.cs" />
+    <Compile Include="lib\network\CSerialModbus.cs" />
+    <Compile Include="lib\network\CSerialFRENIC.cs" />
+    <Compile Include="lib\sec\AjinMiniStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\sec\AjinMiniStatus.Designer.cs">
+      <DependentUpon>AjinMiniStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="data\CSTATION.cs" />
+    <Compile Include="data\CInterlock.cs" />
+    <Compile Include="Process\ProcessLoaderCvWork.cs" />
+    <Compile Include="Process\ProcessOutUbCvWork.cs" />
+    <Compile Include="Process\ProcessOutMoldCvWork.cs" />
+    <Compile Include="Process\ProcessAlignCvWork.cs" />
+    <Compile Include="Process\ProcessUbReverseWork.cs" />
+    <Compile Include="Process\ProcessUbWork.cs" />
+    <Compile Include="Process\ProcessMoldWork.cs" />
+    <Compile Include="Process\ProcessShuttleWork.cs" />
+    <Compile Include="Process\ProcessMoldReverseWork.cs" />
+    <Compile Include="Process\Part\ProcessMoldBase.cs" />
+    <Compile Include="Process\Part\ProcessMoldPP.cs" />
+    <Compile Include="Process\Part\ProcessUbPP.cs" />
+    <Compile Include="Process\ETC\ProcessOrg.cs" />
+    <Compile Include="Process\Part\ProcessInPP.cs" />
+    <Compile Include="Process\ProcessInWork.cs" />
+    <Compile Include="data\ExtAxis.cs" />
+    <Compile Include="FormAuto\FormUnitInit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormUnitInit.Designer.cs">
+      <DependentUpon>FormUnitInit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCommon\FormAxisLimit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCommon\FormAxisLimit.Designer.cs">
+      <DependentUpon>FormAxisLimit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachInPP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTeach\FormTeachInPP.Designer.cs">
+      <DependentUpon>FormTeachInPP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormComponent\JogControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FormComponent\JogControl.Designer.cs">
+      <DependentUpon>JogControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ALARM.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="Conf.cs" />
+    <Compile Include="CProcess.cs" />
+    <Compile Include="FormAuto\FormMode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormMode.Designer.cs">
+      <DependentUpon>FormMode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAuto\FormAxisOrigin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormAxisOrigin.Designer.cs">
+      <DependentUpon>FormAxisOrigin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCommon\FormAlarm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCommon\FormAlarm.Designer.cs">
+      <DependentUpon>FormAlarm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAuto\FormIOMonitor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormIOMonitor.Designer.cs">
+      <DependentUpon>FormIOMonitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTeach.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTeach.Designer.cs">
+      <DependentUpon>FormTeach.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData.Designer.cs">
+      <DependentUpon>FormData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAuto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto.Designer.cs">
+      <DependentUpon>FormAuto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormBottom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBottom.Designer.cs">
+      <DependentUpon>FormBottom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTop.Designer.cs">
+      <DependentUpon>FormTop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLog.Designer.cs">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCommon\FormKeyboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCommon\FormKeyboard.designer.cs">
+      <DependentUpon>FormKeyboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCommon\FormNumpad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCommon\FormNumpad.designer.cs">
+      <DependentUpon>FormNumpad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="INPUT.cs" />
+    <Compile Include="lib\3rdparty\IconHelper.cs" />
+    <Compile Include="lib\3rdparty\IconListManager.cs" />
+    <Compile Include="lib\3rdparty\StopWatch.cs" />
+    <Compile Include="lib\3rdparty\TimePeriod.cs" />
+    <Compile Include="lib\CFileManager.cs" />
+    <Compile Include="lib\CircularBuffer.cs" />
+    <Compile Include="lib\CLMSXml.cs" />
+    <Compile Include="lib\CLogManager.cs" />
+    <Compile Include="lib\ComiSSCNET3.cs" />
+    <Compile Include="lib\control\CChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\control\CChart.Designer.cs">
+      <DependentUpon>CChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\CChartSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lib\control\CChartSetting.Designer.cs">
+      <DependentUpon>CChartSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\CListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\control\CMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lib\control\CMessageBox.Designer.cs">
+      <DependentUpon>CMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\CModelAddDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lib\control\CModelAddDlg.Designer.cs">
+      <DependentUpon>CModelAddDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\CNotifyIcon.cs" />
+    <Compile Include="lib\control\CNumberKeyPad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lib\control\CNumberKeyPad.Designer.cs">
+      <DependentUpon>CNumberKeyPad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\CNumericPad.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\control\CNumericPad.Designer.cs">
+      <DependentUpon>CNumericPad.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\CSourceGrid.cs" />
+    <Compile Include="lib\control\CStatusLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\control\CTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\control\CTextLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\control\CVirtualKeyboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lib\control\CVirtualKeyboard.Designer.cs">
+      <DependentUpon>CVirtualKeyboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\DirectoryTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\control\DirectoryTreeView.Designer.cs">
+      <DependentUpon>DirectoryTreeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\ExtDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\control\ExtMSChart.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\control\ExtTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\control\FileListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\control\FileListView.Designer.cs">
+      <DependentUpon>FileListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\control\IForm.cs" />
+    <Compile Include="lib\control\PathSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\control\PathSelector.Designer.cs">
+      <DependentUpon>PathSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\CRegistry.cs" />
+    <Compile Include="lib\CSettings.cs" />
+    <Compile Include="lib\CSVManager.cs" />
+    <Compile Include="lib\CVirtualKeyboard.cs" />
+    <Compile Include="lib\DAQ\LabjackU12.cs" />
+    <Compile Include="lib\database\MsSqlServerManager.cs" />
+    <Compile Include="lib\database\MySqlDataBase.cs" />
+    <Compile Include="lib\database\MySqlManager.cs" />
+    <Compile Include="lib\database\UtilMySql.cs" />
+    <Compile Include="lib\Debug.cs" />
+    <Compile Include="lib\device\CDevice.cs" />
+    <Compile Include="lib\device\CDeviceManager.cs" />
+    <Compile Include="lib\device\CDIO.cs" />
+    <Compile Include="lib\device\CElaspedTimer.cs" />
+    <Compile Include="lib\device\DoubleSyl.cs" />
+    <Compile Include="lib\device\ElectricContract.cs" />
+    <Compile Include="lib\device\NutRunnerBoschParser.cs" />
+    <Compile Include="lib\device\NutRunnerDaichi.cs" />
+    <Compile Include="lib\device\ProximitySensor.cs" />
+    <Compile Include="lib\device\SingleCylinder.cs" />
+    <Compile Include="lib\device\SingleSyl.cs" />
+    <Compile Include="lib\Excel.cs" />
+    <Compile Include="lib\extControl\CImageButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\extControl\CImageButton.Designer.cs">
+      <DependentUpon>CImageButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\extControl\CIOButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\extControl\CIOButton.Designer.cs">
+      <DependentUpon>CIOButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\extControl\CPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\extControl\CTableLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="lib\Extension.cs" />
+    <Compile Include="lib\FormUtil.cs" />
+    <Compile Include="lib\form\formDataViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lib\form\formDataViewer.Designer.cs">
+      <DependentUpon>formDataViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\form\formDataViewerSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="lib\form\formDataViewerSetting.Designer.cs">
+      <DependentUpon>formDataViewerSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\GrpahicsManager.cs" />
+    <Compile Include="lib\IO\3rdparty\Dask.cs" />
+    <Compile Include="lib\IO\adlink7230.cs" />
+    <Compile Include="lib\IO\adlink7432.cs" />
+    <Compile Include="lib\IO\BaseDIO.cs" />
+    <Compile Include="lib\IO\Comidas.cs" />
+    <Compile Include="lib\IO\ComiInput.cs" />
+    <Compile Include="lib\IO\ComiOutput.cs" />
+    <Compile Include="lib\IO\DIO.cs" />
+    <Compile Include="lib\IO\PaixIO.cs" />
+    <Compile Include="lib\IO\PaixIO_NMF.cs" />
+    <Compile Include="lib\MathUtil.cs" />
+    <Compile Include="lib\IO\AjinDIO.cs" />
+    <Compile Include="lib\motion\ajin\AjinEnum.cs" />
+    <Compile Include="lib\motion\ajin\AjinMotionAxis.cs" />
+    <Compile Include="lib\motion\AxisEnum.cs" />
+    <Compile Include="lib\motion\BaseMotion.cs" />
+    <Compile Include="lib\motion\BaseMotionSsc.cs" />
+    <Compile Include="lib\motion\ExamplePaixMotion.cs" />
+    <Compile Include="lib\motion\MotionAxisData.cs" />
+    <Compile Include="lib\motion\PaixMotion.cs" />
+    <Compile Include="lib\motion\paix\AxisControlPaix.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\motion\paix\AxisControlPaix.Designer.cs">
+      <DependentUpon>AxisControlPaix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\motion\paix\PaixEnum.cs" />
+    <Compile Include="lib\motion\paix\PaixLib.cs" />
+    <Compile Include="lib\motion\paix\PaixMotionAxis.cs" />
+    <Compile Include="lib\motion\paix\SimpleControlPaix.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\motion\paix\SimpleControlPaix.Designer.cs">
+      <DependentUpon>SimpleControlPaix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\motion\rsa_mmce\NMCMotionSDK.cs" />
+    <Compile Include="lib\motion\rsa_mmce\RSAMMCEAxis.cs" />
+    <Compile Include="lib\motion\rsa_mmce\RSAMMCEBoard.cs" />
+    <Compile Include="lib\motion\rsa_mmce\RSAMMCEDIO.cs" />
+    <Compile Include="lib\motion\rsa_mmce\RSAMMCELib.cs" />
+    <Compile Include="lib\motion\SE_TeachingPendent.cs" />
+    <Compile Include="lib\motion\SscMotion.cs" />
+    <Compile Include="lib\network\CFtp.cs" />
+    <Compile Include="lib\network\CNetwork.cs" />
+    <Compile Include="lib\network\CNetworkClient.cs" />
+    <Compile Include="lib\network\CNetworkClientS.cs" />
+    <Compile Include="lib\network\CNetworkFocusBlue.cs" />
+    <Compile Include="lib\network\CNetworkPF.cs" />
+    <Compile Include="lib\network\CNetworkServer.cs" />
+    <Compile Include="lib\network\CNetworkServerFocusBlue.cs" />
+    <Compile Include="lib\network\CNetwork_IV2.cs" />
+    <Compile Include="lib\network\CSeraialJ4A_RS422.cs" />
+    <Compile Include="lib\network\CSerial.cs" />
+    <Compile Include="lib\network\CSerialAFC.cs" />
+    <Compile Include="lib\network\CSerialAFC3000.cs" />
+    <Compile Include="lib\network\CSerialAFC_SehanHdc40i.cs" />
+    <Compile Include="lib\network\CSerialALT.cs" />
+    <Compile Include="lib\network\CSerialBCR.cs" />
+    <Compile Include="lib\network\CSerialBCRSick_CLV63x.cs" />
+    <Compile Include="lib\network\CSerialBCR_Cognex.cs" />
+    <Compile Include="lib\network\CSerial_SE_TP.cs" />
+    <Compile Include="lib\network\CSerialBCR_Honeywell.cs" />
+    <Compile Include="lib\network\CSerialCAS_CUW620HX.cs" />
+    <Compile Include="lib\network\CSerialHoiki3540.cs" />
+    <Compile Include="lib\network\CSerialIAIMotor.cs" />
+    <Compile Include="lib\network\CSerialKeyence_DLRS1A.cs" />
+    <Compile Include="lib\network\CSerialKeyence_LJV7000.cs" />
+    <Compile Include="lib\network\CSerialMusashi_Heater.cs" />
+    <Compile Include="lib\network\CSerialMusashi_MSD3.cs" />
+    <Compile Include="lib\network\CSerialNoatech.cs" />
+    <Compile Include="lib\network\CSerialSmhaccpMicom.cs" />
+    <Compile Include="lib\network\CSerialSmhaccpWeight.cs" />
+    <Compile Include="lib\network\CSerialTOS6200.cs" />
+    <Compile Include="lib\network\CSerialZPL.cs" />
+    <Compile Include="lib\network\ModbusCRC.cs" />
+    <Compile Include="lib\network\ModbusLRC.cs" />
+    <Compile Include="lib\nmc2.cs" />
+    <Compile Include="lib\NMF.cs" />
+    <Compile Include="lib\pathUtil.cs" />
+    <Compile Include="lib\plc\CSimensePLC.cs" />
+    <Compile Include="lib\plc\LSFenet.cs" />
+    <Compile Include="lib\plc\LSFenet_MOBIS.cs" />
+    <Compile Include="lib\plc\MelsecCCLink.cs" />
+    <Compile Include="lib\plc\MelsecMCProtocol.cs" />
+    <Compile Include="lib\plc\MelsecMxComponent.cs" />
+    <Compile Include="lib\plc\MelsecMxComponent64.cs" />
+    <Compile Include="lib\plc\PLC.cs" />
+    <Compile Include="lib\ScreenShotUtil.cs" />
+    <Compile Include="lib\sec\AxisMiniStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="lib\sec\AxisMiniStatus.Designer.cs">
+      <DependentUpon>AxisMiniStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="lib\Util.cs" />
+    <Compile Include="lib\UtilFile.cs" />
+    <Compile Include="lib\UtilProcess.cs" />
+    <Compile Include="lib\vericode\VeriCodeReader.cs" />
+    <Compile Include="ModelInfo.cs" />
+    <Compile Include="OUTPUT.cs" />
+    <Compile Include="ProcessMain.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PopupMessage.cs" />
+    <Compile Include="TeachingPendant.cs" />
+    <Compile Include="TPSerial.cs" />
+    <EmbeddedResource Include="FormAuto\FormSimMonitor.resx">
+      <DependentUpon>FormSimMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto\FormProductInfo.resx">
+      <DependentUpon>FormProductInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto\FormStep.resx">
+      <DependentUpon>FormStep.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto\FormUnitInit.resx">
+      <DependentUpon>FormUnitInit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCommon\FormPassWord.resx">
+      <DependentUpon>FormPassWord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\AxisLimitControl.resx">
+      <DependentUpon>AxisLimitControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormDataModel.resx">
+      <DependentUpon>FormDataModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormDataJogVel.resx">
+      <DependentUpon>FormDataJogVel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormDataMotorVel.resx">
+      <DependentUpon>FormDataMotorVel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormDataPort.resx">
+      <DependentUpon>FormDataPort.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormDataSystem.resx">
+      <DependentUpon>FormDataSystem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLog.resx">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto\FormMode.resx">
+      <DependentUpon>FormMode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto\FormAxisOrigin.resx">
+      <DependentUpon>FormAxisOrigin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCommon\FormAxisLimit.resx">
+      <DependentUpon>FormAxisLimit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCommon\FormAlarm.resx">
+      <DependentUpon>FormAlarm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto\FormIOMonitor.resx">
+      <DependentUpon>FormIOMonitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTeach.resx">
+      <DependentUpon>FormTeach.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData.resx">
+      <DependentUpon>FormData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto.resx">
+      <DependentUpon>FormAuto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBottom.resx">
+      <DependentUpon>FormBottom.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTeach\FormTeachTrayPP.resx">
+      <DependentUpon>FormTeachTrayPP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTeach\FormTeachOutPP.resx">
+      <DependentUpon>FormTeachOutPP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTeach\FormTeachInPP.resx">
+      <DependentUpon>FormTeachInPP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTop.resx">
+      <DependentUpon>FormTop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCommon\FormKeyboard.resx">
+      <DependentUpon>FormKeyboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCommon\FormNumpad.resx">
+      <DependentUpon>FormNumpad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormComponent\JogControl.resx">
+      <DependentUpon>JogControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CChart.resx">
+      <DependentUpon>CChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CChartSetting.resx">
+      <DependentUpon>CChartSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CMessageBox.resx">
+      <DependentUpon>CMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CModelAddDlg.resx">
+      <DependentUpon>CModelAddDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CNumberKeyPad.resx">
+      <DependentUpon>CNumberKeyPad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CNumericPad.resx">
+      <DependentUpon>CNumericPad.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CTextBox.resx">
+      <DependentUpon>CTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CTextLabel.resx">
+      <DependentUpon>CTextLabel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\CVirtualKeyboard.resx">
+      <DependentUpon>CVirtualKeyboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\DirectoryTreeView.resx">
+      <DependentUpon>DirectoryTreeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\ExtDataGridView.resx">
+      <DependentUpon>ExtDataGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\ExtMSChart.resx">
+      <DependentUpon>ExtMSChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\FileListView.resx">
+      <DependentUpon>FileListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\control\PathSelector.resx">
+      <DependentUpon>PathSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\extControl\CImageButton.resx">
+      <DependentUpon>CImageButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\extControl\CIOButton.resx">
+      <DependentUpon>CIOButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\form\formDataViewer.resx">
+      <DependentUpon>formDataViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\form\formDataViewerSetting.ko-KR.resx">
+      <DependentUpon>formDataViewerSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\form\formDataViewerSetting.resx">
+      <DependentUpon>formDataViewerSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\motion\paix\AxisControlPaix.resx">
+      <DependentUpon>AxisControlPaix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\motion\paix\SimpleControlPaix.resx">
+      <DependentUpon>SimpleControlPaix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\sec\AjinMiniStatus.resx">
+      <DependentUpon>AjinMiniStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="lib\sec\AxisMiniStatus.resx">
+      <DependentUpon>AxisMiniStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.manifest" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AXL.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EzBasicAxl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\control\res\close_folder_icon.jpg" />
+    <Content Include="lib\control\res\open_folder_icon.jpg" />
+    <Content Include="lib\control\res\warning.png" />
+    <Content Include="lib\dll\x64\nmc2.dll" />
+    <Content Include="lib\dll\x86\LJDotNet.dll" />
+    <Content Include="lib\dll\x86\nmc2.dll" />
+    <None Include="Resource\ubImage.png" />
+    <None Include="Resource\auto_run.ico" />
+    <None Include="Resource\Change.ico" />
+    <Content Include="NMC_Comm.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NMC_Driver.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NMC_Motion.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\ErrorImageExample.jpg" />
+    <None Include="Resource\exit.ico" />
+    <Content Include="Resource\Loading.gif" />
+    <Content Include="Resource\Loading_ComFAS.gif" />
+    <Content Include="Resource\MBAM.png" />
+    <Content Include="Resource\MCCM.png" />
+    <Content Include="Resource\MDAM.png" />
+    <Content Include="Resource\MIOM.png" />
+    <None Include="Resource\MIOM1.png" />
+    <None Include="Resource\MIOM_ALARM.png" />
+    <None Include="Resource\moldImage.png" />
+    <Content Include="Resource\NA.png" />
+    <Content Include="Resource\New Folder\appIcon.ico" />
+    <Content Include="Resource\New Folder\auto_run.ico" />
+    <Content Include="Resource\New Folder\btn_auto_active.JPG" />
+    <Content Include="Resource\New Folder\btn_auto_disable.JPG" />
+    <Content Include="Resource\New Folder\btn_auto_enable.JPG" />
+    <Content Include="Resource\New Folder\btn_auto_press.JPG" />
+    <Content Include="Resource\New Folder\btn_data_active.JPG" />
+    <Content Include="Resource\New Folder\btn_data_disable.JPG" />
+    <Content Include="Resource\New Folder\btn_data_enable.JPG" />
+    <Content Include="Resource\New Folder\btn_data_press.JPG" />
+    <Content Include="Resource\New Folder\btn_Exit.JPG" />
+    <Content Include="Resource\New Folder\btn_hide.jpg" />
+    <Content Include="Resource\New Folder\btn_log_active.JPG" />
+    <Content Include="Resource\New Folder\btn_log_disable.JPG" />
+    <Content Include="Resource\New Folder\btn_log_enable.JPG" />
+    <Content Include="Resource\New Folder\btn_log_press.JPG" />
+    <Content Include="Resource\New Folder\btn_teach_active.JPG" />
+    <Content Include="Resource\New Folder\btn_teach_disable.JPG" />
+    <Content Include="Resource\New Folder\btn_teach_enable.JPG" />
+    <Content Include="Resource\New Folder\btn_teach_press.JPG" />
+    <Content Include="Resource\New Folder\Change.ico" />
+    <Content Include="Resource\New Folder\down_disable.jpg" />
+    <Content Include="Resource\New Folder\down_enable.jpg" />
+    <Content Include="Resource\New Folder\exit.ico" />
+    <Content Include="Resource\New Folder\jog_down.bmp" />
+    <Content Include="Resource\New Folder\jog_down_press.bmp" />
+    <Content Include="Resource\New Folder\jog_left.bmp" />
+    <Content Include="Resource\New Folder\jog_left_press.bmp" />
+    <Content Include="Resource\New Folder\jog_right.bmp" />
+    <Content Include="Resource\New Folder\jog_right_press.bmp" />
+    <Content Include="Resource\New Folder\jog_up.bmp" />
+    <Content Include="Resource\New Folder\jog_up_press.bmp" />
+    <Content Include="Resource\New Folder\KMF3100.PNG" />
+    <Content Include="Resource\New Folder\left_disable.jpg" />
+    <Content Include="Resource\New Folder\left_enable.jpg" />
+    <Content Include="Resource\New Folder\Next.ico" />
+    <Content Include="Resource\New Folder\phoneImg.png" />
+    <Content Include="Resource\New Folder\Previous.ico" />
+    <Content Include="Resource\New Folder\q6.png" />
+    <Content Include="Resource\New Folder\right_disable.jpg" />
+    <Content Include="Resource\New Folder\right_enable.jpg" />
+    <Content Include="Resource\New Folder\up_disable.jpg" />
+    <Content Include="Resource\New Folder\up_enable.jpg" />
+    <Content Include="Resource\New Folder\wingplate.png" />
+    <Content Include="Resource\NV_Button_Default.png" />
+    <Content Include="Resource\NV_Click_Resource.png" />
+    <Content Include="Resource\NV_Default_Resource.png" />
+    <Content Include="Resource\NV_ETC_Exit_Click.png" />
+    <Content Include="Resource\NV_ETC_Exit_Default.png" />
+    <Content Include="Resource\NV_ETC_Exit_Hover.png" />
+    <Content Include="Resource\NV_GREEN_Click_Resource.png" />
+    <Content Include="Resource\NV_GREEN_Default_Resource.png" />
+    <Content Include="Resource\NV_GREEN_Hover_Resource.png" />
+    <Content Include="Resource\NV_Hover_Resource.png" />
+    <Content Include="Resource\NV_IO_Input_Default.png" />
+    <Content Include="Resource\NV_IO_Input_ON.png" />
+    <Content Include="Resource\NV_IO_Output_Click.png" />
+    <Content Include="Resource\NV_IO_Output_Click_Hover.png" />
+    <Content Include="Resource\NV_IO_Output_Default.png" />
+    <Content Include="Resource\NV_IO_Output_Hover.png" />
+    <Content Include="Resource\NV_KeyBoard_Key.png" />
+    <Content Include="Resource\NV_KeyBoard_Key_Click.png" />
+    <Content Include="Resource\NV_KeyBoard_Key_Hover.png" />
+    <Content Include="Resource\NV_KeyBoard_Numeric_Background.png" />
+    <Content Include="Resource\NV_LED_Gray.PNG" />
+    <Content Include="Resource\NV_LED_Green.PNG" />
+    <Content Include="Resource\NV_LED_Red.PNG" />
+    <Content Include="Resource\NV_Mainform_AutoTab_Model.png" />
+    <Content Include="Resource\NV_Mainform_AutoTab_Test Name.png" />
+    <Content Include="Resource\NV_MainForm_ManualTab_Click.png" />
+    <Content Include="Resource\NV_MainForm_ManualTab_Click_Hover.png" />
+    <Content Include="Resource\NV_MainForm_ManualTab_Default.png" />
+    <Content Include="Resource\NV_MainForm_ManualTab_Default_Hover.png" />
+    <Content Include="Resource\NV_Mainfrom_TeachingTab_Save_Click.png" />
+    <Content Include="Resource\NV_Mainfrom_TeachingTab_Save_Default.png" />
+    <Content Include="Resource\NV_Mainfrom_TeachingTab_Save_Hover.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_Click.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_Default.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_Hover.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_Off_Click.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_Off_Default.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_Off_Hover.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_On_Click.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_On_Default.png" />
+    <Content Include="Resource\NV_MainUI_AutoRun_On_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Auto_Click.png" />
+    <Content Include="Resource\NV_MainUI_Auto_Click_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Auto_Default.png" />
+    <Content Include="Resource\NV_MainUI_Auto_Hover.png" />
+    <Content Include="Resource\NV_MainUI_ByPass_Click.png" />
+    <Content Include="Resource\NV_MainUI_ByPass_Default.png" />
+    <Content Include="Resource\NV_MainUI_ByPass_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Common_Button_Click.png" />
+    <Content Include="Resource\NV_MainUI_Common_Button_Default.png" />
+    <Content Include="Resource\NV_MainUI_Common_Button_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Common_Button_Main_Click.png" />
+    <Content Include="Resource\NV_MainUI_Common_Button_Main_Default.png" />
+    <Content Include="Resource\NV_MainUI_Common_Button_Main_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Common_Button_On.png" />
+    <Content Include="Resource\NV_MainUI_Common_Button_On_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Common_Check.png" />
+    <Content Include="Resource\NV_MainUI_Common_Check_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Common_UnCheck.png" />
+    <Content Include="Resource\NV_MainUI_Common_UnCheck_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Data_Click.png" />
+    <Content Include="Resource\NV_MainUI_Data_Click_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Data_Default.png" />
+    <Content Include="Resource\NV_MainUI_Data_Hover.png" />
+    <Content Include="Resource\NV_MainUI_DryRun_Click.png" />
+    <Content Include="Resource\NV_MainUI_DryRun_Default.png" />
+    <Content Include="Resource\NV_MainUI_DryRun_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Exit_Click.png" />
+    <Content Include="Resource\NV_MainUI_Exit_Default.png" />
+    <Content Include="Resource\NV_MainUI_Exit_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Hide_Default.png" />
+    <Content Include="Resource\NV_MainUI_Initialize_Click.png" />
+    <Content Include="Resource\NV_MainUI_Initialize_Default.png" />
+    <Content Include="Resource\NV_MainUI_Initialize_Hover.png" />
+    <Content Include="Resource\NV_MainUI_IOMonitioring_Click.png" />
+    <Content Include="Resource\NV_MainUI_IOMonitioring_Default.png" />
+    <Content Include="Resource\NV_MainUI_IOMonitioring_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Log_Click.png" />
+    <Content Include="Resource\NV_MainUI_Log_Click_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Log_Default.png" />
+    <Content Include="Resource\NV_MainUI_Log_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Manual_Click.png" />
+    <Content Include="Resource\NV_MainUI_Manual_Click_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Manual_Default.png" />
+    <Content Include="Resource\NV_MainUI_Manual_Hover.png" />
+    <Content Include="Resource\NV_MainUI_off.png" />
+    <Content Include="Resource\NV_MainUI_off_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Origin_Click.png" />
+    <Content Include="Resource\NV_MainUI_Origin_Default.png" />
+    <Content Include="Resource\NV_MainUI_Origin_Hover.png" />
+    <Content Include="Resource\NV_MainUI_PassRun_Click.png" />
+    <Content Include="Resource\NV_MainUI_PassRun_Default.png" />
+    <Content Include="Resource\NV_MainUI_PassRun_Hover.png" />
+    <Content Include="Resource\NV_MainUI_ProductInfo_Click.png" />
+    <Content Include="Resource\NV_MainUI_ProductInfo_Default.png" />
+    <Content Include="Resource\NV_MainUI_ProductInfo_Hover.png" />
+    <Content Include="Resource\NV_MainUI_SelectMode_Click.png" />
+    <Content Include="Resource\NV_MainUI_SelectMode_Default.png" />
+    <Content Include="Resource\NV_MainUI_SelectMode_Hover.png" />
+    <Content Include="Resource\NV_MainUI_START.png" />
+    <Content Include="Resource\NV_MainUI_StartOff_Default.png" />
+    <Content Include="Resource\NV_MainUI_StartOff_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Start_Default.png" />
+    <Content Include="Resource\NV_MainUI_Start_Hover.png" />
+    <Content Include="Resource\NV_MainUI_STOP.png" />
+    <Content Include="Resource\NV_MainUI_StopOff_Default.png" />
+    <Content Include="Resource\NV_MainUI_StopOff_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Stop_Default.png" />
+    <Content Include="Resource\NV_MainUI_Stop_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Tact_Time_Avg.png" />
+    <Content Include="Resource\NV_MainUI_Tact_Time_Sec.png" />
+    <Content Include="Resource\NV_MainUI_Teach_Click.png" />
+    <Content Include="Resource\NV_MainUI_Teach_Click_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Teach_Default.png" />
+    <Content Include="Resource\NV_MainUI_Teach_Hover.png" />
+    <Content Include="Resource\NV_MainUI_Total_Count.png" />
+    <Content Include="Resource\NV_OP_Off_Default.png" />
+    <Content Include="Resource\NV_OP_Off_Hover.png" />
+    <Content Include="Resource\NV_OP_On_Start_Default.png" />
+    <Content Include="Resource\NV_OP_On_Start_Hover.png" />
+    <Content Include="Resource\NV_OP_On_Stop_Default.png" />
+    <Content Include="Resource\NV_OP_On_Stop_Hover.png" />
+    <Content Include="Resource\NV_SubTitle.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_Click.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_Default.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_Hover.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_Off_Click.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_Off_Default.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_Off_Hover.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_On_Click.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_On_Default.png" />
+    <Content Include="Resource\NV_SubUI_AutoRun_On_Hover.png" />
+    <Content Include="Resource\NV_SubUI_ByPass_Click.png" />
+    <Content Include="Resource\NV_SubUI_ByPass_Default.png" />
+    <Content Include="Resource\NV_SubUI_ByPass_Hover.png" />
+    <Content Include="Resource\NV_SubUI_DryRun_Cilck.png" />
+    <Content Include="Resource\NV_SubUI_DryRun_Click.png" />
+    <Content Include="Resource\NV_SubUI_DryRun_Hover.png" />
+    <Content Include="Resource\NV_SubUI_Home_Click.png" />
+    <Content Include="Resource\NV_SubUI_Home_Default.png" />
+    <Content Include="Resource\NV_SubUI_Home_Hover.png" />
+    <Content Include="Resource\NV_SubUI_Input_Index1.png" />
+    <Content Include="Resource\NV_SubUI_Input_Index2.png" />
+    <Content Include="Resource\NV_SubUI_Input_Index3.png" />
+    <Content Include="Resource\NV_SubUI_Input_Index4.png" />
+    <Content Include="Resource\NV_SubUI_Input_Index5.png" />
+    <Content Include="Resource\NV_SubUI_Input_Index6.png" />
+    <Content Include="Resource\NV_SubUI_Login_Button_Click.png" />
+    <Content Include="Resource\NV_SubUI_Login_Button_Default.png" />
+    <Content Include="Resource\NV_SubUI_Login_Button_Hover.png" />
+    <Content Include="Resource\NV_SubUI_Login_Image.png" />
+    <Content Include="Resource\NV_SubUI_Login_Password.png" />
+    <Content Include="Resource\NV_SubUI_NextEnd_Click .png" />
+    <Content Include="Resource\NV_SubUI_NextEnd_Default .png" />
+    <Content Include="Resource\NV_SubUI_NextEnd_Hover.png" />
+    <Content Include="Resource\NV_SubUI_Next_Click .png" />
+    <Content Include="Resource\NV_SubUI_Next_Default.png" />
+    <Content Include="Resource\NV_SubUI_Next_Hover.png" />
+    <Content Include="Resource\NV_SubUI_Origin_Click.png" />
+    <Content Include="Resource\NV_SubUI_Origin_Click1.png" />
+    <Content Include="Resource\NV_SubUI_Origin_Default.png" />
+    <Content Include="Resource\NV_SubUI_Origin_Default1.png" />
+    <Content Include="Resource\NV_SubUI_Origin_Hover.png" />
+    <Content Include="Resource\NV_SubUI_Origin_Hover1.png" />
+    <Content Include="Resource\NV_SubUI_Output_Index1.png" />
+    <Content Include="Resource\NV_SubUI_Output_Index2.png" />
+    <Content Include="Resource\NV_SubUI_Output_Index3.png" />
+    <Content Include="Resource\NV_SubUI_Output_Index4.png" />
+    <Content Include="Resource\NV_SubUI_Output_Index5.png" />
+    <Content Include="Resource\NV_SubUI_Output_Index6.png" />
+    <Content Include="Resource\NV_SubUI_PassRun_Click.png" />
+    <Content Include="Resource\NV_SubUI_PassRun_Default.png" />
+    <Content Include="Resource\NV_SubUI_PassRun_Hover.png" />
+    <Content Include="Resource\NV_SubUI_PrevEnd_Click.png" />
+    <Content Include="Resource\NV_SubUI_PrevEnd_Default.png" />
+    <Content Include="Resource\NV_SubUI_PrevEnd_Hover.png" />
+    <Content Include="Resource\NV_SubUI_Prev_Click.png" />
+    <Content Include="Resource\NV_SubUI_Prev_Default.png" />
+    <Content Include="Resource\NV_SubUI_Prev_Hover.png" />
+    <Content Include="Resource\NV_SubUI_SysClose_Click.png" />
+    <Content Include="Resource\NV_SubUI_SysClose_Default.png" />
+    <Content Include="Resource\NV_SubUI_SysClose_Hover.png" />
+    <Content Include="Resource\NV_SubUI_Title_InitList.png" />
+    <Content Include="Resource\NV_SubUI_Title_InitState.png" />
+    <Content Include="Resource\NV_SubUI_Title_Input IO.png" />
+    <Content Include="Resource\NV_SubUI_Title_IOMonitoring.png" />
+    <Content Include="Resource\NV_SubUI_Title_Log.png" />
+    <Content Include="Resource\NV_SubUI_Title_LOGIN.png" />
+    <Content Include="Resource\NV_SubUI_Title_Origin.png" />
+    <Content Include="Resource\NV_SubUI_Title_Output IO.png" />
+    <Content Include="Resource\NV_SubUI_Title_ProductInfo.png" />
+    <Content Include="Resource\NV_SubUI_Title_SelectMode.png" />
+    <Content Include="Resource\NV_SubUI_Title_UnitInitialize.png" />
+    <Content Include="Resource\NV_SubUl_Modify_Cilck.png" />
+    <Content Include="Resource\NV_SubUl_Modify_Default.png" />
+    <Content Include="Resource\NV_SubUl_Modify_Default_Hover.png" />
+    <Content Include="Resource\NV_Symbol_Input.png" />
+    <Content Include="Resource\NV_Symbol_Output.png" />
+    <Content Include="Resource\NV_TactTime.png" />
+    <Content Include="Resource\NV_TT_Paddingless.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="FormLog\" />
+    <Folder Include="FormSystem\" />
+    <Folder Include="lib\motion\3rdparty\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.8">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.8 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
