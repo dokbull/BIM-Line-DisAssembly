@@ -1,6 +1,6 @@
 ﻿namespace bim_base
 {
-    partial class FormSimMonitor
+    partial class FormCimMonitor
     {
         /// <summary>
         /// Required designer variable.
@@ -212,11 +212,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormSimMonitor";
+            this.Name = "FormCimMonitor";
             this.Padding = new System.Windows.Forms.Padding(10);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "IO Monitor";
-            this.Load += new System.EventHandler(this.FormSimMonitor_Load);
+            this.Load += new System.EventHandler(this.FormCimMonitor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

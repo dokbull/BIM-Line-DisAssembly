@@ -52,7 +52,6 @@ namespace bim_base.data.CIM
 
         //private RMS m_RMS = new RMS();
 
-        private List<EnumRequestProcState> m_RequestProcStateList = new List<EnumRequestProcState>();
 
         #endregion
 
@@ -75,6 +74,8 @@ namespace bim_base.data.CIM
             get { return this.m_Writer; }
             private set { this.m_Writer = value; }
         }
+
+        public List<EnumRequestProcState> RequestProcStateList { get; private set; } = new List<EnumRequestProcState>();
 
 
         #endregion
@@ -272,21 +273,21 @@ namespace bim_base.data.CIM
 
         private bool AddRequestProcState(EnumRequestProcState state)
         {
-            if (this.m_RequestProcStateList.Contains(state))
+            if (this.RequestProcStateList.Contains(state))
                 return false;
 
 
-            this.m_RequestProcStateList.Add(state);
+            this.RequestProcStateList.Add(state);
             return true;
         }
 
         private void RemoveRequestProcState(EnumRequestProcState state)
         {
-            if (this.m_RequestProcStateList.Contains(state) == false)
+            if (this.RequestProcStateList.Contains(state) == false)
                 return;
 
 
-            this.m_RequestProcStateList.Remove(state);
+            this.RequestProcStateList.Remove(state);
         }
 
         #endregion
@@ -409,7 +410,7 @@ namespace bim_base.data.CIM
 
         #region Public Method
 
-        public void Run()
+        public void RunScan()
         {
             if (this.IsRun) return;
 
@@ -578,10 +579,11 @@ namespace bim_base.data.CIM
                 }
             });
             asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-            if (asyncHS.Result == false) return false;
-
-            // Date Time 동기화 처리
-            if (this.SetDateTime() == false) return false;
+            if (asyncHS.Result)
+            {
+                // Date Time 동기화 처리
+                if (this.SetDateTime() == false) return false;
+            }
 
             this.IsInitialized = true;
             Task.Run(() =>
@@ -622,7 +624,7 @@ namespace bim_base.data.CIM
 
 
 
-        #endregion
+#endregion
 
         #region Public Method : CIM Equipment State
 
