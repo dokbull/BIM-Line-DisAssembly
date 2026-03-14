@@ -44,6 +44,8 @@ namespace bim_base.data.CIM
 
         //private RMS m_RMS = new RMS();
 
+        private List<EnumRequestProcState> m_RequestProcStateList = new List<EnumRequestProcState>();
+
         #endregion
 
         #region public Properties
@@ -81,6 +83,50 @@ namespace bim_base.data.CIM
 
         #region Private Method
 
+        private void SyncCommCCIE()
+        {
+            bool ret = true;
+
+            int[] readDataB = new int[512 / 32];
+            int[] readDataW = new int[0x12FFF];
+            int[] readDataW32 = new int[0x12FFF / 2];
+
+            ret = m_ccLink.read(Addr.B, 0x1000, readDataB.Length, ref readDataB);
+            ret &= m_ccLink.read(Addr.W, 0xD000, readDataW32.Length, ref readDataW32);
+
+            if (ret == false)
+            {
+                // Debug.warning("ProcessMain::run cclink read failed");
+            }
+
+            for (int i = 0; i < readDataW32.Length; i++)
+            {
+                readDataW[i * 2] = readDataW32[i] & 0xFFFF;
+                readDataW[i * 2 + 1] = readDataW32[i] >> 16;
+            }
+
+            m_Reader.toBitArray(readDataB);
+            m_Reader.toWordArray(readDataW);
+
+            int[] writeDataB = new int[512 / 32];
+            int[] writeDataW = new int[0xCFFF];
+
+            m_Writer.toArrayB(ref writeDataB);
+            m_Writer.toArrayW(ref writeDataW);
+
+            ret = m_ccLink.write(Addr.B, 0x0000, writeDataB.Length * 4, writeDataB);
+            ret &= m_ccLink.write(Addr.W, 0x0000, writeDataW.Length * 2, writeDataW);
+
+
+            if (ret)
+            {
+                this.InitializeSignals();
+            }
+            else
+            {
+                throw new Exception("failed to run cclink write failed");
+            }
+        }
 
         private void SleepWithDoEvent(int _seconds)
         {
@@ -212,6 +258,14 @@ namespace bim_base.data.CIM
             }
         }
 
+        private void AddRequestProcState(EnumRequestProcState state)
+        {
+            if (this.m_RequestProcStateList.Contains(state) == false)
+            {
+                this.m_RequestProcStateList.Add(state);
+            }
+        }
+
         #endregion
 
         #region Private Method : CIM 대응
@@ -283,7 +337,10 @@ namespace bim_base.data.CIM
                 if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
                     return;
 
-                bool isValid = ReceivedInterlockEvent?.Invoke(interlockID, strMessage, rcmd);
+                if (this.ReceivedInterlockEvent == null) 
+                    return;
+
+                bool isValid = ReceivedInterlockEvent.Invoke(interlockID, strMessage, rcmd);
 
                 this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
                 Task.Run(() => this.SleepWithDoEvent(1)).Wait();
@@ -299,6 +356,38 @@ namespace bim_base.data.CIM
             }
         }
 
+        private void ReleaseInterlcokState()
+        {
+            try
+            {
+                //this.WriteWord(WRITE_W.(WRITE_B.INTERLOCKCONFIRM_42, true);
+                //this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
+
+                //string strID = this.ReadWord(CIMRead.READ_W.ASCII_10_D09E_InterlockID);
+                //string strMessage = this.ReadWord(CIMRead.READ_W.ASCII_60_D0A8_InterlockMessage);
+                //string strRCMD = this.ReadWord(CIMRead.READ_W.ASCII_1_D0E4_InterlockRCMD);
+
+                //if (int.TryParse(strID, out int interlockID) == false)
+                //    return;
+
+                //if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
+                //    return;
+
+                //bool isValid = ReceivedInterlockEvent?.Invoke(interlockID, strMessage, rcmd);
+
+                //this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
+                //Task.Run(() => this.SleepWithDoEvent(1)).Wait();
+                //this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
+
+                //if (isValid == false) return;
+
+                //this.SetEqState(EnumInterlockState.On);
+                //this.SetEqState(EnumMoveState.Pause);
+            }
+            catch
+            {
+            }
+        }
 
         #endregion
 
@@ -310,8 +399,12 @@ namespace bim_base.data.CIM
 
             this.IsRun = true;
 
+            this.SyncCommCCIE();
+
             Task.Run(() => this.TerminalDisplay());
             Task.Run(() => this.OperatorCall());
+            Task.Run(() => this.RequestInterlcokState());
+            Task.Run(() => this.ReleaseInterlcokState());
 
 
             this.IsRun = false;
@@ -339,50 +432,6 @@ namespace bim_base.data.CIM
             return true;
         }
 
-        public void InitializeCCIE()
-        {
-            bool ret = true;
-
-            int[] readDataB = new int[512 / 32];
-            int[] readDataW = new int[0x12FFF];
-            int[] readDataW32 = new int[0x12FFF / 2];
-
-            ret = m_ccLink.read(Addr.B, 0x1000, readDataB.Length, ref readDataB);
-            ret &= m_ccLink.read(Addr.W, 0xD000, readDataW32.Length, ref readDataW32);
-
-            if (ret == false)
-            {
-                // Debug.warning("ProcessMain::run cclink read failed");
-            }
-
-            for (int i = 0; i < readDataW32.Length; i++)
-            {
-                readDataW[i * 2] = readDataW32[i] & 0xFFFF;
-                readDataW[i * 2 + 1] = readDataW32[i] >> 16;
-            }
-
-            m_Reader.toBitArray(readDataB);
-            m_Reader.toWordArray(readDataW);
-
-            int[] writeDataB = new int[512 / 32];
-            int[] writeDataW = new int[0xCFFF];
-
-            m_Writer.toArrayB(ref writeDataB);
-            m_Writer.toArrayW(ref writeDataW);
-
-            ret = m_ccLink.write(Addr.B, 0x0000, writeDataB.Length * 4, writeDataB);
-            ret &= m_ccLink.write(Addr.W, 0x0000, writeDataW.Length * 2, writeDataW);
-
-
-            if (ret)
-            {
-                this.InitializeSignals();
-            }
-            else
-            {
-                throw new Exception("failed to run cclink write failed");
-            }
-        }
 
         public void WriteBit(CIMWrite.WRITE_B addr, bool value)
         {
@@ -470,6 +519,10 @@ namespace bim_base.data.CIM
 
                     return false;
                 }
+                finally
+                {
+                    this.WriteBit(_addrWrite, !_writeValue);
+                }
             }
             ;
 
@@ -554,6 +607,32 @@ namespace bim_base.data.CIM
             return true;
         }
 
+
+        public void SendTerminalDisplay(string _message)
+        {
+            try
+            {
+                this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
+                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, 5000);
+
+            }
+            catch
+            {
+            }
+        }
+
+        public void SendOperatorCall(string _message)
+        {
+            try
+            {
+                this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
+                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, 5000);
+
+            }
+            catch
+            {
+            }
+        }
         #endregion
 
         #region Public Method : CIM Equipment State
@@ -561,20 +640,20 @@ namespace bim_base.data.CIM
 
         public void SetEqState(CIMEnumeric.EnumAvailabilityState _state)
         {
-            this.WriteWord(WRITE_W.ASCII_1_002C_EQPAvailability, $"{_state}")
+            this.WriteWord(WRITE_W.ASCII_1_002C_EQPAvailability, $"{_state}");
         }
 
         public void SetEqState(CIMEnumeric.EnumInterlockState _state)
         {
-            this.WriteWord(WRITE_W.ASCII_1_002D_EQPInterlock, $"{_state}")
+            this.WriteWord(WRITE_W.ASCII_1_002D_EQPInterlock, $"{_state}");
         }
         public void SetEqState(CIMEnumeric.EnumMoveState _state)
         {
-            this.WriteWord(WRITE_W.ASCII_1_002E_EQPMove, $"{_state}")
+            this.WriteWord(WRITE_W.ASCII_1_002E_EQPMove, $"{_state}");
         }
         public void SetEqState(CIMEnumeric.EnumRunState _state)
         {
-            this.WriteWord(WRITE_W.ASCII_1_002F_EQPRun, $"{_state}")
+            this.WriteWord(WRITE_W.ASCII_1_002F_EQPRun, $"{_state}");
         }
 
 

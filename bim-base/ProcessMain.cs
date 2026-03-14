@@ -511,7 +511,7 @@ namespace bim_base
                     commDIO();
                     commAIO();
                     //commSIM();
-                    Automation.Instance.InitializeCCIE();
+                    Automation.Instance.Run();
 
                     foreach (ExtAxis axis in m_axis)
                     {
