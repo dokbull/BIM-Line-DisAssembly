@@ -5,17 +5,20 @@ namespace bim_base
     public enum ALARM
     {
         NONE = -1,
-        CIM_DISCONNECTION = 0,
+
+        // COMMUNICATION : CO 
+        CO_SYSTEM_CCIE_COMM_DISCONNECT = 0,
+        CO_MAIN_SYSTEM_PC_ECAT_DISCONNECT,
+
+        // EMO : EM
+        EM_MAIN_SYSTEM_PLC_EMERGENCY_OFF,
+        EM_MAIN_SYSTEM_PLC_MC_OFF,
 
         // DOOR :DO
         DO_MAIN_DOOR_FRONT_LEFT_OPEN,
         DO_MAIN_DOOR_FRONT_RIGHT_OPEN,
         DO_MAIN_DOOR_REAR_LEFT_OPEN,
         DO_MAIN_DOOR_REAR_RIGHT_OPEN,
-
-        // EMO : EM
-        EM_MAIN_SYSTEM_PLC_EMERGENCY_OFF,
-        EM_MAIN_SYSTEM_PLC_MC_OFF,
 
         // MOTOR : MO
         MO_UNLOADER_UBPP_AXIS_Z_SERVO_OFF,
@@ -53,10 +56,6 @@ namespace bim_base
         MO_BASE_MOLDBASE_AXIS_X_MOVE_TIMEOUT,
         MO_LOADER_INPP_AXIS_Z_MOVE_TIMEOUT,
         MO_LOADER_INPP_AXIS_Y_MOVE_TIMEOUT,
-
-
-
-
 
         // VACUUM : VC
         VC_MAIN_SYSTEM_MAIN_AIR1_LOW,
@@ -140,11 +139,6 @@ namespace bim_base
         // UTILITY : UT
 
         // OPERATION : OT
-
-        // COMMUNICATION : CO
-        CO_MAIN_SYSTEM_PC_ECAT_DISCONNECT,
-
-
     }
 
     public enum ALARM_TYPE
