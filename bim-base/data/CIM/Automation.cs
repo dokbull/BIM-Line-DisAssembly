@@ -26,6 +26,7 @@ namespace bim_base.data.CIM
         public delegate void OnReceivedTerminalDisplayEventHandler(int _MessageNum, string _MessageText);
         public delegate void OnReceivedOperatorCallEventHandler(int _OpCallNum, string _OpCallText);
         public delegate bool OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
+        public delegate bool OnRequestAutoNormalModeEventHandler();
 
         #endregion
 
@@ -34,6 +35,12 @@ namespace bim_base.data.CIM
         public Automation()
         {
         }
+
+        #endregion
+
+        #region Constants
+
+        private const int HANDSHAKE_TIMEOUT_SECONDS = 5;
 
         #endregion
 
@@ -80,7 +87,10 @@ namespace bim_base.data.CIM
         /// 설비 가동 정지, 인터락 메세지 팝업
         /// </summary>
         public event OnReceivedInterlockEventHandler ReceivedInterlockEvent;
-
+        /// <summary>
+        /// 인터락 모드 해제 및 AUTO로 정상 가등 모드로 운영 요청
+        /// </summary>
+        public event OnRequestAutoNormalModeEventHandler RequestAutoNormalModeEvent;
         #endregion
 
         #region Private Method
@@ -260,22 +270,36 @@ namespace bim_base.data.CIM
             }
         }
 
-        private void AddRequestProcState(EnumRequestProcState state)
+        private bool AddRequestProcState(EnumRequestProcState state)
+        {
+            if (this.m_RequestProcStateList.Contains(state))
+                return false;
+
+
+            this.m_RequestProcStateList.Add(state);
+            return true;
+        }
+
+        private void RemoveRequestProcState(EnumRequestProcState state)
         {
             if (this.m_RequestProcStateList.Contains(state) == false)
-            {
-                this.m_RequestProcStateList.Add(state);
-            }
+                return;
+
+
+            this.m_RequestProcStateList.Remove(state);
         }
 
         #endregion
 
-        #region Private Method : CIM 대응
+        #region Private Method : CIM Request
 
-        private void TerminalDisplay()
+        private void RequestTerminalDisplay()
         {
             try
             {
+                if (this.AddRequestProcState(EnumRequestProcState.TerminalDisplay) == false)
+                    return;
+
                 if (this.ReadBit(CIMRead.READ_B.TERMINALDISPLAY_3) == false)
                     return;
 
@@ -291,16 +315,24 @@ namespace bim_base.data.CIM
                 Task.Run(() => this.SleepWithDoEvent(1)).Wait();
                 this.WriteBit(WRITE_B.TERMINALDISPLAY_3, false);
 
+
             }
             catch
             {
             }
+            finally
+            {
+                this.RemoveRequestProcState(EnumRequestProcState.TerminalDisplay);
+            }
         }
 
-        private void OperatorCall()
+        private void RequestOperatorCall()
         {
             try
             {
+                if (this.AddRequestProcState(EnumRequestProcState.OperatorCall) == false)
+                    return;
+
                 if (this.ReadBit(CIMRead.READ_B.OPERATORCALL_4) == false)
                     return;
 
@@ -322,12 +354,19 @@ namespace bim_base.data.CIM
             catch
             {
             }
+            finally
+            {
+                this.RemoveRequestProcState(EnumRequestProcState.OperatorCall);
+            }
         }
 
         private void RequestInterlcokState()
         {
             try
             {
+                if (this.AddRequestProcState(EnumRequestProcState.RequestInterlcokState) == false)
+                    return;
+
                 if (this.ReadBit(CIMRead.READ_B.INTERLOCK_5) == false)
                     return;
 
@@ -359,40 +398,12 @@ namespace bim_base.data.CIM
             catch
             {
             }
-        }
-
-        private void ReleaseInterlcokState()
-        {
-            try
+            finally
             {
-                //this.WriteWord(WRITE_W.(WRITE_B.INTERLOCKCONFIRM_42, true);
-                //this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
-
-                //string strID = this.ReadWord(CIMRead.READ_W.ASCII_10_D09E_InterlockID);
-                //string strMessage = this.ReadWord(CIMRead.READ_W.ASCII_60_D0A8_InterlockMessage);
-                //string strRCMD = this.ReadWord(CIMRead.READ_W.ASCII_1_D0E4_InterlockRCMD);
-
-                //if (int.TryParse(strID, out int interlockID) == false)
-                //    return;
-
-                //if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
-                //    return;
-
-                //bool isValid = ReceivedInterlockEvent?.Invoke(interlockID, strMessage, rcmd);
-
-                //this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
-                //Task.Run(() => this.SleepWithDoEvent(1)).Wait();
-                //this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
-
-                //if (isValid == false) return;
-
-                //this.SetEqState(EnumInterlockState.On);
-                //this.SetEqState(EnumMoveState.Pause);
-            }
-            catch
-            {
+                this.RemoveRequestProcState(EnumRequestProcState.RequestInterlcokState);
             }
         }
+
 
         #endregion
 
@@ -406,10 +417,9 @@ namespace bim_base.data.CIM
 
             this.SyncCommCCIE();
 
-            Task.Run(() => this.TerminalDisplay());
-            Task.Run(() => this.OperatorCall());
+            Task.Run(() => this.RequestTerminalDisplay());
+            Task.Run(() => this.RequestOperatorCall());
             Task.Run(() => this.RequestInterlcokState());
-            Task.Run(() => this.ReleaseInterlcokState());
 
 
             this.IsRun = false;
@@ -547,12 +557,11 @@ namespace bim_base.data.CIM
         {
             if (this.IsInitialized) return false;
 
-            int timeoutSeconds = 5;
             this.InitializeSignals();
 
             // 초기 ALIVE 신호 OFF로 Reset
-            Task<bool> asyncHS = Task.Run(() => this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, timeoutSeconds));
-            asyncHS.Wait(timeoutSeconds);
+            Task<bool> asyncHS = Task.Run(() => this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_SECONDS));
+            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
             if (asyncHS.Result == false) return false;
 
             // Date Time 동기화 요청 신호 대기
@@ -560,7 +569,7 @@ namespace bim_base.data.CIM
             {
                 try
                 {
-                    this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, timeoutSeconds);
+                    this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, HANDSHAKE_TIMEOUT_SECONDS);
                     return true;
                 }
                 catch
@@ -568,7 +577,7 @@ namespace bim_base.data.CIM
                     return false;
                 }
             });
-            asyncHS.Wait(timeoutSeconds);
+            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
             if (asyncHS.Result == false) return false;
 
             // Date Time 동기화 처리
@@ -612,33 +621,6 @@ namespace bim_base.data.CIM
         }
 
 
-        public void SendTerminalDisplay(string _message)
-        {
-            try
-            {
-                this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
-                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, 5000);
-
-            }
-            catch
-            {
-            }
-        }
-
-        public void SendOperatorCall(string _message)
-        {
-            try
-            {
-                // TODO CHECK LHJ : Operator Call은 ID가 존재하는데, ID는 어떻게 관리할지? 일단은 메시지만 전달하는 형태로 구현
-
-                this.WriteWord(WRITE_W.ASCII_60_259C_UnitOPCallConfirmOPCallMessage, _message);
-                this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, 5000);
-
-            }
-            catch
-            {
-            }
-        }
 
         #endregion
 
@@ -663,7 +645,99 @@ namespace bim_base.data.CIM
             this.WriteWord(WRITE_W.ASCII_1_002F_EQPRun, $"{_state}");
         }
 
+        /// <summary>
+        /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
+        /// </summary>
+        public void SendTerminalDisplay(string _message)
+        {
+            try
+            {
+                this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
+                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_SECONDS);
 
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
+        /// </summary>
+        public void SendOperatorCall(string _message)
+        {
+            try
+            {
+                // TODO CHECK LHJ : Operator Call은 ID가 존재하는데, ID는 어떻게 관리할지? 일단은 메시지만 전달하는 형태로 구현
+
+                this.WriteWord(WRITE_W.ASCII_60_259C_UnitOPCallConfirmOPCallMessage, _message);
+                this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_SECONDS);
+
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
+        /// </summary>
+        public bool ReleaseInterlcokState(string _message)
+        {
+            try
+            {
+                // TODO CHECK LHJ : 인터락 해제 시 사용할 Word 영역 및 Data 확인 및 수정 필요
+                this.WriteWord(WRITE_W.ASCII_60_104A_InterlockMessageConfirm, _message);
+                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
+
+                this.WaitBitSignal(READ_B.INTERLOCKCONFIRM_42, true, HANDSHAKE_TIMEOUT_SECONDS);
+                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
+
+                if(this.RequestAutoNormalModeEvent == null)
+                    throw new Exception("RequestAutoNormalModeEvent is not set.");
+
+                if(this.RequestAutoNormalModeEvent.Invoke() == false)
+                    throw new Exception("Failed to changing Auto-Normal Mode");
+
+
+                this.SetEqState(EnumInterlockState.Off);
+                this.SetEqState(EnumMoveState.Runnning);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
+            }
+        }
+
+        public void AlarmOccured(ALARM _alarmID)
+        {
+            //const int BIT_COUNT = 16;
+            //int idx = (int)_alarmID;
+            //if (idx < 0 || idx >= BIT_COUNT) throw new ArgumentOutOfRangeException(nameof(_alarmID));
+
+            //// 연속된 WRITE_B 열거값의 시작값(실제 이름으로 교체)
+            //int baseWriteB = (int)WRITE_B.ALARMBIT_0;
+
+            //// 모든 비트를 false로 설정하고, 해당 인덱스만 true로 설정
+            //for (int i = 0; i < BIT_COUNT; i++)
+            //{
+            //    var bitAddr = (WRITE_B)(baseWriteB + i);
+            //    this.WriteBit(bitAddr, i == idx);
+            //}
+
+            //this.WriteWord(WRITE_W.ASCII_10_1040_AlarmID, idx.ToString());
+            //this.WriteWord(WRITE_W.ASCII_60_104A_AlarmMessage, _alarmID.ToString());
+
+            //this.WriteBit(WRITE_B.ALARMSEND_43, true);
+            //Task.Run(() => this.SleepWithDoEvent(1)).Wait();
+            //this.WriteBit(WRITE_B.ALARMSEND_43, false);
+        }
 
         #endregion
 
