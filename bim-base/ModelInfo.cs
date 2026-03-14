@@ -47,6 +47,7 @@ public class POS
 
 public class ModelInfo
 {
+    int m_index = 0;
     string m_modelName = "DEFAULT_MODEL";
 
     CSettings m_setting = null;
@@ -55,8 +56,9 @@ public class ModelInfo
 
     public event EventHandler changedModel;
 
-    public ModelInfo(string name)
+    public ModelInfo(int index, string name = "NONE")
     {
+        m_index = index;
         m_modelName = name;
         init();
     }
@@ -101,27 +103,6 @@ public class ModelInfo
 
         if (changedModel != null)
             changedModel(modelName, null);
-    }
-
-    public List<string> loadModelList()
-    {
-        List<string> list = new List<string>();
-        DirectoryInfo dirInfo = new DirectoryInfo(Common.MODEL_PATH);
-
-        FileInfo[] fileInfo = dirInfo.GetFiles();
-        if (fileInfo.Length == 0)
-        {
-            addModel(m_modelName);
-            fileInfo = dirInfo.GetFiles();
-        }
-
-        for (int i = 0; i < fileInfo.Length; i++)
-        {
-            Debug.debug("Name :  " + fileInfo[i].Name + " | " + fileInfo[i].FullName);
-            list.Add(fileInfo[i].Name);
-        }
-
-        return list;
     }
 
     public bool addModel(string name)
@@ -225,7 +206,7 @@ public class ModelInfo
         return true;
     }
 
-    public string currentModelName()
+    public string modelName()
     {
         return m_modelName;
     }

@@ -98,8 +98,8 @@ namespace bim_base
 
             m_agoStep = m_step;
 
-            ModelInfo mc = Common.MC_INFO;
-            ModelInfo model = Common.MODEL_INFO;
+            ModelInfo mc = Common.MC;
+            ModelInfo model = Common.MODEL_INFO(Conf.CURR_MODEL);
 
             POS mc_readyPos = mc.teachPos(TEACH_POS.PICK_PP_WAIT);
             POS mc_teachPos = mc.teachPos(TEACH_POS.NONE);

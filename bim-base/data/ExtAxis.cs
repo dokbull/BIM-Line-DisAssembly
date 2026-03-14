@@ -36,7 +36,7 @@
 
         bool checkInterlock()
         {
-            ModelInfo model = Common.MODEL_INFO;
+            ModelInfo model = Common.MODEL_INFO(Conf.CURR_MODEL);
 
             if (m_axisEnum == AXIS.MOLD_PP_X)
             {

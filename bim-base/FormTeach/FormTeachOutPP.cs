@@ -22,7 +22,7 @@ namespace bim_base
         {
             InitializeComponent();
             main = procMain;
-            m_model = Common.MODEL_INFO;
+            m_model = Common.MODEL_INFO(Conf.CURR_MODEL);
 
             List<ExtAxis> axisList = new List<ExtAxis>();
             axisList.Add(main.axis(AXIS.UB_PP_Y));

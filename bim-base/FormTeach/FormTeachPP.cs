@@ -30,13 +30,7 @@ namespace bim_base
         {
             InitializeComponent();
             main = procMain;
-            m_model = Common.MODEL_INFO;
-
-            //axisList = new List<ExtAxis>() { main.axis(AXIS.TRANSFER_X) };
-            //if (main.isSimulation() == false) {
-            //    jogControl31.setMain(main, true);
-            //    jogControl31.setAxis(axisList);
-            //}
+            m_model = Common.MODEL_INFO(Conf.CURR_MODEL);
         }
 
         private void FormTeachPP_Load(object sender, EventArgs e)

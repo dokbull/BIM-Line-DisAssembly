@@ -21,8 +21,8 @@ public class Common
 
     public static string MODEL_PATH = PATH + "\\models\\";
 
-    public static ModelInfo MC_INFO = null;
-    public static ModelInfo MODEL_INFO = null;
+    public static ModelInfo MC = null;
+    public static List<ModelInfo> MODEL = new List<ModelInfo>();
 
     public static string LOG_PATH = PATH + "\\log";
     public static string PRODUCT_PATH = LOG_PATH + "\\product_log\\";
@@ -43,10 +43,35 @@ public class Common
         Conf.load();
         Alarm.load();
 
-        MC_INFO = new ModelInfo("MACHINE");
-        MODEL_INFO = new ModelInfo(Conf.CURR_MODEL);
+        MC = new ModelInfo(1000, "MACHINE");
+
+        for (int i = 0; i < 100; i++)
+        {
+            MODEL[i] = new ModelInfo(i);
+        }
 
         return m_instance;
+    }
+
+    public static ModelInfo MODEL_INFO(string name)
+    {
+        for (int i = 0; i < MODEL.Count; i++)
+        {
+            ModelInfo INFO = MODEL[i];
+
+            if (INFO.modelName() ==  name)
+                return MODEL[i];
+        }
+
+        return null;
+    }
+
+    public static ModelInfo MODEL_INFO(int index)
+    {
+        if (index < 0 || index > (MODEL.Count - 1))
+            return null;
+
+        return MODEL[index];
     }
 
     public static void setCustomPath(string path)
