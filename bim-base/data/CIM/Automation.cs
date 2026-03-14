@@ -372,7 +372,23 @@ namespace bim_base.data.CIM
             this.IsRun = false;
         }
 
+        public void SetEqState(CIMEnumeric.EnumAvailabilityState _state)
+        {
+            //this.CCIE_Writer.
+        }
 
+        public void SetEqState(CIMEnumeric.EnumInterlockState _state)
+        {
+
+        }
+        public void SetEqState(CIMEnumeric.EnumMoveState _state)
+        {
+
+        }
+        public void SetEqState(CIMEnumeric.EnumRunState _state)
+        {
+
+        }
         #endregion
 
 
