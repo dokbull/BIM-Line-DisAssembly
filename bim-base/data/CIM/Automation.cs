@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static bim_base.CSTATION;
+using static CIMRead;
 using static CIMWrite;
 
 namespace bim_base.data.CIM

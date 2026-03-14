@@ -1,4 +1,5 @@
-﻿using lib.plc;
+﻿using bim_base.data.CIM;
+using lib.plc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,10 +20,8 @@ namespace bim_base
         AjinAIO m_aioIn = null;
 
         CSerialFRENIC m_frenic = null;
-        MelsecCCLink m_ccLink = null;
 
-        CIMRead m_readData = null;
-        CIMWrite m_writeData = null;
+        Automation m_cim = null;
 
         // AXIS LIST
         List<ExtAxis> m_axis = new List<ExtAxis>();
@@ -124,20 +123,15 @@ namespace bim_base
 
             Conf.load();
 
-            m_ccLink = new MelsecCCLink();
-            m_ccLink.NetworkNo = 1;
-            m_ccLink.StationNo = 255;
-            m_ccLink.ChannelNo = 151;
-            m_ccLink.open();
-
-            m_readData = new CIMRead();
-            m_writeData = new CIMWrite();
-
             Debug.setPath(Common.LOG_PATH, "dev-log");
             m_alarmManager = new CLogManager("alarm", Common.LOG_PATH);
             m_setupLogMgr = new CLogManager("setup", Common.LOG_PATH);
             m_mesLogMgr = new CLogManager("mes", Common.LOG_PATH);
             m_mcStatusLog = new CLogManager("Error Stop Time", "C:\\FA\\", "", "Error Stop Time");
+
+            m_cim = new Automation();
+            m_cim.OpenCCIE();
+            m_cim.Initialize();
 
             IN_PP_Y = new ExtAxis(this, (int)AXIS.IN_PP_Y, "IN PP Y");
             IN_PP_Z = new ExtAxis(this, (int)AXIS.IN_PP_Z, "IN PP Z");
@@ -558,42 +552,7 @@ namespace bim_base
 
         void commSIM()
         {
-            bool ret = true;
-
-            int[] readDataB = new int[512 / 32];
-            int[] readDataW = new int[0x12FFF]; 
-            int[] readDataW32 = new int[0x12FFF / 2];
-
-            ret = m_ccLink.read(Addr.B, 0x1000, readDataB.Length, ref readDataB);
-            ret &= m_ccLink.read(Addr.W, 0xD000, readDataW32.Length, ref readDataW32);
-
-            if (ret == false)
-            {
-                // Debug.warning("ProcessMain::run cclink read failed");
-            }
-
-            for (int i = 0; i < readDataW32.Length; i++)
-            {
-                readDataW[i * 2] = readDataW32[i] & 0xFFFF;
-                readDataW[i * 2 + 1] = readDataW32[i] >> 16;
-            }
-
-            m_readData.toBitArray(readDataB);
-            m_readData.toWordArray(readDataW);
-
-            int[] writeDataB = new int[512 / 32];
-            int[] writeDataW = new int[0xCFFF];
-
-            m_writeData.toArrayB(ref writeDataB);
-            m_writeData.toArrayW(ref writeDataW);
-
-            ret = m_ccLink.write(Addr.B, 0x0000, writeDataB.Length * 4, writeDataB);
-            ret &= m_ccLink.write(Addr.W, 0x0000, writeDataW.Length * 2, writeDataW);
-
-            if (ret == false)
-            {
-                // Debug.warning("ProcessMain::run cclink write failed");
-            }
+            m_cim.InitializeCCIE();
         }
 
         void commDIO()
@@ -1102,58 +1061,32 @@ namespace bim_base
 
         public void setCimBit(CIMWrite.WRITE_B addr, bool value)
         {
-            m_writeData.setBit(addr, value);
+            m_cim.WriteBit(addr, value);
         }
 
         public bool readCimBit(CIMWrite.WRITE_B addr)
         {
-            return m_writeData.bit(addr);
+            return m_cim.ReadBit(addr);
         }
 
         public bool readCimBit(CIMRead.READ_B addr)
         {
-            return m_readData.readBit(addr);
+            return m_cim.ReadBit(addr);
         }
 
         public string readCimWord(CIMRead.READ_W addr)
         {
-            CIMRead.WORD_DATA data = m_readData.wordData(addr);
-
-            string text = "";
-
-            if (data.type == CIMRead.READ_TYPE.DEC)
-                text = data.value.ToString();
-
-            if (data.type == CIMRead.READ_TYPE.ASCII)
-                text = data.text;
-
-            return text;
+            return m_cim.ReadWord(addr);
         }
 
         public string readCimWord(CIMWrite.WRITE_W addr)
         {
-            CIMWrite.WORD_DATA data = m_writeData.wordData(addr);
-
-            string text = "";
-
-            if (data.type == CIMWrite.WRITE_TYPE.DEC)
-                text = data.value.ToString();
-
-            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
-                text = data.text;
-
-            return text;
+            return m_cim.ReadWord(addr);
         }
 
         public void writeCimWord(CIMWrite.WRITE_W addr, string text)
         {
-            CIMWrite.WORD_DATA data = m_writeData.wordData(addr);
-
-            if (data.type == CIMWrite.WRITE_TYPE.DEC)
-                data.value = Util.toInt32(text);
-
-            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
-                data.text = text;
+            m_cim.WriteWord(addr, text);
         }
 
         public CSTATION station(CSTATION.STATION station)
