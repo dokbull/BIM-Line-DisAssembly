@@ -18,20 +18,65 @@ namespace bim_base
             main = procMain;
         }
 
+        private void bottomButtonClick(object sender, EventArgs e)
+        {
+            switch ((PAGE)sender)
+            {
+                case PAGE.AUTO:
+                {
+                    lbScreenNo.Text = "1";
+                    lbScreenName.Text = "Auto Screen";
+                    break;
+                }
+                case PAGE.MANUAL:
+                {
+                    lbScreenNo.Text = "1000";
+                    lbScreenName.Text = "Manual Screen";
+                    break;
+                }
+                case PAGE.TEACH:
+                {
+                    lbScreenNo.Text = "2000";
+                    lbScreenName.Text = "Teach Screen";
+                    break;
+                }
+                case PAGE.DATA:
+                {
+                    lbScreenNo.Text = "3000";
+                    lbScreenName.Text = "Data Screen";
+                    break;
+                }
+                case PAGE.LOG:
+                {
+                    lbScreenNo.Text = "4000";
+                    lbScreenName.Text = "Alarm Screen";
+                    break;
+                }
+                case PAGE.MONITOR:
+                {
+                    lbScreenNo.Text = "6000";
+                    lbScreenName.Text = "Monitor Screen";
+                    break;
+                }
+            }
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
-            modelNameLabel.Text = Common.MODEL_INFO.currentModelName();
-            timeLabel.Text = DateTime.Now.ToString("yyyy-MM-dd") + " " + DateTime.Now.ToString("HH:mm:ss");
+            //modelNameLabel.Text = $"Model Name : {Conf.CURR_MODEL}";
 
+            lbVersion.Text = Common.SHOT_VERSION;
+            lbCurrentDate.Text = DateTime.Now.ToString("yyyy . MM . dd");
+            lbCurrentTime.Text = DateTime.Now.ToString("HH : mm : ss");
             if (main.isAdmin() == false)
             {
-                projectNameLabel.Text = Common.TITLE;
-                projectNameLabel.ForeColor = Color.White;
+                lbProjectName.Text = Common.TITLE;
+                lbProjectName.ForeColor = Color.LimeGreen;
             }
             else
             {
-                projectNameLabel.Text = "ADMIN MODE";
-                projectNameLabel.ForeColor = Color.Red;
+                lbProjectName.Text = "ADMIN MODE";
+                lbProjectName.ForeColor = Color.Red;
             }
 
             if (infoLabelClicked)
@@ -43,27 +88,20 @@ namespace bim_base
                     clickTimer.stop();
                 }
             }
+
+            //scanTimeLabel.Text = main.scanTime().ToString() + "ms";
         }
 
         private void FormTop_Load(object sender, EventArgs e)
         {
-            projectNameLabel.Text = Common.TITLE;
-            versionLabel.Text = Common.VERSION;
+            lbProjectName.Text = Common.TITLE;
+
+            FormMain.inst().m_formBottom.bottomButtonClick += bottomButtonClick;
         }
 
         private void projectNameLabel_DoubleClick(object sender, EventArgs e)
         {
-            if (main.isAdmin() == true)
-            {
-                main.setAdmin(false);
-                return;
-            }
 
-            FormPassword passDlg = new FormPassword(main);
-            if (passDlg.ShowDialog() != DialogResult.OK)
-                return;
-
-            main.setAdmin(true);
         }
 
         private void infoLabel_Click(object sender, EventArgs e)
@@ -83,10 +121,51 @@ namespace bim_base
             }
         }
 
-        private void mxLabel_Click(object sender, EventArgs e)
+        private void projectNameLabel_Click(object sender, EventArgs e)
+        {
+            //FormStep dlg = new FormStep(main);
+            //dlg.TopMost = true;
+            //dlg.ShowDialog();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            //FormPassword passDlg = new FormPassword(main);
+            //if (passDlg.ShowDialog() != DialogResult.OK)
+            //    return;
+
+            //if (main.isAdmin() == false)
+            //{
+            //    main.setAdmin(true);
+            //    return;
+            //}
+        }
+
+        private void label2_Click(object sender, EventArgs e)
         {
             FormStep dlg = new FormStep(main);
+            dlg.TopMost = true;
             dlg.ShowDialog();
+        }
+
+        private void lbPPID_Click(object sender, EventArgs e)
+        {
+            if (main.isAuto()) return;
+            using (var dlg = new FormKeyboard())
+            {
+                if (dlg.ShowDialog() == DialogResult.OK)
+                    lbPPID.Text = dlg.getKeyword().ToUpper();
+            }
+        }
+
+        private void lbEQNo_Click(object sender, EventArgs e)
+        {
+            if (main.isAuto()) return;
+            using (var dlg = new FormNumpad(lbEQNo.Text, false))
+            {
+                if (dlg.ShowDialog() == DialogResult.OK)
+                    lbEQNo.Text = dlg.getNewValue();
+            }
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -10,7 +7,7 @@ namespace bim_base
     public partial class AxisLimitControl : UserControl
     {
         ProcessMain main;
-        ExtAxis m_axis;
+        AjinMotionAxis m_axis;
 
         bool m_leftPress = false;
         bool m_rightPress = false;
@@ -25,7 +22,7 @@ namespace bim_base
             main = procMain;
         }
 
-        public void setAxis(ExtAxis axis)
+        public void setAxis(AjinMotionAxis axis)
         {
             m_axis = axis;
         }
@@ -52,31 +49,31 @@ namespace bim_base
             Bitmap leftIcon = null;
             Bitmap rightIcon = null;
 
-            if ((AXIS)m_axis.no() == AXIS.IN_PP_Y)
-            {
-                leftIcon = Properties.Resources.jog_left;
-                rightIcon = Properties.Resources.jog_right;
-            }
-            else
-            {
-                leftIcon = Properties.Resources.jog_up;
-                rightIcon = Properties.Resources.jog_down;
-            }
+            //if ((AXIS)m_axis.no() == AXIS.PP_ATTACH_X)
+            //{
+            //    leftIcon = Properties.Resources.jog_left;
+            //    rightIcon = Properties.Resources.jog_right;
+            //}
+            //else
+            //{
+            //    leftIcon = Properties.Resources.jog_up;
+            //    rightIcon = Properties.Resources.jog_down;
+            //}
 
-            if (m_leftPress)
-            {
-                if ((AXIS)m_axis.no() == AXIS.IN_PP_Y)
-                    leftIcon = Properties.Resources.jog_left_press;
-                else
-                    leftIcon = Properties.Resources.jog_up_press;
-            }
-            else if (m_rightPress)
-            {
-                if ((AXIS)m_axis.no() == AXIS.IN_PP_Y)
-                    rightIcon = Properties.Resources.jog_right_press;
-                else
-                    rightIcon = Properties.Resources.jog_down_press;
-            }
+            //if (m_leftPress)
+            //{
+            //    if ((AXIS)m_axis.no() == AXIS.PP_ATTACH_X)
+            //        leftIcon = Properties.Resources.jog_left_press;
+            //    else
+            //        leftIcon = Properties.Resources.jog_up_press;
+            //}
+            //else if (m_rightPress)
+            //{
+            //    if ((AXIS)m_axis.no() == AXIS.PP_ATTACH_X)
+            //        rightIcon = Properties.Resources.jog_right_press;
+            //    else
+            //        rightIcon = Properties.Resources.jog_down_press;
+            //}
 
             axisMinusButton.BackgroundImage = leftIcon;
             axisPlusButton.BackgroundImage = rightIcon;
@@ -134,7 +131,7 @@ namespace bim_base
             m_axis.stop();
         }
 
-        private void jogMove(ExtAxis axis, DIRECTION dir)
+        private void jogMove(AjinMotionAxis axis, DIRECTION dir)
         {
             AXIS axisNo = (AXIS)axis.no();
             JOG_SPEED jogSpeed = main.getJogSpeed();

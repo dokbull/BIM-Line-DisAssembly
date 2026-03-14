@@ -1,4 +1,5 @@
-﻿using System;
+﻿using bim_base;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -7,6 +8,8 @@ using System.Reflection;
 
 public class Common
 {
+    static Common m_instance = null;
+
     public static string TITLE = "BASE-S-V1"; 
     public static string MC_NAME = "TOPM00";
 
@@ -14,6 +17,7 @@ public class Common
     public static string MES_PATH = "C:\\FA\\MES\\mesConverter.exe";
 
     public static string VERSION = TITLE + "_1." + getBuildDate().ToString("yyyyMMdd") + ".01";
+    public static string SHOT_VERSION = "(Ver 1." + getBuildDate().ToString("yyyyMMdd") + ".01)";
 
     public static string MODEL_PATH = PATH + "\\models\\";
 
@@ -24,10 +28,25 @@ public class Common
     public static string PRODUCT_PATH = LOG_PATH + "\\product_log\\";
     public static CLogManager ALARM_MANAGER = new CLogManager("alarm", LOG_PATH, "", "alarm");
 
-    static public void init()
+    public Common()
     {
+        m_instance = this;
+    }
+
+    public static Common inst()
+    {
+        if (m_instance == null)
+            m_instance = new Common();
+
+        PATH = pathUtil.savePath();
+
+        Conf.load();
+        Alarm.load();
+
         MC_INFO = new ModelInfo("MACHINE");
         MODEL_INFO = new ModelInfo(Conf.CURR_MODEL);
+
+        return m_instance;
     }
 
     public static void setCustomPath(string path)

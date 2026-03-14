@@ -162,7 +162,7 @@ namespace bim_base
             }
         }
 
-        public void addLog(ALARM code, ALARM_TYPE type, string text)
+        public void addLog(ALARM code, ALARM type, string text)
         {
             DateTime datetime = DateTime.Now;
             addLog(datetime.ToString("yyyy-MM-dd"), datetime.ToString("HH:mm:ss"), (int)code, (int)type, text);

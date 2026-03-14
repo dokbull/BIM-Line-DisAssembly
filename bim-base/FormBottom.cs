@@ -1,83 +1,150 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Drawing;
 using System.Windows.Forms;
-using System.IO;
 
 namespace bim_base
 {
+    public enum PAGE
+    {
+        AUTO = 0,
+        MANUAL = 1,
+        TEACH = 2,
+        DATA = 3,
+        MONITOR = 4,
+        LOG = 5,
+        //VISION = 6,
+        MAX,
+    }
+
     public partial class FormBottom : Form, IForm
     {
         ProcessMain main;
         public event EventHandler bottomButtonClick;
 
-        Button[] m_buttonArg = null;
+        SUserControls.ColorButton[] m_buttonArg = null;
 
         Queue<string> m_historyQueue = new Queue<string>();
+        private Dictionary<SUserControls.ColorButton, (Color top, Color bottom)> _originColors = new Dictionary<SUserControls.ColorButton, (Color, Color)>();
 
-        bool m_simulation = false;
-
+        private readonly Color SELECT_TOP = Color.LightBlue;
+        private readonly Color SELECT_BOTTOM = Color.LightBlue;
         public FormBottom(ProcessMain procMain)
         {
             InitializeComponent();
-
-            m_simulation = File.Exists(Common.PATH + "\\simulation");
 
             main = procMain;
 
             int cnt = 0;
 
-            m_buttonArg = new Button[] {
-                autoButton,
-                teachButton,
-                databutton,
-                logButton,
-                hideButton };
+            m_buttonArg = new SUserControls.ColorButton[] {
+                BT_AUTO,
+                BT_MANUAL,
+                BT_TEACH,
+                BT_DATA,
+                BT_MONITOR,
+                BT_ALARM,
+                BT_HIDE,
+                BT_EXIT
+            };
 
-            foreach (Button button in m_buttonArg)
+            foreach (SUserControls.ColorButton button in m_buttonArg)
             {
                 button.Tag = cnt++;
                 button.Click += btnClick;
+                _originColors[button] = (button.GradientTop, button.GradientBottom);
             }
+            SetSelectedButton(BT_AUTO);
         }
-
-        private void btnClick(object sender, EventArgs e)
+        private void SetSelectedButton(SUserControls.ColorButton selected)
         {
-            Button btn = (Button)sender;
-            int idx = Convert.ToInt32(btn.Tag);
+            foreach (SUserControls.ColorButton button in m_buttonArg)
+            {
+                int idx = Convert.ToInt32(button.Tag);
 
-            if (m_simulation == false)
-            {   
-                if (idx == 1 || idx == 2)
+                if (idx >= 0 && idx <= 5)
                 {
-                    if (main.isAdmin() == false)
+                    if (button == selected)
                     {
-                        CMessageBox msgBox = new CMessageBox(Common.TITLE,
-                            "administrator permission required", MessageBoxButtons.OK);
-
-                        msgBox.showDialog();
-                        return;
+                        button.GradientTop = SELECT_TOP;
+                        button.GradientBottom = SELECT_BOTTOM;
+                    }
+                    else
+                    {
+                        button.GradientTop = _originColors[button].top;
+                        button.GradientBottom = _originColors[button].bottom;
                     }
                 }
-            }
+                else
+                {
+                    button.GradientTop = _originColors[button].top;
+                    button.GradientBottom = _originColors[button].bottom;
+                }
 
-            foreach (Button button in m_buttonArg)
+                button.Invalidate();
+            }
+        }
+        private void btnClick(object sender, EventArgs e)
+        {
+            if (bottomButtonClick == null)
+                return;
+
+            SUserControls.ColorButton btn = (SUserControls.ColorButton)sender;
+            int idx = Convert.ToInt32(btn.Tag);
+
+            if ((idx == 1 || idx == 2 || idx == 3) && !main.m_bSetup)
             {
-                if (btn == button)
+                string _Password = "";
+                FormKeyboard dlg = new FormKeyboard();
+                dlg._TYPE = KEYBOARD_TYPE.Password;
+                DialogResult res = dlg.ShowDialog();
+
+                if (res == DialogResult.OK)
+                {
+                    _Password = dlg.getKeyword();
+                    if (_Password != Conf.PASSWORD) return;
+                    main._TimSetup.StartTimer();
+                    main.m_bSetup = true;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            //else if (idx == 4 && !main.m_bSetupVS)
+            //{
+            //    string _Password = "";
+            //    FormKeyboard dlg = new FormKeyboard();
+            //    dlg._TYPE = KEYBOARD_TYPE.Password;
+            //    DialogResult res = dlg.ShowDialog();
+
+            //    if (res == DialogResult.OK)
+            //    {
+            //        _Password = dlg.getKeyword();
+            //        if (_Password != main._PassVision) return;
+            //        main._TimSetupVS.StartTimer();
+            //        main.m_bSetupVS = true;
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }
+            //}
+            SetSelectedButton(btn);
+            foreach (SUserControls.ColorButton buttonn in m_buttonArg)
+            {
+                if (btn == buttonn)
                     continue;
             }
-
-            if (bottomButtonClick != null) 
-                bottomButtonClick(idx, null);
+            bottomButtonClick(idx, null);
         }
 
         public void onShow(bool enable)
         {
         }
-
         private void exitButton_Click(object sender, EventArgs e)
         {
-            CMessageBox msgBox = new CMessageBox(Common.TITLE, PopupMessage.message(POPUP.EXIT_PROGRAM), MessageBoxButtons.OKCancel);
+            CMessageBox msgBox = new CMessageBox(Common.TITLE, "DO YOU WANT TO EXIT PROGRAM?", MessageBoxButtons.OKCancel);
             if (msgBox.showDialog() == false)
                 return;
 
@@ -92,25 +159,42 @@ namespace bim_base
 
         public void addHistory(string history)
         {
-            string timeString = "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "]";
-            string text = timeString + history;
+            try
+            {
+                string timeString = "[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "]";
+                string text = timeString + history;
 
-            m_historyQueue.Enqueue(text);
+                m_historyQueue.Enqueue(text);
+            }
+            catch (Exception ex)
+            {
+                Debug.debug($"Add log bottom fail : {ex.ToString()}");
+            }
         }
 
         private void ui_timer_Tick(object sender, EventArgs e)
         {
             bool state = main.isAuto();
 
-            teachButton.Enabled = !state;
-            databutton.Enabled = !state;
-
-            if (m_historyQueue.Count > 0)
+            BT_TEACH.Enabled = !state;
+            BT_DATA.Enabled = !state;
+            BT_MANUAL.Enabled = !state;
+            try
             {
-                string text = m_historyQueue.Dequeue();
-                historyList.Items.Insert(0, text);
-                if (historyList.Items.Count > 200)
-                    historyList.Items.RemoveAt(200);
+                if (m_historyQueue.Count > 0)
+                {
+                    string text = m_historyQueue.Dequeue();
+
+                    historyList.Items.Insert(0, text);
+
+                    if (historyList.Items.Count > 100)
+                        historyList.Items.RemoveAt(100);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.debug($"{ex}");
+                Debug.debug("Add messenger to bottom fail logic");
             }
         }
 

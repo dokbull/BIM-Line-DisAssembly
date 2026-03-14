@@ -1,5 +1,4 @@
-﻿using bim_base.data.CIM;
-using SourceGrid;
+﻿using SourceGrid;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,7 +47,7 @@ namespace bim_base
 
                 CIMRead.READ_B addr = (CIMRead.READ_B)i;
 
-                if(Automation.Instance.ReadBit(addr))
+                if (main.readCimBit(addr) == true)
                     cell.Style.BackColor = Color.Lime;
                 else
                     cell.Style.BackColor = Color.White;
@@ -60,7 +59,7 @@ namespace bim_base
 
                 CIMWrite.WRITE_B addr = (CIMWrite.WRITE_B)i;
 
-                if (Automation.Instance.ReadBit(addr) == true)
+                if (main.readCimBit(addr) == true)
                     cell.Style.BackColor = Color.Lime;
                 else
                     cell.Style.BackColor = Color.White;
@@ -71,13 +70,13 @@ namespace bim_base
             if (readDropDown.SelectedIndex > -1)
             {
                 CIMRead.READ_W addr = (CIMRead.READ_W)readDropDown.SelectedIndex;
-                readLabel.Text = Automation.Instance.ReadWord(addr);
+                readLabel.Text = main.readCimWord(addr);
             }
 
             if (writeDropDown.SelectedIndex > -1)
             {
                 CIMWrite.WRITE_W addr = (CIMWrite.WRITE_W)writeDropDown.SelectedIndex;
-                readLabel.Text = Automation.Instance.ReadWord(addr);
+                writeLabel.Text = main.readCimWord(addr);
             }
 
             Refresh();
@@ -113,7 +112,7 @@ namespace bim_base
 
                 CIMWrite.WRITE_B addr = (CIMWrite.WRITE_B)idx;
 
-                Automation.Instance.WriteBit(addr, value);
+                main.setCimBit(addr, value);
             }
         }
 
@@ -141,7 +140,7 @@ namespace bim_base
                 CIMWrite.WRITE_W addr = (CIMWrite.WRITE_W)writeDropDown.SelectedIndex;
 
                 string text = setTextBox.Text;
-                Automation.Instance.WriteWord(addr, text);
+                main.writeCimWord(addr, text);
             }
         }
     }

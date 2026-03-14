@@ -265,7 +265,7 @@ namespace bim_base
 
                 case STEP.OVERRUN_CV:
                     {
-                        m_cvOverRunTime.isStart();
+                        m_cvOverRunTime.start();
 
                         m_step = STEP.CHECK_OVERRUN_CV;
                     }

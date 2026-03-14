@@ -20,6 +20,8 @@ namespace bim_base
             ALIGN_FWD,
             CHECK_ALIGN_FWD,
 
+            STOP_CV,
+
             ALIGN_BWD,
             CHECK_ALIGN_BWD,
 
@@ -43,6 +45,7 @@ namespace bim_base
         CElaspedTimer m_cvRunTimer = new CElaspedTimer(10 * 1000);
         CElaspedTimer m_cvOverRunTime = new CElaspedTimer(1 * 1000);
         CElaspedTimer m_cylTimeout = new CElaspedTimer(2 * 1000);
+        CElaspedTimer m_actDelay = new CElaspedTimer(500);
 
         public ProcessAlignCvWork(ProcessMain procMain) : base(procMain)
         {
@@ -170,19 +173,14 @@ namespace bim_base
                     {
                         if (isDry == true)
                         {
-                            m_cvRunTimer.start();
-                        }
-                        else
-                        { 
-                            if (input(INPUT.ALIGN_CV_IN) == true)
-                                m_cvRunTimer.start();
+                            m_step = STEP.RUN_CV;
+                            return;
                         }
 
-                        if (m_cvRunTimer.isStart() == false)
+                        if (input(INPUT.ALIGN_CV_IN) == false)
                             return;
 
-                        if (m_cvRunTimer.isElasped() == true)
-                            return;
+                        m_cvRunTimer.start();
 
                         m_step = STEP.RUN_CV;
                     }
@@ -222,11 +220,6 @@ namespace bim_base
                         if (m_cvOverRunTime.isElasped() == false)
                             return;
 
-                        setOutput(OUTPUT.ALIGN_CV_RUN, false);
-
-                        if (ST_ALIGN_CV.type() != CSTATION.TYPE.MOLD)
-                            ST_ALIGN_CV.setType(CSTATION.TYPE.MOLD);
-
                         m_step = STEP.ALIGN_FWD;
                     }
                     break;
@@ -243,22 +236,40 @@ namespace bim_base
 
                 case STEP.CHECK_ALIGN_FWD:
                     {
-                        if (isFwd() == false)
+                        if (isDry == false)
                         {
-                            if (m_cylTimeout.isElasped() == true)
+                            if (isFwd() == false)
                             {
-                                addAlarm(ALARM.CY_LOADER_ALIGNCV_ALIGN_CYL_FWD);
+                                if (m_cylTimeout.isElasped() == true)
+                                {
+                                    addAlarm(ALARM.CY_LOADER_ALIGNCV_ALIGN_CYL_FWD);
 
-                                m_step = STEP.ALIGN_FWD;
+                                    m_step = STEP.ALIGN_FWD;
+                                    return;
+                                }
                                 return;
                             }
-                            return;
                         }
+
+                        m_actDelay.start();
+
+                        m_step = STEP.STOP_CV;
+                    }
+                    break;
+
+                case STEP.STOP_CV:
+                    {
+                        if (m_actDelay.isElasped() == false)
+                            return;
+
+                        setOutput(OUTPUT.ALIGN_CV_RUN, false);
+
+                        if (ST_ALIGN_CV.type() != CSTATION.TYPE.MOLD)
+                            ST_ALIGN_CV.setType(CSTATION.TYPE.MOLD);
 
                         m_step = STEP.ALIGN_BWD;
                     }
                     break;
-
 
                 case STEP.ALIGN_BWD:
                     {

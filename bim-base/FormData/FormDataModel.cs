@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace bim_base
@@ -8,6 +9,7 @@ namespace bim_base
     public partial class FormDataModel : Form
     {
         ProcessMain main = null;
+
         public FormDataModel(ProcessMain procMain)
         {
             InitializeComponent();
@@ -22,57 +24,27 @@ namespace bim_base
             for (int i = 0; i < items.Count; i++)
                 modelList.Items.Add(items[i]);
 
-            string currentModel = Common.MODEL_INFO.currentModelName(); 
+            int count = modelList.Items.Count;
 
-            for (int i = 0; i < modelList.Items.Count; i++)
+            if (count > 0) 
             {
-                if (modelList.Items[i].ToString() == currentModel)
+                int index = 0;
+
+                for (int i = 0; i < count; i++)
                 {
-                    modelList.SelectedIndex = i;
-                    currentModelLabel.Text = currentModel;
-                    break;
+                    string name = modelList.Items[i].ToString();
+
+                    if (Conf.CURR_MODEL == name)
+                    {
+                        index = i;
+                        break;
+                    }
                 }
-            }
-        }
 
-        private void fromButton_Click(object sender, EventArgs e)
-        {
-            if (modelList.SelectedIndex < 0)
-                return;
-            fromLabel.Text = modelList.SelectedItem.ToString();
-        }
+                modelList.SelectedIndex = index;
+                currentModelLabel.Text = Conf.CURR_MODEL;
 
-        private void toButton_Click(object sender, EventArgs e)
-        {
-            if (modelList.SelectedIndex < 0)
-                return;
-            toLabel.Text = modelList.SelectedItem.ToString();
-        }
-
-        private void copyButton_Click(object sender, EventArgs e)
-        {
-            if (fromLabel.Text.ToString() == toLabel.Text.ToString())
-            {
-                CMessageBox errMsg = new CMessageBox(Common.TITLE, "복사할 파일이 동일한 파일입니다.", MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
-                errMsg.ShowDialog();
-                return;
-            }
-
-            string message = String.Format("%1의 데이터를 %2에 복사하시겠습니까?" , fromLabel.Text, toLabel.Text);
-            CMessageBox msgBox = new CMessageBox(Common.TITLE, message, MessageBoxButtons.OKCancel, ContentAlignment.MiddleCenter);
-            if (msgBox.ShowDialog() != DialogResult.OK)
-                return;
-
-            string srcName = Common.MODEL_PATH + fromLabel.Text;
-            string destName = Common.MODEL_PATH + toLabel.Text;
-
-            bool ret = Common.MODEL_INFO.copy(srcName, destName);
-            main.writeSetupLog("FormSubDataModel::createButton_Click name:" + srcName + " base:" + destName);
-            if (ret == false)
-            {
-                CMessageBox resMsg = new CMessageBox(Common.TITLE, "모델 복사에 실패하였습니다.", MessageBoxButtons.OKCancel, ContentAlignment.MiddleCenter);
-                if (resMsg.ShowDialog() != DialogResult.OK)
-                    Debug.debug("copy ressult fail");
+                uiTimer.Enabled = true;
             }
         }
 
@@ -81,9 +53,9 @@ namespace bim_base
             string dest = currentModelLabel.Text;
             string name = newModelName.Text;
             bool ret = Common.MODEL_INFO.addModel(name);
-            if (ret == false)
+            if (ret == false || name == "VSFRONT")
             {
-                CMessageBox msgBox = new CMessageBox(Common.TITLE, "모델 생성에 실패하였습니다.", MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
+                CMessageBox msgBox = new CMessageBox(Common.TITLE, "Can't Create This Model with Name.", MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
                 msgBox.ShowDialog();
                 return;
             }
@@ -94,7 +66,7 @@ namespace bim_base
             if (ret == false)
             {
                 Common.MODEL_INFO.delete(name);
-                CMessageBox msgBox = new CMessageBox(Common.TITLE, "모델 생성에 실패하였습니다.", MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
+                CMessageBox msgBox = new CMessageBox(Common.TITLE, "Can't Create This Model with Name.", MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
                 msgBox.ShowDialog();
                 return;
             }
@@ -124,6 +96,8 @@ namespace bim_base
                 return;
 
             string name = Common.MODEL_PATH + modelList.SelectedItem.ToString();
+            string CognexFile = Common.MODEL_PATH + @"Vision\Cognex\" + $"{modelList.SelectedItem.ToString()}.vpp";
+            string VSDataFile = Common.MODEL_PATH + @"Vision\" + $"{modelList.SelectedItem.ToString()}.json";
             bool ret = Common.MODEL_INFO.delete(name);
             if (ret == false)
             {
@@ -131,6 +105,24 @@ namespace bim_base
                 msgBox.ShowDialog();
                 return;
             }
+
+            /*******************************************************************************************************************/
+            ret = Common.MODEL_INFO.delete(CognexFile);
+            if (ret == false)
+            {
+                CMessageBox msgBox = new CMessageBox(Common.TITLE, "FAIL", MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
+                msgBox.ShowDialog();
+                return;
+            }
+            /*******************************************************************************************************************/
+            ret = Common.MODEL_INFO.delete(VSDataFile);
+            if (ret == false)
+            {
+                CMessageBox msgBox = new CMessageBox(Common.TITLE, "FAIL", MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
+                msgBox.ShowDialog();
+                return;
+            }
+            /*******************************************************************************************************************/
             main.writeSetupLog("FormSubDataModel::deleteButton_Click name:" + name);
             modelList.Items.RemoveAt(modelList.SelectedIndex);
         }
@@ -138,8 +130,7 @@ namespace bim_base
         private void changeButton_Click(object sender, EventArgs e)
         {
             string name = modelList.SelectedItem.ToString();
-            string curName = Common.MODEL_INFO.currentModelName();
-
+            string curName = Conf.CURR_MODEL;
             if (name == curName)
             {
                 CMessageBox errMsg = new CMessageBox(Common.TITLE, "SAME NAME." , MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
@@ -153,11 +144,12 @@ namespace bim_base
 
             Common.MODEL_INFO.modelChange(name);
 
+            currentModelLabel.Text = Conf.CURR_MODEL;
             CMessageBox resMsg = new CMessageBox(Common.TITLE, "SUCCESS " + name, MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
             resMsg.ShowDialog();
 
             main.writeSetupLog("FormSubDataModel::changeButton_Click name:" + name + " bfModel:" + curName);
-            currentModelLabel.Text = curName;
+            
         }
 
         private void newModelName_Click(object sender, EventArgs e)
@@ -172,12 +164,42 @@ namespace bim_base
 
         private void modelList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //int index = modelList.SelectedIndex;
+            int index = modelList.SelectedIndex;
 
-            //if (index < 0 || index >= modelList.Items.Count)
-            //    return;
+            if (index < 0 || index >= modelList.Items.Count)
+                return;
 
-            //newModelName.Text = modelList.Items[index].ToString();
+            newModelName.Text = modelList.Items[index].ToString();
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            CMessageBox msgBox = new CMessageBox(Common.TITLE, "Do you want to save?", MessageBoxButtons.OKCancel, ContentAlignment.MiddleCenter);
+
+            bool ret = msgBox.showDialog();
+
+            if (ret == false)
+                return;
+
+            Common.MODEL_INFO.load();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void uiTimer_Tick(object sender, EventArgs e)
+        {
+        }
+
+        private void modeLabel_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void btTrayParameter_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }
