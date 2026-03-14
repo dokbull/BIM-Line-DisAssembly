@@ -1,4 +1,5 @@
-﻿using lib.plc;
+﻿using bim_base.data.CIM;
+using lib.plc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,10 +20,6 @@ namespace bim_base
         AjinAIO m_aioIn = null;
 
         CSerialFRENIC m_frenic = null;
-        MelsecCCLink m_ccLink = null;
-
-        CIMRead m_readData = null;
-        CIMWrite m_writeData = null;
 
         // AXIS LIST
         List<ExtAxis> m_axis = new List<ExtAxis>();
@@ -91,7 +88,7 @@ namespace bim_base
         bool m_showMcAlarm = false;
 
         bool m_lastWorkMode = false;
-       
+
         // BOARD RECONNECT 
         CElaspedTimer m_boardReconnectTimer = new CElaspedTimer(60 * 1000);
         bool m_isBoardConnectWait = false;
@@ -115,14 +112,16 @@ namespace bim_base
 
             Conf.load();
 
-            m_ccLink = new MelsecCCLink();
-            m_ccLink.NetworkNo = 1;
-            m_ccLink.StationNo = 255;
-            m_ccLink.ChannelNo = 151;
-            m_ccLink.open();
+            Automation.Instance.Initialize();
 
-            m_readData = new CIMRead();
-            m_writeData = new CIMWrite();
+            //m_ccLink = new MelsecCCLink();
+            //m_ccLink.NetworkNo = 1;
+            //m_ccLink.StationNo = 255;
+            //m_ccLink.ChannelNo = 151;
+            //m_ccLink.open();
+
+            //m_readData = new CIMRead();
+            //m_writeData = new CIMWrite();
 
             Debug.setPath(Common.LOG_PATH, "dev-log");
             m_alarmManager = new CLogManager("alarm", Common.LOG_PATH);
@@ -138,7 +137,7 @@ namespace bim_base
             MOLD_PP_X = new ExtAxis(this, (int)AXIS.MOLD_PP_X, "MOLD PP X");
             MOLD_PP_ZR = new ExtAxis(this, (int)AXIS.MOLD_PP_ZR, "MOLD PP ZR");
             MOLD_PP_ZL = new ExtAxis(this, (int)AXIS.MOLD_PP_ZL, "MOLD PP ZL");
-            
+
             UB_PP_Y = new ExtAxis(this, (int)AXIS.UB_PP_Y, "UB PP Y");
             UB_PP_Z = new ExtAxis(this, (int)AXIS.UB_PP_Z, "UB PP Z");
 
@@ -161,7 +160,7 @@ namespace bim_base
                     m_axis[i].setUnitPerPulse(1, 1000);
                     m_axis[i].setAccelUnit(AXM_ACCEL_UNIT.SEC);
                     m_axis[i].setLimit(AXT_MOTION_STOPMODE.SLOWDOWN_STOP, AXM_LEVEL.LOW, AXM_LEVEL.LOW);
-                    
+
                     if (m_axis[i].name().Contains("Z"))
                     {
                         //m_axis[i].setAbsSpeed(Conf.vel((AXIS)i), Conf.acc((AXIS)i), Conf.dec((AXIS)i));
@@ -511,7 +510,8 @@ namespace bim_base
 
                     commDIO();
                     commAIO();
-                    commSIM();
+                    //commSIM();
+                    Automation.Instance.commCIM();
 
                     foreach (ExtAxis axis in m_axis)
                     {
@@ -519,6 +519,8 @@ namespace bim_base
                     }
                     m_once = false;
                 }
+
+                Automation.Instance.ppidreq();
 
                 watchEmergency();
                 watchServo();
@@ -531,14 +533,14 @@ namespace bim_base
                 Thread.Sleep(30);
             }
 
-            if (m_lib != null) 
+            if (m_lib != null)
                 m_lib.close();
 
             if (m_frenic != null)
                 m_frenic.stop();
 
             for (int i = 0; i < m_axis.Count; i++)
-            { 
+            {
                 if (m_axis[i] != null)
                     m_axis[i].close();
             }
@@ -546,45 +548,45 @@ namespace bim_base
             Debug.debug("ProcessMain::run END");
         }
 
-        void commSIM()
-        {
-            bool ret = true;
+        //void commSIM()
+        //{
+        //    bool ret = true;
 
-            int[] readDataB = new int[512 / 32];
-            int[] readDataW = new int[0x12FFF]; 
-            int[] readDataW32 = new int[0x12FFF / 2];
+        //    int[] readDataB = new int[512 / 32];
+        //    int[] readDataW = new int[0x12FFF]; 
+        //    int[] readDataW32 = new int[0x12FFF / 2];
 
-            ret = m_ccLink.read(Addr.B, 0x1000, readDataB.Length, ref readDataB);
-            ret &= m_ccLink.read(Addr.W, 0xD000, readDataW32.Length, ref readDataW32);
+        //    ret = m_ccLink.read(Addr.B, 0x1000, readDataB.Length, ref readDataB);
+        //    ret &= m_ccLink.read(Addr.W, 0xD000, readDataW32.Length, ref readDataW32);
 
-            if (ret == false)
-            {
-                // Debug.warning("ProcessMain::run cclink read failed");
-            }
+        //    if (ret == false)
+        //    {
+        //        // Debug.warning("ProcessMain::run cclink read failed");
+        //    }
 
-            for (int i = 0; i < readDataW32.Length; i++)
-            {
-                readDataW[i * 2] = readDataW32[i] & 0xFFFF;
-                readDataW[i * 2 + 1] = readDataW32[i] >> 16;
-            }
+        //    for (int i = 0; i < readDataW32.Length; i++)
+        //    {
+        //        readDataW[i * 2] = readDataW32[i] & 0xFFFF;
+        //        readDataW[i * 2 + 1] = readDataW32[i] >> 16;
+        //    }
 
-            m_readData.toBitArray(readDataB);
-            m_readData.toWordArray(readDataW);
+        //    m_readData.toBitArray(readDataB);
+        //    m_readData.toWordArray(readDataW);
 
-            int[] writeDataB = new int[512 / 32];
-            int[] writeDataW = new int[0xCFFF];
+        //    int[] writeDataB = new int[512 / 32];
+        //    int[] writeDataW = new int[0xCFFF];
 
-            m_writeData.toArrayB(ref writeDataB);
-            m_writeData.toArrayW(ref writeDataW);
+        //    m_writeData.toArrayB(ref writeDataB);
+        //    m_writeData.toArrayW(ref writeDataW);
 
-            ret = m_ccLink.write(Addr.B, 0x0000, writeDataB.Length * 4, writeDataB);
-            ret &= m_ccLink.write(Addr.W, 0x0000, writeDataW.Length * 2, writeDataW);
+        //    ret = m_ccLink.write(Addr.B, 0x0000, writeDataB.Length * 4, writeDataB);
+        //    ret &= m_ccLink.write(Addr.W, 0x0000, writeDataW.Length * 2, writeDataW);
 
-            if (ret == false)
-            {
-                // Debug.warning("ProcessMain::run cclink write failed");
-            }
-        }
+        //    if (ret == false)
+        //    {
+        //        // Debug.warning("ProcessMain::run cclink write failed");
+        //    }
+        //}
 
         void commDIO()
         {
@@ -651,7 +653,7 @@ namespace bim_base
         {
             if (m_isAuto == false)
                 return;
-            
+
             m_isCycleStop = true;
 
             writeBottomHistory("Req Cycle Stop");
@@ -832,7 +834,7 @@ namespace bim_base
 
                 if (isAuto() == false)
                 {
-                    setAuto(true); 
+                    setAuto(true);
                 }
             }
             else if (input(INPUT.OP_BOX_STOP_SW))
@@ -960,14 +962,14 @@ namespace bim_base
         public AjinDIO dioOutput() { return m_dioOut; }
 
         public ProcessLoaderCvWork procLoaderCvWork() { return m_procLoaderCvWork; }
-        public ProcessAlignCvWork procAlignCvWork() {  return m_procAlignCvWork; }
+        public ProcessAlignCvWork procAlignCvWork() { return m_procAlignCvWork; }
         public ProcessInWork procInWork() { return m_procInWork; }
-        public ProcessMoldWork procMoldWork() {  return m_procMoldWork; }
+        public ProcessMoldWork procMoldWork() { return m_procMoldWork; }
         public ProcessMoldReverseWork procMoldReverseWork() { return m_procMoldReverseWork; }
         public ProcessShuttleWork procShuttleWork() { return m_procShuttleWork; }
-        public ProcessUbWork procUbWork() {  return m_procUbWork; }
-        public ProcessUbReverseWork procUbReverseWork() {  return m_procUbReverseWork; }
-        public ProcessOutMoldCvWork procOutMoldCvWork() { return m_procOutMoldCvWork; } 
+        public ProcessUbWork procUbWork() { return m_procUbWork; }
+        public ProcessUbReverseWork procUbReverseWork() { return m_procUbReverseWork; }
+        public ProcessOutMoldCvWork procOutMoldCvWork() { return m_procOutMoldCvWork; }
         public ProcessOutUbCvWork processOutUbCvWork() { return m_procOutUbCvWork; }
 
 
@@ -1083,70 +1085,14 @@ namespace bim_base
             m_lastWorkMode = value;
         }
 
-        public void setCimBit(CIMWrite.WRITE_B addr, bool value)
-        {
-            m_writeData.setBit(addr, value);
-        }
-
-        public bool readCimBit(CIMWrite.WRITE_B addr)
-        {
-            return m_writeData.bit(addr);
-        }
-
-        public bool readCimBit(CIMRead.READ_B addr)
-        {
-            return m_readData.readBit(addr);
-        }
-
-        public string readCimWord(CIMRead.READ_W addr)
-        {
-            CIMRead.WORD_DATA data = m_readData.wordData(addr);
-
-            string text = "";
-
-            if (data.type == CIMRead.READ_TYPE.DEC)
-                text = data.value.ToString();
-
-            if (data.type == CIMRead.READ_TYPE.ASCII)
-                text = data.text;
-
-            return text;
-        }
-
-        public string readCimWord(CIMWrite.WRITE_W addr)
-        {
-            CIMWrite.WORD_DATA data = m_writeData.wordData(addr);
-
-            string text = "";
-
-            if (data.type == CIMWrite.WRITE_TYPE.DEC)
-                text = data.value.ToString();
-
-            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
-                text = data.text;
-
-            return text;
-        }
-
-        public void writeCimWord(CIMWrite.WRITE_W addr, string text)
-        {
-            CIMWrite.WORD_DATA data = m_writeData.wordData(addr);
-
-            if (data.type == CIMWrite.WRITE_TYPE.DEC)
-                data.value = Util.toInt32(text);
-
-            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
-                data.text = text;
-        }
-
         public CSTATION station(CSTATION.STATION station)
         {
             return m_station[(int)station];
         }
 
         public CSTATION[] station()
-        { 
-            return m_station; 
+        {
+            return m_station;
         }
     }//class
 }//namespace

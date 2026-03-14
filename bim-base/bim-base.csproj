@@ -206,6 +206,7 @@
     <Compile Include="data\CIM\Automation.cs" />
     <Compile Include="data\CIM\CIMRead.cs" />
     <Compile Include="data\CIM\CIMWrite.cs" />
+    <Compile Include="data\CIM\RMS.cs" />
     <Compile Include="FormAuto\FormSimMonitor.cs">
       <SubType>Form</SubType>
     </Compile>
