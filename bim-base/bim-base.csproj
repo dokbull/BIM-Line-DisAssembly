@@ -214,6 +214,12 @@
     <Compile Include="data\CIM\CIMRead.cs" />
     <Compile Include="data\CIM\CIMWrite.cs" />
     <Compile Include="data\CIM\RMS.cs" />
+    <Compile Include="FormAuto\FormAutomationTester.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormAutomationTester.Designer.cs">
+      <DependentUpon>FormAutomationTester.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormAuto\FormInterface.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -814,6 +820,9 @@
     <Compile Include="PopupMessage.cs" />
     <Compile Include="TeachingPendant.cs" />
     <Compile Include="TPSerial.cs" />
+    <EmbeddedResource Include="FormAuto\FormAutomationTester.resx">
+      <DependentUpon>FormAutomationTester.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormAuto\FormInterface.resx">
       <DependentUpon>FormInterface.cs</DependentUpon>
     </EmbeddedResource>

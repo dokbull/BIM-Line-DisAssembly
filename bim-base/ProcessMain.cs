@@ -121,7 +121,6 @@ namespace bim_base
 
             Conf.load();
 
-            Automation.Instance.InitializeCIM();
 
             Debug.setPath(Common.LOG_PATH, "dev-log");
             m_alarmManager = new CLogManager("alarm", Common.LOG_PATH);
@@ -474,6 +473,8 @@ namespace bim_base
 
             m_frenic = new CSerialFRENIC(FormMain.inst().serialFRENIC, 11);
 
+            Automation.Instance.InitializeCIM();
+
             while (true)
             {
                 if (m_stop)
@@ -512,7 +513,7 @@ namespace bim_base
 
                     commDIO();
                     commAIO();
-                    Automation.Instance.Run();
+                    Automation.Instance.RunScan();
 
                     foreach (ExtAxis axis in m_axis)
                     {
