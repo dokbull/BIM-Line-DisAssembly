@@ -116,7 +116,7 @@ namespace bim_base
             }
         }
 
-        private void FormSimMonitor_Load(object sender, EventArgs e)
+        private void FormCimMonitor_Load(object sender, EventArgs e)
         {
             for (int i = 0; i < (int)CIMRead.READ_W.MAX; i++)
             {
