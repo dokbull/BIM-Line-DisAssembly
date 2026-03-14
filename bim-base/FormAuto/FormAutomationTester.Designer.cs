@@ -111,6 +111,7 @@
             this.Controls.Add(this.label1);
             this.Name = "FormAutomationTester";
             this.Text = "CIM Tester";
+            this.Load += new System.EventHandler(this.FormAutomationTester_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -20,7 +20,7 @@ namespace bim_base
 
         private void btnHandShake_Click(object sender, EventArgs e)
         {
-            Automation.Instance.HandShakeSignal(CIMWrite.WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true);
+            Automation.Instance.HandShakeSignal(CIMWrite.WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, 5);
 
         }
 
@@ -48,6 +48,11 @@ namespace bim_base
             {
                 this.lblRunProcessingList.Text = string.Join(Environment.NewLine, Automation.Instance.RequestProcStateList.Select(x => $"{x.ToString()}\r\n"));
             }
+        }
+
+        private void FormAutomationTester_Load(object sender, EventArgs e)
+        {
+            this.tmrRedraw.Start();
         }
     }
 }

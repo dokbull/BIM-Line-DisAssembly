@@ -579,10 +579,11 @@ namespace bim_base.data.CIM
                 }
             });
             asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-            if (asyncHS.Result == false) return false;
-
-            // Date Time 동기화 처리
-            if (this.SetDateTime() == false) return false;
+            if (asyncHS.Result)
+            {
+                // Date Time 동기화 처리
+                if (this.SetDateTime() == false) return false;
+            }
 
             this.IsInitialized = true;
             Task.Run(() =>
@@ -592,7 +593,7 @@ namespace bim_base.data.CIM
                  {
                      alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
-                     this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
+                         this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
                  }
              });
 
@@ -623,7 +624,7 @@ namespace bim_base.data.CIM
 
 
 
-        #endregion
+#endregion
 
         #region Public Method : CIM Equipment State
 
