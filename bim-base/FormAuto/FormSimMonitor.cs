@@ -48,7 +48,7 @@ namespace bim_base
 
                 CIMRead.READ_B addr = (CIMRead.READ_B)i;
 
-                if(Automation.Instance.readCimBit(addr))
+                if(Automation.Instance.ReadBit(addr))
                     cell.Style.BackColor = Color.Lime;
                 else
                     cell.Style.BackColor = Color.White;
@@ -60,7 +60,7 @@ namespace bim_base
 
                 CIMWrite.WRITE_B addr = (CIMWrite.WRITE_B)i;
 
-                if (Automation.Instance.readCimBit(addr) == true)
+                if (Automation.Instance.ReadBit(addr) == true)
                     cell.Style.BackColor = Color.Lime;
                 else
                     cell.Style.BackColor = Color.White;
@@ -71,13 +71,13 @@ namespace bim_base
             if (readDropDown.SelectedIndex > -1)
             {
                 CIMRead.READ_W addr = (CIMRead.READ_W)readDropDown.SelectedIndex;
-                readLabel.Text = Automation.Instance.readCimWord(addr);
+                readLabel.Text = Automation.Instance.ReadWord(addr);
             }
 
             if (writeDropDown.SelectedIndex > -1)
             {
                 CIMWrite.WRITE_W addr = (CIMWrite.WRITE_W)writeDropDown.SelectedIndex;
-                readLabel.Text = Automation.Instance.readCimWord(addr);
+                readLabel.Text = Automation.Instance.ReadWord(addr);
             }
 
             Refresh();
@@ -113,7 +113,7 @@ namespace bim_base
 
                 CIMWrite.WRITE_B addr = (CIMWrite.WRITE_B)idx;
 
-                Automation.Instance.setCimBit(addr, value);
+                Automation.Instance.WriteBit(addr, value);
             }
         }
 
@@ -141,7 +141,7 @@ namespace bim_base
                 CIMWrite.WRITE_W addr = (CIMWrite.WRITE_W)writeDropDown.SelectedIndex;
 
                 string text = setTextBox.Text;
-                Automation.Instance.writeCimWord(addr, text);
+                Automation.Instance.WriteWord(addr, text);
             }
         }
     }

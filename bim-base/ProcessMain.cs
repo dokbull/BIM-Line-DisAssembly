@@ -511,7 +511,7 @@ namespace bim_base
                     commDIO();
                     commAIO();
                     //commSIM();
-                    Automation.Instance.commCIM();
+                    Automation.Instance.InitializeCCIE();
 
                     foreach (ExtAxis axis in m_axis)
                     {
@@ -520,7 +520,7 @@ namespace bim_base
                     m_once = false;
                 }
 
-                Automation.Instance.ppidreq();
+                //Automation.Instance.ppidreq();
 
                 watchEmergency();
                 watchServo();

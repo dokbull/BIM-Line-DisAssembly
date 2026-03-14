@@ -36,7 +36,7 @@ namespace bim_base.data.CIM
 
         #region Private Member
 
-
+        private MelsecCCLink m_ccLink = null;
         private CIMRead m_Reader = new CIMRead();
         private CIMWrite m_Writer = new CIMWrite();
 
@@ -46,13 +46,12 @@ namespace bim_base.data.CIM
 
         #region public Properties
 
-        private int commandHoldTimeMs = 1000;
         public static Automation Instance = new Automation();
 
         public bool IsInitialized { get; private set; } = false;
         public bool IsRun { get; private set; } = false;
 
-        MelsecCCLink m_ccLink = null;
+
         public CIMRead CCIE_Reader
         {
             get { return this.m_Reader; }
@@ -65,22 +64,6 @@ namespace bim_base.data.CIM
             private set { this.m_Writer = value; }
         }
 
-        public bool Initialize()
-        {
-            m_ccLink = new MelsecCCLink();
-
-            m_ccLink.NetworkNo = 1;
-            m_ccLink.StationNo = 255;
-            m_ccLink.ChannelNo = 151;
-
-            if (!m_ccLink.open())
-                return false;
-
-            m_Reader = new CIMRead();
-            m_Writer = new CIMWrite();
-
-            return true;
-        }
         #endregion
 
         #region Event
@@ -108,7 +91,7 @@ namespace bim_base.data.CIM
 
         private void WaitBitSignal(CIMRead.READ_B _addr, bool _waitValue, int _timeoutSeconds = 0)
         {
-            bool val = this.CCIE_Reader.readBit(_addr);
+            bool val = this.ReadBit(_addr);
 
             DateTime startTime = DateTime.Now;
             TimeSpan ts = DateTime.Now - startTime;
@@ -120,7 +103,7 @@ namespace bim_base.data.CIM
                     throw new Exception("WaitBitSignal Timeout Occurred. Addr: " + _addr.ToString() + ", WaitValue: " + _waitValue.ToString());
                 }
 
-                val = this.CCIE_Reader.readBit(_addr);
+                val = this.ReadBit(_addr);
 
                 if (val == _waitValue) { return; }
 
@@ -219,7 +202,7 @@ namespace bim_base.data.CIM
             foreach (string enumName in Enum.GetNames(typeof(CIMWrite.WRITE_B)))
             {
                 CIMWrite.WRITE_B addrBit = (CIMWrite.WRITE_B)Enum.Parse(typeof(CIMWrite.WRITE_B), enumName);
-                this.CCIE_Writer.setBit(addrBit, false);
+                this.WriteBit(addrBit, false);
             }
         }
 
@@ -231,20 +214,20 @@ namespace bim_base.data.CIM
         {
             try
             {
-                if (this.CCIE_Reader.readBit(CIMRead.READ_B.TERMINALDISPLAY_3) == false)
+                if (this.ReadBit(CIMRead.READ_B.TERMINALDISPLAY_3) == false)
                     return;
 
-                CIMRead.WORD_DATA varMessageNum = this.CCIE_Reader.wordData(CIMRead.READ_W.ASCII_1_D04D_TerminalNumber);
-                CIMRead.WORD_DATA varMessageText = this.CCIE_Reader.wordData(CIMRead.READ_W.ASCII_60_D011_TerminalDisplayText);
+                string msgNum = this.ReadWord(CIMRead.READ_W.ASCII_1_D04D_TerminalNumber);
+                string msgText = this.ReadWord(CIMRead.READ_W.ASCII_60_D011_TerminalDisplayText);
 
-                if (int.TryParse(varMessageNum.text, out int messageNum) == false)
+                if (int.TryParse(msgNum, out int messageNum) == false)
                     return;
 
-                ReceivedTerminalDisplayEvent?.Invoke(messageNum, varMessageText.text);
+                ReceivedTerminalDisplayEvent?.Invoke(messageNum, msgText);
 
-                this.CCIE_Writer.setBit(WRITE_B.TERMINALDISPLAY_3, true);
+                this.WriteBit(WRITE_B.TERMINALDISPLAY_3, true);
                 Task.Run(() => this.SleepWithDoEvent(1)).Wait();
-                this.CCIE_Writer.setBit(WRITE_B.TERMINALDISPLAY_3, false);
+                this.WriteBit(WRITE_B.TERMINALDISPLAY_3, false);
 
             }
             catch
@@ -256,20 +239,20 @@ namespace bim_base.data.CIM
         {
             try
             {
-                if (this.CCIE_Reader.readBit(CIMRead.READ_B.OPERATORCALL_4) == false)
+                if (this.ReadBit(CIMRead.READ_B.OPERATORCALL_4) == false)
                     return;
 
-                CIMRead.WORD_DATA varOpCallNum = this.CCIE_Reader.wordData(CIMRead.READ_W.ASCII_10_D058_OperatorCallID);
-                CIMRead.WORD_DATA varOpCallText = this.CCIE_Reader.wordData(CIMRead.READ_W.ASCII_60_D062_OperatorCallText);
+                string strOpCallNum = this.ReadWord(CIMRead.READ_W.ASCII_10_D058_OperatorCallID);
+                string strOpCallText = this.ReadWord(CIMRead.READ_W.ASCII_60_D062_OperatorCallText);
 
-                if (int.TryParse(varOpCallNum.text, out int opCallNum) == false)
+                if (int.TryParse(strOpCallNum, out int opCallNum) == false)
                     return;
 
-                ReceivedOperatorCallEvent?.Invoke(opCallNum, varOpCallText.text);
+                ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
 
-                this.CCIE_Writer.setBit(WRITE_B.OPCALLCONFIRM_41, true);
+                this.WriteBit(WRITE_B.OPCALLCONFIRM_41, true);
                 Task.Run(() => this.SleepWithDoEvent(1)).Wait();
-                this.CCIE_Writer.setBit(WRITE_B.OPCALLCONFIRM_41, false);
+                this.WriteBit(WRITE_B.OPCALLCONFIRM_41, false);
 
             }
             catch
@@ -280,7 +263,64 @@ namespace bim_base.data.CIM
 
         #endregion
 
-        #region Public Method
+        #region Public Method : CCIE Comm
+
+
+        public void WriteBit(CIMWrite.WRITE_B addr, bool value)
+        {
+            m_Writer.setBit(addr, value);
+        }
+
+        public bool ReadBit(CIMWrite.WRITE_B addr)
+        {
+            return m_Writer.bit(addr);
+        }
+
+        public bool ReadBit(CIMRead.READ_B addr)
+        {
+            return m_Reader.readBit(addr);
+        }
+
+        public string ReadWord(CIMRead.READ_W addr)
+        {
+            CIMRead.WORD_DATA data = m_Reader.wordData(addr);
+
+            string text = "";
+
+            if (data.type == CIMRead.READ_TYPE.DEC)
+                text = data.value.ToString();
+
+            if (data.type == CIMRead.READ_TYPE.ASCII)
+                text = data.text;
+
+            return text;
+        }
+
+        public string ReadWord(CIMWrite.WRITE_W addr)
+        {
+            CIMWrite.WORD_DATA data = m_Writer.wordData(addr);
+
+            string text = "";
+
+            if (data.type == CIMWrite.WRITE_TYPE.DEC)
+                text = data.value.ToString();
+
+            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
+                text = data.text;
+
+            return text;
+        }
+
+        public void WriteWord(CIMWrite.WRITE_W addr, string text)
+        {
+            CIMWrite.WORD_DATA data = m_Writer.wordData(addr);
+
+            if (data.type == CIMWrite.WRITE_TYPE.DEC)
+                data.value = Util.toInt32(text);
+
+            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
+                data.text = text;
+        }
 
         public bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
         {
@@ -289,7 +329,7 @@ namespace bim_base.data.CIM
                 // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
                 try
                 {
-                    this.CCIE_Writer.setBit(_addrWrite, _writeValue);
+                    this.WriteBit(_addrWrite, _writeValue);
                     this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
 
                     return true;
@@ -303,7 +343,8 @@ namespace bim_base.data.CIM
 
                     return false;
                 }
-            };
+            }
+            ;
 
             Task<bool> asyncHS = Task.Run(() => function());
             asyncHS.Wait(_timeoutSeconds * 1000);
@@ -311,7 +352,30 @@ namespace bim_base.data.CIM
 
             return asyncHS.Result;
         }
-        public void commCIM()
+
+        #endregion
+
+        #region Public Method
+
+
+        public bool OpenCCIE()
+        {
+            m_ccLink = new MelsecCCLink();
+
+            m_ccLink.NetworkNo = 1;
+            m_ccLink.StationNo = 255;
+            m_ccLink.ChannelNo = 151;
+
+            if (!m_ccLink.open())
+                return false;
+
+            this.m_Reader = new CIMRead();
+            this.m_Writer = new CIMWrite();
+
+            return true;
+        }
+
+        public void InitializeCCIE()
         {
             bool ret = true;
 
@@ -345,69 +409,23 @@ namespace bim_base.data.CIM
             ret = m_ccLink.write(Addr.B, 0x0000, writeDataB.Length * 4, writeDataB);
             ret &= m_ccLink.write(Addr.W, 0x0000, writeDataW.Length * 2, writeDataW);
 
-            if (ret == false)
+
+            if (ret)
             {
-                // Debug.warning("ProcessMain::run cclink write failed");
+                this.InitializeSignals();
+            }
+            else
+            { 
+                throw new Exception("failed to run cclink write failed");
             }
         }
 
-        public void setCimBit(CIMWrite.WRITE_B addr, bool value)
-        {
-            m_Writer.setBit(addr, value);
-        }
+        #endregion
 
-        public bool readCimBit(CIMWrite.WRITE_B addr)
-        {
-            return m_Writer.bit(addr);
-        }
+        #region Public Method : CIM 대응
 
-        public bool readCimBit(CIMRead.READ_B addr)
-        {
-            return m_Reader.readBit(addr);
-        }
 
-        public string readCimWord(CIMRead.READ_W addr)
-        {
-            CIMRead.WORD_DATA data = m_Reader.wordData(addr);
-
-            string text = "";
-
-            if (data.type == CIMRead.READ_TYPE.DEC)
-                text = data.value.ToString();
-
-            if (data.type == CIMRead.READ_TYPE.ASCII)
-                text = data.text;
-
-            return text;
-        }
-
-        public string readCimWord(CIMWrite.WRITE_W addr)
-        {
-            CIMWrite.WORD_DATA data = m_Writer.wordData(addr);
-
-            string text = "";
-
-            if (data.type == CIMWrite.WRITE_TYPE.DEC)
-                text = data.value.ToString();
-
-            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
-                text = data.text;
-
-            return text;
-        }
-
-        public void writeCimWord(CIMWrite.WRITE_W addr, string text)
-        {
-            CIMWrite.WORD_DATA data = m_Writer.wordData(addr);
-
-            if (data.type == CIMWrite.WRITE_TYPE.DEC)
-                data.value = Util.toInt32(text);
-
-            if (data.type == CIMWrite.WRITE_TYPE.ASCII)
-                data.text = text;
-        }
-
-        public bool CIMInitialize()
+        public bool Initialize()
         {
             if (this.IsInitialized) return false;
 
@@ -444,7 +462,7 @@ namespace bim_base.data.CIM
                  bool alive = false;
                  while (this.IsInitialized)
                  {
-                     alive = this.CCIE_Reader.readBit(CIMRead.READ_B.ALIVEBIT_1);
+                     alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
                      this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, timeoutSeconds);
                  }
@@ -457,10 +475,10 @@ namespace bim_base.data.CIM
         {
             // TODO CHECK LHJ : PC의 Local 시간에 Date Time이 변경되는지 여부 확인
 
-            this.CCIE_Writer.setBit(WRITE_B.DATETIMESET_2, false);
+            this.WriteBit(WRITE_B.DATETIMESET_2, false);
 
-            CIMRead.WORD_DATA varDateTime = this.CCIE_Reader.wordData(CIMRead.READ_W.ASCII_7_D000_Datetime);
-            if (this.TryParseDateTime(varDateTime.text, out DateTime setDateTime) == false)
+            string strDateTime = this.ReadWord(CIMRead.READ_W.ASCII_7_D000_Datetime);
+            if (this.TryParseDateTime(strDateTime, out DateTime setDateTime) == false)
                 return false;
 
             if (this.SetSystemLocalTime(setDateTime) == false)
@@ -468,9 +486,9 @@ namespace bim_base.data.CIM
                 return false;
             }
 
-            this.CCIE_Writer.setBit(WRITE_B.DATETIMESET_2, true);
+            this.WriteBit(WRITE_B.DATETIMESET_2, true);
             Task.Run(() => this.SleepWithDoEvent(1)).Wait();
-            this.CCIE_Writer.setBit(WRITE_B.DATETIMESET_2, false);
+            this.WriteBit(WRITE_B.DATETIMESET_2, false);
 
             return true;
         }
@@ -512,6 +530,9 @@ namespace bim_base.data.CIM
         //상시 대기
         public void PpidListRequest()
         {
+        
+            int commandHoldTimeMs = 1000;
+
             //ModelInfo
             if (m_Reader.readBit(CIMRead.READ_B.CURRENTEQUIPPPIDLISTREQUEST_56) == true)
             {
