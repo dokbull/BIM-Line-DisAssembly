@@ -235,8 +235,8 @@
     <Compile Include="FormAuto\FormSimMonitor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAuto\FormSimMonitor.Designer.cs">
-      <DependentUpon>FormSimMonitor.cs</DependentUpon>
+    <Compile Include="FormAuto\FormCimMonitor.Designer.cs">
+      <DependentUpon>FormCimMonitor.cs</DependentUpon>
     </Compile>
     <Compile Include="FormAuto\FormProductInfo.cs">
       <SubType>Form</SubType>

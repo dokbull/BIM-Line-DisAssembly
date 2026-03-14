@@ -187,7 +187,8 @@ namespace bim_base
             towerG.ForeColor = main.output(OUTPUT.TOWER_G) ? Color.White : Color.Black;
 
             //DOOR & MC
-            mcLabel.BackColor = main.isDetectSafetyMC() ? Color.DarkRed : Color.Lime;
+            mcLabel.BackColor = main.isDetectEMC() ? Color.DarkRed : Color.Lime;
+            safetyLabel.BackColor = main.isDetectSafetyMC() ? Color.DarkRed : Color.Lime;
             lbFrontLeftDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.FR_LEFT) ? Color.DarkRed : Color.Lime;
             lbFrontRightDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.FR_RIGHT) ? Color.DarkRed : Color.Lime;
             lbRearLeftDoor.BackColor = main.isDoorDetect(ProcessMain.DOOR_ID.RR_LEFT) ? Color.DarkRed : Color.Lime;
