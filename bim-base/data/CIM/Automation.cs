@@ -99,7 +99,7 @@ namespace bim_base.data.CIM
 
         public bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = true)
         {
-            Task<bool> function = Task.Run(() =>
+            bool function()
             {
                 // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
                 try
@@ -120,21 +120,20 @@ namespace bim_base.data.CIM
                 }
             });
 
-            function.Start();
-            function.Wait(_timeoutSeconds * 1000);
+            Task<bool> asyncHS = Task.Run(() => function());
+            asyncHS.Wait(_timeoutSeconds * 1000);
 
 
-            return function.Result;
+            return asyncHS.Result;
         }
 
         //public bool Initialize()
         //{
         //    this.m_IsRun = true;
 
-        //    Task off = Task.Run(() => this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, 5, false);
-        //    {
-        //        return false;
-        //    }
+        //    Task<bool> reset = this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, 5, false));
+            
+
 
 
 
