@@ -468,6 +468,55 @@ namespace bim_base.data.CIM
 
         #endregion
 
+        #region Private Method : CIM Request - RMS
+
+        private void RequestPpidList()
+        {
+            try
+            {
+                if (this.AddRequestProcState(EnumRequestProcState.RequestPpidList) == false)
+                    return;
+
+                //ModelInfo
+                if (m_Reader.readBit(CIMRead.READ_B.CURRENTEQUIPPPIDLISTREQUEST_56) == false)
+                    return;
+
+                List<string> items = new List<string>();
+
+                for (int i = 0; i < Common.MODEL.Count; i++)
+                {
+                    ModelInfo INFO = Common.MODEL[i];
+
+                    items.Add(INFO.modelName());
+                }
+
+                for (int i = 0; i < items.Count; i++)
+                {
+                    var addr = (WRITE_W)((int)WRITE_W.ASCII_20_8A54_PPID_1 + i);
+                    m_Writer.wordData(addr).text = items[i];
+                }
+
+                m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(CommandHoldTimeMs).ConfigureAwait(true);
+                    m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
+                });
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+                this.RemoveRequestProcState(EnumRequestProcState.RequestPpidList);
+            }
+        }
+
+        #endregion
+
         #region Public Method
 
         public async void RunScan()
@@ -484,6 +533,7 @@ namespace bim_base.data.CIM
             tasks.Add(Task.Run(() => this.RequestTerminalDisplay()));
             tasks.Add(Task.Run(() => this.RequestOperatorCall()));
             tasks.Add(Task.Run(() => this.RequestInterlcokState()));
+            tasks.Add(Task.Run(() => this.RequestPpidList()));
 
             await Task.WhenAll(tasks).ConfigureAwait(true); ;
 
@@ -1169,36 +1219,6 @@ namespace bim_base.data.CIM
                     m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, false);
                 });
 
-            }
-        }
-
-        public void PpidListQuery()
-        {
-            //ModelInfo
-            if (m_Reader.readBit(CIMRead.READ_B.CURRENTEQUIPPPIDLISTREQUEST_56) == true)
-            {
-                List<string> items = new List<string>();
-
-                for (int i = 0; i < Common.MODEL.Count; i++)
-                {
-                    ModelInfo INFO = Common.MODEL[i];
-
-                    items.Add(INFO.modelName());
-                }
-
-                for (int i = 0; i < items.Count; i++)
-                {
-                    var addr = (WRITE_W)((int)WRITE_W.ASCII_20_8A54_PPID_1 + i);
-                    m_Writer.wordData(addr).text = items[i];
-                }
-
-                m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
-
-                _ = Task.Run(async () =>
-                {
-                    await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS);
-                    m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
-                });
             }
         }
 

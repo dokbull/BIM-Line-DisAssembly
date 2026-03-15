@@ -14,6 +14,7 @@ namespace bim_base.data.CIM
             TerminalDisplay,
             OperatorCall,
             RequestInterlcokState,
+            RequestPpidList,
         }
 
         public enum EnumAvailabilityState
