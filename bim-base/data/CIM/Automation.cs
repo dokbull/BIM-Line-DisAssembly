@@ -1035,38 +1035,49 @@ namespace bim_base.data.CIM
         /// </summary>
         public void EqStopByOperator(EnmumEqStopByOperatorType _stopType)
         {
-            this.WriteBit(WRITE_B.TPMLOSSREADY_19, true);
-
-            // Loss Code Popup
-            Dictionary<string, string> itemsLossCode = new Dictionary<string, string>();
-            foreach (var item in Enum.GetNames(typeof(EnmumEqStopByOperatorType)))
+            try
             {
-                EnmumEqStopByOperatorType _type = (EnmumEqStopByOperatorType)Enum.Parse(typeof(EnmumEqStopByOperatorType), item);
+                this.WriteBit(WRITE_B.TPMLOSSREADY_19, true);
 
-                itemsLossCode.Add($"{(int)_type}", $"{_type}");
+                // Loss Code Popup
+                Dictionary<string, string> itemsLossCode = new Dictionary<string, string>();
+                foreach (var item in Enum.GetNames(typeof(EnmumEqStopByOperatorType)))
+                {
+                    EnmumEqStopByOperatorType _type = (EnmumEqStopByOperatorType)Enum.Parse(typeof(EnmumEqStopByOperatorType), item);
+
+                    itemsLossCode.Add($"{(int)_type}", $"{_type}");
+                }
+
+                DarkMessageBox msgPopup = DarkMessageBox.CreateMessageBox(
+                    "TPM Loss",
+                    Lib.UI.Generic.Icons.EnumMessageBoxIcons.Warning,
+                    "Loss Code를 선택하세요",
+                    Lib.UI.Generic.DarkMode.EnumMessageBoxButtons.OK,
+                    itemsLossCode);
+
+                msgPopup.WindowState = FormWindowState.Maximized;
+                msgPopup.MaximumSize = new System.Drawing.Size(1024, 768);
+                msgPopup.StartPosition = FormStartPosition.CenterScreen;
+                msgPopup.TopMost = true;
+                DialogResult result = msgPopup.ShowDialog();
+
+                this.WriteWord(WRITE_W.DEC_2_120F_TMPLossCode, msgPopup.SelectedItem.ID);
+                this.WriteWord(WRITE_W.ASCII_20_1211_TMPLossDescp, msgPopup.SelectedItem.Text);
+
+                msgPopup.Close();
+
+                this.WaitBitSignal(READ_B.TPMLOSSREADY_19, true, HANDSHAKE_TIMEOUT_SECONDS);
+
+                this.WriteBit(WRITE_B.TPMLOSSREADY_19, false);
             }
+            catch
+            {
 
-            DarkMessageBox msgPopup = DarkMessageBox.CreateMessageBox(
-                "TPM Loss", 
-                Lib.UI.Generic.Icons.EnumMessageBoxIcons.Warning, 
-                "Loss Code를 선택하세요", 
-                Lib.UI.Generic.DarkMode.EnumMessageBoxButtons.OK,
-                itemsLossCode);
-
-            msgPopup.WindowState = FormWindowState.Maximized;
-            msgPopup.MaximumSize = new System.Drawing.Size(1024, 768);
-            msgPopup.StartPosition = FormStartPosition.CenterScreen;
-            msgPopup.TopMost = true;
-            DialogResult result = msgPopup.ShowDialog();
-
-            this.WriteWord(WRITE_W.DEC_2_120F_TMPLossCode, msgPopup.SelectedItem.ID);
-            this.WriteWord(WRITE_W.ASCII_20_1211_TMPLossDescp, msgPopup.SelectedItem.Text);
-
-            msgPopup.Close();
-
-            this.WaitBitSignal(READ_B.TPMLOSSREADY_19, true, HANDSHAKE_TIMEOUT_SECONDS);
-
-            this.WriteBit(WRITE_B.TPMLOSSREADY_19, false);
+            }
+            finally
+            {
+                this.WriteBit(WRITE_B.TPMLOSSREADY_19, false);
+            }
         }
 
 
