@@ -522,6 +522,9 @@ namespace bim_base
                     m_once = false;
                 }
 
+                //Automation.Instance.PpidListRequest();
+                Automation.Instance.PpidChange();
+
                 watchFrenic();
                 watchEmergency();
                 watchServo();
