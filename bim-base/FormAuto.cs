@@ -34,10 +34,10 @@ namespace bim_base
         {
             uiTimer.Enabled = true;
 
-            Automation.Instance.ReceivedOperatorCallEvent += Instance_ReceivedOperatorCallEvent;    
+            Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;    
         }
 
-        private async void Instance_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
+        private async void Automation_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
         {
             main.setOutput(OUTPUT.BUZZER_1, true);
 

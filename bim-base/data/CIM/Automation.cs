@@ -84,7 +84,7 @@ namespace bim_base.data.CIM
 
         public EnumEqControlMode EqControlMode { get; set; } = EnumEqControlMode.Manual;
 
-        public List<OperatorCallData> OperatorCallHistory { get; private set; } = new List<OperatorCallData>();
+        public List<HistoryItem> OperatorCallHistory { get; private set; } = new List<HistoryItem>();
 
         #endregion
 
@@ -398,7 +398,7 @@ namespace bim_base.data.CIM
                 if (int.TryParse(strOpCallNum, out int opCallNum) == false)
                     return;
 
-                this.OperatorCallHistory.Add(new OperatorCallData(DateTime.Now, $"{opCallNum}", strOpCallText));
+                this.OperatorCallHistory.Add(new HistoryItem(DateTime.Now, $"{opCallNum}", strOpCallText));
                 if(this.OperatorCallHistory.Count > 100)
                 {
                     this.OperatorCallHistory.RemoveAt(0);

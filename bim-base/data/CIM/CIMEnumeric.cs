@@ -117,5 +117,12 @@ namespace bim_base.data.CIM
             Manual = 2,
             Teaching = 3,
         }
+
+        public enum EnumCimHistoryType
+        {
+            OperatorCall,
+            InterlockOccured,
+            InterlockReleased,
+        }
     }
 }

@@ -213,7 +213,7 @@
     <Compile Include="data\CIM\CIMEnumeric.cs" />
     <Compile Include="data\CIM\CIMRead.cs" />
     <Compile Include="data\CIM\CIMWrite.cs" />
-    <Compile Include="data\CIM\OperatorCallData.cs" />
+    <Compile Include="data\CIM\HistoryItem.cs" />
     <Compile Include="data\CIM\RMS.cs" />
     <Compile Include="FormAuto\FormAutomationTester.cs">
       <SubType>Form</SubType>
@@ -239,11 +239,11 @@
     <Compile Include="FormAuto\FormCimMonitor.Designer.cs">
       <DependentUpon>FormCimMonitor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAuto\FormOperatorCallHistory.cs">
+    <Compile Include="FormAuto\FormCIMHistory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAuto\FormOperatorCallHistory.Designer.cs">
-      <DependentUpon>FormOperatorCallHistory.cs</DependentUpon>
+    <Compile Include="FormAuto\FormCIMHistory.Designer.cs">
+      <DependentUpon>FormCIMHistory.cs</DependentUpon>
     </Compile>
     <Compile Include="FormAuto\FormProductInfo.cs">
       <SubType>Form</SubType>
@@ -845,8 +845,8 @@
     <EmbeddedResource Include="FormAuto\FormCIMSimulationMonitor.resx">
       <DependentUpon>FormCIMSimulationMonitor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAuto\FormOperatorCallHistory.resx">
-      <DependentUpon>FormOperatorCallHistory.cs</DependentUpon>
+    <EmbeddedResource Include="FormAuto\FormCIMHistory.resx">
+      <DependentUpon>FormCIMHistory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormAuto\FormProductInfo.resx">
       <DependentUpon>FormProductInfo.cs</DependentUpon>
