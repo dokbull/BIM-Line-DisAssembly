@@ -562,6 +562,10 @@ namespace bim_base.data.CIM
                         }
                     }
 
+                    //알람 발생
+                    if (nSelectedIdx == -1)
+                        return;
+
                     POS[] pos = ReadTeachPos();
 
                     for (int i = 0; i < (int)TEACH_POS.MAX; i++)
@@ -629,6 +633,10 @@ namespace bim_base.data.CIM
                             break;
                         }
                     }
+
+                    //알람 발생
+                    if (nSelectedIdx == -1)
+                        return;
 
                     ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
                     m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
@@ -1145,7 +1153,7 @@ namespace bim_base.data.CIM
         }
 
         // PPID 생성
-        public bool PpidCreate(string ppid)
+        public bool PpidCreate(/*string ppid*/)
         {
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
 
@@ -1199,7 +1207,7 @@ namespace bim_base.data.CIM
         }
 
         // PPID 삭제
-        public bool PpidDelete(string ppid)
+        public bool PpidDelete(/*string ppid*/)
         {
             ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
