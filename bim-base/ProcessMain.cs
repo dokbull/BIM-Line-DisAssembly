@@ -747,8 +747,8 @@ namespace bim_base
         {
             for (int i = 0; i < 11; i++)
             {
-                if (m_frenic.freq(i) != 30.0d)
-                    m_frenic.setFrequency(i, 30.0d);
+                if (m_frenic.freq(i) != 60.0d)
+                    m_frenic.setFrequency(i, 60.0d);
             }
         }
 
