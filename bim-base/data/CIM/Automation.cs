@@ -570,9 +570,26 @@ namespace bim_base.data.CIM
                 default:
                     break;
             }
-
         }
 
+        // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
+        public void WriteWord(CIMRead.READ_W _addr, string _val)
+        {
+            CIMRead.WORD_DATA data = m_Reader.wordData(_addr);
+
+            switch (data.type)
+            {
+                case READ_TYPE.ASCII:
+                    data.text = _val;
+                    break;
+                case READ_TYPE.DEC:
+                    data.value = Util.toInt32(_val);
+                    break;
+                case READ_TYPE.NONE:
+                default:
+                    break;
+            }
+        }
 
         public async Task<bool> HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
         {

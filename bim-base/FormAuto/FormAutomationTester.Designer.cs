@@ -33,10 +33,11 @@
             this.btnHandShake = new System.Windows.Forms.Button();
             this.lblInitialized = new System.Windows.Forms.Label();
             this.tmrRedraw = new System.Windows.Forms.Timer(this.components);
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.lblRunScan = new System.Windows.Forms.Label();
             this.lblRunProcessing = new System.Windows.Forms.Label();
             this.lblRunProcessingList = new System.Windows.Forms.Label();
+            this.btnSetDateTime = new System.Windows.Forms.Button();
+            this.DateTimeTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -98,11 +99,31 @@
             this.lblRunProcessingList.Text = "Run Processing List";
             this.lblRunProcessingList.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // btnSetDateTime
+            // 
+            this.btnSetDateTime.Location = new System.Drawing.Point(843, 80);
+            this.btnSetDateTime.Name = "btnSetDateTime";
+            this.btnSetDateTime.Size = new System.Drawing.Size(77, 47);
+            this.btnSetDateTime.TabIndex = 8;
+            this.btnSetDateTime.Text = "SetDataTime";
+            this.btnSetDateTime.UseVisualStyleBackColor = true;
+            this.btnSetDateTime.Click += new System.EventHandler(this.btnSetDateTime_Click);
+            // 
+            // DateTimeTextBox
+            // 
+            this.DateTimeTextBox.Location = new System.Drawing.Point(634, 90);
+            this.DateTimeTextBox.Name = "DateTimeTextBox";
+            this.DateTimeTextBox.Size = new System.Drawing.Size(203, 28);
+            this.DateTimeTextBox.TabIndex = 9;
+            this.DateTimeTextBox.TextChanged += new System.EventHandler(this.DataTimeTextBox_TextChanged);
+            // 
             // FormAutomationTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(932, 835);
+            this.Controls.Add(this.DateTimeTextBox);
+            this.Controls.Add(this.btnSetDateTime);
             this.Controls.Add(this.lblRunProcessingList);
             this.Controls.Add(this.lblRunProcessing);
             this.Controls.Add(this.lblRunScan);
@@ -122,9 +143,10 @@
         private System.Windows.Forms.Button btnHandShake;
         private System.Windows.Forms.Label lblInitialized;
         private System.Windows.Forms.Timer tmrRedraw;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label lblRunScan;
         private System.Windows.Forms.Label lblRunProcessing;
         private System.Windows.Forms.Label lblRunProcessingList;
+        private System.Windows.Forms.Button btnSetDateTime;
+        private System.Windows.Forms.TextBox DateTimeTextBox;
     }
 }
