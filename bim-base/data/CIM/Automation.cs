@@ -500,7 +500,7 @@ namespace bim_base.data.CIM
 
                 _ = Task.Run(async () =>
                 {
-                    await Task.Delay(CommandHoldTimeMs).ConfigureAwait(true);
+                    await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true);
                     m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
                 });
             }
