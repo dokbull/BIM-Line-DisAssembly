@@ -37,10 +37,30 @@ namespace bim_base
             {
                 this.lblRunProcessingList.Text = string.Join(Environment.NewLine, Automation.Instance.RequestProcStateList.Select(x => $"{x.ToString()}\r\n"));
             }
+
+            bool writeReady = Automation.Instance.ReadBit(CIMWrite.WRITE_B.TPMLOSSREADY_19);
+            bool readReady = Automation.Instance.ReadBit(CIMRead.READ_B.TPMLOSSREADY_19);
+
+            if (!writeReady)
+            {
+                lblTpmLossMonitor.Text = "TPM LOSS : 대기 상태";
+                lblTpmLossMonitor.BackColor = SystemColors.Control;
+            }
+            else if (writeReady && !readReady)
+            {
+                lblTpmLossMonitor.Text = "TPM LOSS : 응답 대기 상태";
+                lblTpmLossMonitor.BackColor = Color.Orange;
+            }
+            else
+            {
+                lblTpmLossMonitor.Text = "TPM LOSS : 응답 수신";
+                lblTpmLossMonitor.BackColor = Color.LightGreen;
+            }
         }
 
         private void FormAutomationTester_Load(object sender, EventArgs e)
         {
+            DateTimeTextBox.Text = DateTime.Now.ToString("yyyyMMddHHmmss");
             this.tmrRedraw.Start();
         }
 
@@ -51,7 +71,7 @@ namespace bim_base
 
             DateTime parseDateTime;
             
-            if (inputDataTime.Length == 14 && DateTime.TryParseExact(inputDataTime, "yyyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out parseDateTime))
+            if (inputDataTime.Length == 14 && DateTime.TryParseExact(inputDataTime, "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out parseDateTime))
             {
                 string testDateTime = parseDateTime.ToString("yyyyMMddHHmmss");
                 Automation.Instance.WriteWord(CIMRead.READ_W.ASCII_7_D000_Datetime, testDateTime);
@@ -62,6 +82,25 @@ namespace bim_base
         private void DataTimeTextBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnTpmLossStart_Click(object sender, EventArgs e)
+        {
+            // 테스트 시작 전 비트 OFF
+            Automation.Instance.WriteBit(CIMRead.READ_B.TPMLOSSREADY_19, false);
+
+            // 알람 사용
+            Automation.Instance.EqStopByOperator(CIMEnumeric.EnmumEqStopByOperatorType.Alarm);
+        }
+
+        private void btnTpmLossReplyOn_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.WriteBit(CIMRead.READ_B.TPMLOSSREADY_19, true);
+        }
+
+        private void btnTpmLossReplyOff_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.WriteBit(CIMRead.READ_B.TPMLOSSREADY_19, false);
         }
     }
 }

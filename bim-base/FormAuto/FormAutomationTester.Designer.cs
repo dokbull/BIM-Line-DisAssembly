@@ -38,6 +38,10 @@
             this.lblRunProcessingList = new System.Windows.Forms.Label();
             this.btnSetDateTime = new System.Windows.Forms.Button();
             this.DateTimeTextBox = new System.Windows.Forms.TextBox();
+            this.btnTpmLossStart = new System.Windows.Forms.Button();
+            this.btnTpmLossReplyOn = new System.Windows.Forms.Button();
+            this.btnTpmLossReplyOff = new System.Windows.Forms.Button();
+            this.lblTpmLossMonitor = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -105,7 +109,7 @@
             this.btnSetDateTime.Name = "btnSetDateTime";
             this.btnSetDateTime.Size = new System.Drawing.Size(77, 47);
             this.btnSetDateTime.TabIndex = 8;
-            this.btnSetDateTime.Text = "SetDataTime";
+            this.btnSetDateTime.Text = "SetDateTime";
             this.btnSetDateTime.UseVisualStyleBackColor = true;
             this.btnSetDateTime.Click += new System.EventHandler(this.btnSetDateTime_Click);
             // 
@@ -117,11 +121,54 @@
             this.DateTimeTextBox.TabIndex = 9;
             this.DateTimeTextBox.TextChanged += new System.EventHandler(this.DataTimeTextBox_TextChanged);
             // 
+            // btnTpmLossStart
+            // 
+            this.btnTpmLossStart.Location = new System.Drawing.Point(29, 145);
+            this.btnTpmLossStart.Name = "btnTpmLossStart";
+            this.btnTpmLossStart.Size = new System.Drawing.Size(149, 46);
+            this.btnTpmLossStart.TabIndex = 10;
+            this.btnTpmLossStart.Text = "TPMLossStart";
+            this.btnTpmLossStart.UseVisualStyleBackColor = true;
+            this.btnTpmLossStart.Click += new System.EventHandler(this.btnTpmLossStart_Click);
+            // 
+            // btnTpmLossReplyOn
+            // 
+            this.btnTpmLossReplyOn.Location = new System.Drawing.Point(184, 145);
+            this.btnTpmLossReplyOn.Name = "btnTpmLossReplyOn";
+            this.btnTpmLossReplyOn.Size = new System.Drawing.Size(162, 46);
+            this.btnTpmLossReplyOn.TabIndex = 11;
+            this.btnTpmLossReplyOn.Text = "TPMLossReplyOn";
+            this.btnTpmLossReplyOn.UseVisualStyleBackColor = true;
+            this.btnTpmLossReplyOn.Click += new System.EventHandler(this.btnTpmLossReplyOn_Click);
+            // 
+            // btnTpmLossReplyOff
+            // 
+            this.btnTpmLossReplyOff.Location = new System.Drawing.Point(352, 145);
+            this.btnTpmLossReplyOff.Name = "btnTpmLossReplyOff";
+            this.btnTpmLossReplyOff.Size = new System.Drawing.Size(162, 46);
+            this.btnTpmLossReplyOff.TabIndex = 12;
+            this.btnTpmLossReplyOff.Text = "TPMLossReplyOff";
+            this.btnTpmLossReplyOff.UseVisualStyleBackColor = true;
+            this.btnTpmLossReplyOff.Click += new System.EventHandler(this.btnTpmLossReplyOff_Click);
+            // 
+            // lblTpmLossMonitor
+            // 
+            this.lblTpmLossMonitor.Location = new System.Drawing.Point(520, 145);
+            this.lblTpmLossMonitor.Name = "lblTpmLossMonitor";
+            this.lblTpmLossMonitor.Size = new System.Drawing.Size(203, 46);
+            this.lblTpmLossMonitor.TabIndex = 13;
+            this.lblTpmLossMonitor.Text = "TPM Monitor";
+            this.lblTpmLossMonitor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // FormAutomationTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(932, 835);
+            this.Controls.Add(this.lblTpmLossMonitor);
+            this.Controls.Add(this.btnTpmLossReplyOff);
+            this.Controls.Add(this.btnTpmLossReplyOn);
+            this.Controls.Add(this.btnTpmLossStart);
             this.Controls.Add(this.DateTimeTextBox);
             this.Controls.Add(this.btnSetDateTime);
             this.Controls.Add(this.lblRunProcessingList);
@@ -148,5 +195,9 @@
         private System.Windows.Forms.Label lblRunProcessingList;
         private System.Windows.Forms.Button btnSetDateTime;
         private System.Windows.Forms.TextBox DateTimeTextBox;
+        private System.Windows.Forms.Button btnTpmLossStart;
+        private System.Windows.Forms.Button btnTpmLossReplyOn;
+        private System.Windows.Forms.Button btnTpmLossReplyOff;
+        private System.Windows.Forms.Label lblTpmLossMonitor;
     }
 }
