@@ -907,6 +907,18 @@ namespace bim_base.data.CIM
             }
         }
 
+        // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
+        public void Test_RequestTerminalDisplay()
+        {
+            this.RequestTerminalDisplay();
+        }
+
+        // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
+        public bool Test_ReadTerminalDisplayReplyBit()
+        {
+            return this.ReadBit(CIMWrite.WRITE_B.TERMINALDISPLAY_3);
+        }
+
         public async Task<bool> HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
         {
             bool function()

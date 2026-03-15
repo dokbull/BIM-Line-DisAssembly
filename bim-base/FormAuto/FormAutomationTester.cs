@@ -32,10 +32,19 @@ namespace bim_base
             // CIM 요청 중 병목현상이 생기는지 여부 확인용도
             this.lblRunScan.BackColor = (Automation.Instance.IsRun ? Color.LightGreen : SystemColors.Control);
 
-            this.lblRunProcessing.BackColor = (Automation.Instance.RequestProcStateList.Count > 0 ? Color.LightGreen : SystemColors.Control);
-            if(Automation.Instance.RequestProcStateList.Count > 0)
+            try
             {
-                this.lblRunProcessingList.Text = string.Join(Environment.NewLine, Automation.Instance.RequestProcStateList.Select(x => $"{x.ToString()}\r\n"));
+                // 스냅샷을 만들어서 안전하게 열거
+                var snapshot = Automation.Instance.RequestProcStateList.ToList();
+                this.lblRunProcessing.BackColor = (snapshot.Count > 0 ? Color.LightGreen : SystemColors.Control);
+                if (snapshot.Count > 0)
+                {
+                    this.lblRunProcessingList.Text = string.Join(Environment.NewLine, snapshot.Select(x => $"{x.ToString()}\r\n"));
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // 컬렉션 수정 중 발생한 예외는 무시하고 다음 타이머에서 재시도
             }
 
             bool writeReady = Automation.Instance.ReadBit(CIMWrite.WRITE_B.TPMLOSSREADY_19);
@@ -60,8 +69,27 @@ namespace bim_base
 
         private void FormAutomationTester_Load(object sender, EventArgs e)
         {
+            lblTpmLossMonitor.Text = "TPM LOSS : 대기 상태";
+
+            lblTerminalRecvMonitor.Text = "수신 대기";
+            lblTerminalSendMonitor.Text = "송신 대기";
+
+            Automation.Instance.ReceivedTerminalDisplayEvent -= ReceiveTerminalDisplayEvent;
+            Automation.Instance.ReceivedTerminalDisplayEvent += ReceiveTerminalDisplayEvent;
+
             DateTimeTextBox.Text = DateTime.Now.ToString("yyyyMMddHHmmss");
             this.tmrRedraw.Start();
+        }
+
+        private void ReceiveTerminalDisplayEvent(int messageNum, string message)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(new Action(() => lblTerminalRecvMonitor.Text = $"수신 완료 MessageNum = {messageNum}, Message = {message} "));
+                return;
+            }
+
+            lblTerminalRecvMonitor.Text = $"수신 완료 MessageNum = {messageNum}, Message = {message} ";
         }
 
         // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
@@ -101,6 +129,102 @@ namespace bim_base
         private void btnTpmLossReplyOff_Click(object sender, EventArgs e)
         {
             Automation.Instance.WriteBit(CIMRead.READ_B.TPMLOSSREADY_19, false);
+        }
+
+        // 터미널 수신 테스트
+        private async void btnTerminalRecv_Click(object sender, EventArgs e)
+        {
+            if (Automation.Instance?.IsInitialized != true)
+            {
+                lblTerminalRecvMonitor.Text = "오류: Automation이 초기화되지 않음";
+                return;
+            }
+
+            try
+            {
+                btnTerminalRecv.Enabled = false;
+
+                string recvNum = "1";
+                string recvText = "CIM -> EQ Terminal Test";
+
+                lblTerminalRecvMonitor.Text = $"수신 시작 Num = {recvNum}, Text = {recvText}";
+
+                Automation.Instance.WriteWord(CIMRead.READ_W.ASCII_1_D04D_TerminalNumber, recvNum);
+                Automation.Instance.WriteWord(CIMRead.READ_W.ASCII_60_D011_TerminalDisplayText, recvText);
+                Automation.Instance.WriteBit(CIMRead.READ_B.TERMINALDISPLAY_3, true);
+
+                await Task.Delay(100);
+
+                Automation.Instance.Test_RequestTerminalDisplay();
+
+                await Task.Delay(500);
+            }
+            catch (Exception ex)
+            {
+                lblTerminalRecvMonitor.Text = $"오류 발생: {ex.Message}";
+            }
+            finally
+            {
+                try
+                {
+                    Automation.Instance?.WriteBit(CIMRead.READ_B.TERMINALDISPLAY_3, false);
+                }
+                catch { }
+                
+                btnTerminalRecv.Enabled = true;
+            }
+        }
+
+        // 터미널 송신 테스트
+        private async void btnTerminalSend_Click(object sender, EventArgs e)
+        {
+            if (Automation.Instance?.IsInitialized != true)
+            {
+                lblTerminalSendMonitor.Text = "오류: Automation이 초기화되지 않음";
+                return;
+            }
+
+            try
+            {
+                btnTerminalSend.Enabled = false;
+
+                string sendText = "EQ -> CIM Terminal Test";
+                lblTerminalSendMonitor.Text = $"송신 시작 Text = {sendText}";
+
+                // 송신 작업을 제대로 await
+                await Task.Run(() => Automation.Instance.SendTerminalDisplay(sendText));
+
+                await Task.Delay(200);
+
+                string writeMessage = Automation.Instance.ReadWord(CIMWrite.WRITE_W.ASCII_60_1086_TerminalDisplaySnd);
+                bool writeBit = Automation.Instance.ReadBit(CIMWrite.WRITE_B.TERMINALDISPLAY_3);
+
+                lblTerminalSendMonitor.Text = $"송신 중 WriteText = {writeMessage}, WriteBit = {writeBit}";
+
+                await Task.Delay(300);
+                Automation.Instance.WriteBit(CIMRead.READ_B.TERMINALDISPLAY_3, true);
+
+                lblTerminalSendMonitor.Text = $"응답 설정 완료 (READ bit = true)";
+
+                await Task.Delay(500);
+
+                bool finalWriteBit = Automation.Instance.ReadBit(CIMWrite.WRITE_B.TERMINALDISPLAY_3);
+                lblTerminalSendMonitor.Text = $"송신 완료 WriteBit = {finalWriteBit}";
+            }
+            catch (Exception ex)
+            {
+                lblTerminalSendMonitor.Text = $"오류 발생: {ex.Message}";
+            }
+            finally
+            {
+                try
+                {
+                    Automation.Instance?.WriteBit(CIMRead.READ_B.TERMINALDISPLAY_3, false);
+                }
+                catch { }
+                
+                btnTerminalSend.Enabled = true;
+            }
         }
     }
 }

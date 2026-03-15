@@ -42,6 +42,10 @@
             this.btnTpmLossReplyOn = new System.Windows.Forms.Button();
             this.btnTpmLossReplyOff = new System.Windows.Forms.Button();
             this.lblTpmLossMonitor = new System.Windows.Forms.Label();
+            this.btnTerminalRecv = new System.Windows.Forms.Button();
+            this.lblTerminalRecvMonitor = new System.Windows.Forms.Label();
+            this.lblTerminalSendMonitor = new System.Windows.Forms.Label();
+            this.btnTerminalSend = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -54,7 +58,7 @@
             // 
             // btnHandShake
             // 
-            this.btnHandShake.Location = new System.Drawing.Point(29, 77);
+            this.btnHandShake.Location = new System.Drawing.Point(16, 77);
             this.btnHandShake.Name = "btnHandShake";
             this.btnHandShake.Size = new System.Drawing.Size(200, 50);
             this.btnHandShake.TabIndex = 2;
@@ -64,7 +68,7 @@
             // 
             // lblInitialized
             // 
-            this.lblInitialized.Location = new System.Drawing.Point(26, 27);
+            this.lblInitialized.Location = new System.Drawing.Point(13, 27);
             this.lblInitialized.Name = "lblInitialized";
             this.lblInitialized.Size = new System.Drawing.Size(203, 47);
             this.lblInitialized.TabIndex = 3;
@@ -77,7 +81,7 @@
             // 
             // lblRunScan
             // 
-            this.lblRunScan.Location = new System.Drawing.Point(235, 27);
+            this.lblRunScan.Location = new System.Drawing.Point(222, 27);
             this.lblRunScan.Name = "lblRunScan";
             this.lblRunScan.Size = new System.Drawing.Size(203, 47);
             this.lblRunScan.TabIndex = 4;
@@ -86,7 +90,7 @@
             // 
             // lblRunProcessing
             // 
-            this.lblRunProcessing.Location = new System.Drawing.Point(425, 27);
+            this.lblRunProcessing.Location = new System.Drawing.Point(412, 27);
             this.lblRunProcessing.Name = "lblRunProcessing";
             this.lblRunProcessing.Size = new System.Drawing.Size(203, 47);
             this.lblRunProcessing.TabIndex = 5;
@@ -96,7 +100,7 @@
             // lblRunProcessingList
             // 
             this.lblRunProcessingList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblRunProcessingList.Location = new System.Drawing.Point(634, 27);
+            this.lblRunProcessingList.Location = new System.Drawing.Point(621, 27);
             this.lblRunProcessingList.Name = "lblRunProcessingList";
             this.lblRunProcessingList.Size = new System.Drawing.Size(286, 47);
             this.lblRunProcessingList.TabIndex = 6;
@@ -105,7 +109,7 @@
             // 
             // btnSetDateTime
             // 
-            this.btnSetDateTime.Location = new System.Drawing.Point(843, 80);
+            this.btnSetDateTime.Location = new System.Drawing.Point(830, 80);
             this.btnSetDateTime.Name = "btnSetDateTime";
             this.btnSetDateTime.Size = new System.Drawing.Size(77, 47);
             this.btnSetDateTime.TabIndex = 8;
@@ -115,7 +119,7 @@
             // 
             // DateTimeTextBox
             // 
-            this.DateTimeTextBox.Location = new System.Drawing.Point(634, 90);
+            this.DateTimeTextBox.Location = new System.Drawing.Point(621, 90);
             this.DateTimeTextBox.Name = "DateTimeTextBox";
             this.DateTimeTextBox.Size = new System.Drawing.Size(203, 28);
             this.DateTimeTextBox.TabIndex = 9;
@@ -123,7 +127,7 @@
             // 
             // btnTpmLossStart
             // 
-            this.btnTpmLossStart.Location = new System.Drawing.Point(29, 145);
+            this.btnTpmLossStart.Location = new System.Drawing.Point(16, 133);
             this.btnTpmLossStart.Name = "btnTpmLossStart";
             this.btnTpmLossStart.Size = new System.Drawing.Size(149, 46);
             this.btnTpmLossStart.TabIndex = 10;
@@ -133,7 +137,7 @@
             // 
             // btnTpmLossReplyOn
             // 
-            this.btnTpmLossReplyOn.Location = new System.Drawing.Point(184, 145);
+            this.btnTpmLossReplyOn.Location = new System.Drawing.Point(171, 133);
             this.btnTpmLossReplyOn.Name = "btnTpmLossReplyOn";
             this.btnTpmLossReplyOn.Size = new System.Drawing.Size(162, 46);
             this.btnTpmLossReplyOn.TabIndex = 11;
@@ -143,7 +147,7 @@
             // 
             // btnTpmLossReplyOff
             // 
-            this.btnTpmLossReplyOff.Location = new System.Drawing.Point(352, 145);
+            this.btnTpmLossReplyOff.Location = new System.Drawing.Point(339, 133);
             this.btnTpmLossReplyOff.Name = "btnTpmLossReplyOff";
             this.btnTpmLossReplyOff.Size = new System.Drawing.Size(162, 46);
             this.btnTpmLossReplyOff.TabIndex = 12;
@@ -153,18 +157,60 @@
             // 
             // lblTpmLossMonitor
             // 
-            this.lblTpmLossMonitor.Location = new System.Drawing.Point(520, 145);
+            this.lblTpmLossMonitor.Location = new System.Drawing.Point(507, 133);
             this.lblTpmLossMonitor.Name = "lblTpmLossMonitor";
             this.lblTpmLossMonitor.Size = new System.Drawing.Size(203, 46);
             this.lblTpmLossMonitor.TabIndex = 13;
             this.lblTpmLossMonitor.Text = "TPM Monitor";
             this.lblTpmLossMonitor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // btnTerminalRecv
+            // 
+            this.btnTerminalRecv.Location = new System.Drawing.Point(16, 185);
+            this.btnTerminalRecv.Name = "btnTerminalRecv";
+            this.btnTerminalRecv.Size = new System.Drawing.Size(149, 46);
+            this.btnTerminalRecv.TabIndex = 14;
+            this.btnTerminalRecv.Text = "TerminalRecv";
+            this.btnTerminalRecv.UseVisualStyleBackColor = true;
+            this.btnTerminalRecv.Click += new System.EventHandler(this.btnTerminalRecv_Click);
+            // 
+            // lblTerminalRecvMonitor
+            // 
+            this.lblTerminalRecvMonitor.Location = new System.Drawing.Point(171, 185);
+            this.lblTerminalRecvMonitor.Name = "lblTerminalRecvMonitor";
+            this.lblTerminalRecvMonitor.Size = new System.Drawing.Size(293, 46);
+            this.lblTerminalRecvMonitor.TabIndex = 16;
+            this.lblTerminalRecvMonitor.Text = "TerminalRecvMonitor";
+            this.lblTerminalRecvMonitor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblTerminalSendMonitor
+            // 
+            this.lblTerminalSendMonitor.Location = new System.Drawing.Point(625, 185);
+            this.lblTerminalSendMonitor.Name = "lblTerminalSendMonitor";
+            this.lblTerminalSendMonitor.Size = new System.Drawing.Size(293, 46);
+            this.lblTerminalSendMonitor.TabIndex = 17;
+            this.lblTerminalSendMonitor.Text = "TerminalSendMonitor";
+            this.lblTerminalSendMonitor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnTerminalSend
+            // 
+            this.btnTerminalSend.Location = new System.Drawing.Point(470, 185);
+            this.btnTerminalSend.Name = "btnTerminalSend";
+            this.btnTerminalSend.Size = new System.Drawing.Size(149, 46);
+            this.btnTerminalSend.TabIndex = 18;
+            this.btnTerminalSend.Text = "TerminalSend";
+            this.btnTerminalSend.UseVisualStyleBackColor = true;
+            this.btnTerminalSend.Click += new System.EventHandler(this.btnTerminalSend_Click);
+            // 
             // FormAutomationTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(932, 835);
+            this.Controls.Add(this.btnTerminalSend);
+            this.Controls.Add(this.lblTerminalSendMonitor);
+            this.Controls.Add(this.lblTerminalRecvMonitor);
+            this.Controls.Add(this.btnTerminalRecv);
             this.Controls.Add(this.lblTpmLossMonitor);
             this.Controls.Add(this.btnTpmLossReplyOff);
             this.Controls.Add(this.btnTpmLossReplyOn);
@@ -199,5 +245,9 @@
         private System.Windows.Forms.Button btnTpmLossReplyOn;
         private System.Windows.Forms.Button btnTpmLossReplyOff;
         private System.Windows.Forms.Label lblTpmLossMonitor;
+        private System.Windows.Forms.Button btnTerminalRecv;
+        private System.Windows.Forms.Label lblTerminalRecvMonitor;
+        private System.Windows.Forms.Label lblTerminalSendMonitor;
+        private System.Windows.Forms.Button btnTerminalSend;
     }
 }
