@@ -64,8 +64,8 @@ namespace bim_base
         bool[] m_input = null;
         bool[] m_output = null;
 
-        List<int> m_cycleTimeList = new List<int>();
-        bool m_isCycleTimeUpdate = false;
+        List<long> m_tactTimeList = new List<long>();
+        bool m_isTactTimeUpdate = false;
 
         bool m_inputStop = false;
         bool m_outputStop = false;
@@ -895,40 +895,64 @@ namespace bim_base
         public bool isOutputStop() { return m_outputStop; }
         public bool isOutOfPPlan() { return m_outOfPPlan; }
 
-        public void addCycleTime(int cycleTime)
+        public void addCycleTime(long tactTime)
         {
-            if (cycleTime < 0)
+            if (tactTime < 0)
                 return;
 
-            lock (m_cycleTimeList)
+            lock (m_tactTimeList)
             {
-                if (m_cycleTimeList.Count > 30)
-                    m_cycleTimeList.Remove(0);
+                if (m_tactTimeList.Count > 30)
+                    m_tactTimeList.Remove(0);
 
-                m_cycleTimeList.Add(cycleTime);
+                m_tactTimeList.Add(tactTime);
             }
 
-            m_isCycleTimeUpdate = true;
+            m_isTactTimeUpdate = true;
         }
-        public bool isCycleTimeUpdate() { return m_isCycleTimeUpdate; }
+
+        public bool isCycleTimeUpdate() 
+        { 
+            return m_isTactTimeUpdate; 
+        }
+
         public void lastCycleTimeClear()
         {
-            m_isCycleTimeUpdate = false;
-            m_cycleTimeList.Clear();
+            m_isTactTimeUpdate = false;
+            m_tactTimeList.Clear();
         }
+
+        /// <summary>
+        /// return at elasped Tact Time. (ms)
+        /// </summary>
+        /// <returns></returns>
+        public long getElaspedTactTime()
+        {
+            return m_procMoldWork.elaspedTactTime();
+        }
+
+        /// <summary>
+        /// return at last Tact Time (ms)
+        /// </summary>
+        /// <returns></returns>
         public double getLastCycleTime() 
         {
-            if (m_cycleTimeList.Count == 0)
+            if (m_tactTimeList.Count == 0)
                 return 0;
 
-            return m_cycleTimeList.Last() / 1000.0d; 
+            return m_tactTimeList.Last();
         }
+
+        /// <summary>
+        /// return at average Tact Time (ms)
+        /// </summary>
+        /// <returns></returns>
         public double getAvgCycleTime()
         {
-            if (m_cycleTimeList.Count == 0)
+            if (m_tactTimeList.Count == 0)
                 return 0;
 
-            return m_cycleTimeList.Average() / 1000.0d; 
+            return m_tactTimeList.Average();
         }
 
         public AjinDIO dioInput() { return m_dioIn; }

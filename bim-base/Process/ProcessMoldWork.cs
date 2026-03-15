@@ -40,7 +40,7 @@ namespace bim_base
         STEP m_step = STEP.START;
         STEP m_agoStep = STEP.END;
 
-        CStopWatch m_cycleTimeCheck = new CStopWatch();
+        CStopWatch m_tactTimeCheck = new CStopWatch();
         
         public ProcessMoldWork(ProcessMain procMain) : base(procMain)
         {
@@ -83,6 +83,11 @@ namespace bim_base
                 return;
 
             m_step = STEP.CHECK_PLACE;
+        }
+
+        public long elaspedTactTime()
+        {
+            return m_tactTimeCheck.GetElapsedTime(CStopWatch.TIME_UNIT.MILLISECOND, false);
         }
 
         public override void run()
@@ -314,14 +319,14 @@ namespace bim_base
                         ST_RIGHT_PP.move(ST_OUT_CV);
                         OUT_CV.setLock(false);
 
-                        if (m_cycleTimeCheck.isStart() == false)
+                        if (m_tactTimeCheck.isStart() == false)
                         {
-                            m_cycleTimeCheck.Start();
+                            m_tactTimeCheck.Start();
                         }
                         else
                         {
-                            long time = m_cycleTimeCheck.GetElapsedTime(CStopWatch.TIME_UNIT.MILLISECOND, true);
-                            main.addCycleTime((int)time);
+                            long time = m_tactTimeCheck.GetElapsedTime(CStopWatch.TIME_UNIT.MILLISECOND, true);
+                            main.addCycleTime(time);
                         }
 
                         m_step = STEP.END;
