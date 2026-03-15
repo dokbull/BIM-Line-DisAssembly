@@ -99,10 +99,10 @@ namespace bim_base
 
             FormMain.inst().m_formBottom.bottomButtonClick += bottomButtonClick;
 
-            Automation.Instance.ReceivedTerminalDisplayEvent += Instance_ReceivedTerminalDisplayEvent;
+            Automation.Instance.ReceivedTerminalDisplayEvent += Automation_ReceivedTerminalDisplayEvent;
         }
 
-        private void Instance_ReceivedTerminalDisplayEvent(int _MessageNum, string _MessageText)
+        private void Automation_ReceivedTerminalDisplayEvent(int _MessageNum, string _MessageText)
         {
             this.lblTerminalDisplay.Text = $"{_MessageNum} : {_MessageText}";
         }

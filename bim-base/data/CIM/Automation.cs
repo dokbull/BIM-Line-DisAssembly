@@ -84,7 +84,7 @@ namespace bim_base.data.CIM
 
         public EnumEqControlMode EqControlMode { get; set; } = EnumEqControlMode.Manual;
 
-
+        public List<OperatorCallData> OperatorCallHistory { get; private set; } = new List<OperatorCallData>();
 
         #endregion
 
@@ -398,8 +398,13 @@ namespace bim_base.data.CIM
                 if (int.TryParse(strOpCallNum, out int opCallNum) == false)
                     return;
 
-                // TODO CHECK LHJ : OP CALL 시그널타워 Yellow Blink, Buzzor 발생 필요. 설비 정지 필요, 터치판넬에서 메세지 팝업
-                // TODO CHECK LHJ : OP Call 팝업 메세지 확인 시 SendOperatorCall 호출, 팝업/시그널타워/부저 초기화
+                this.OperatorCallHistory.Add(new OperatorCallData(DateTime.Now, $"{opCallNum}", strOpCallText));
+                if(this.OperatorCallHistory.Count > 100)
+                {
+                    this.OperatorCallHistory.RemoveAt(0);
+                }
+
+                // TODO CHECK LHJ : OP CALL 시그널타워 Yellow Blink, Buzzor 발생 필요. 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
                 ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
 
                 this.WriteBit(WRITE_B.OPCALLCONFIRM_41, true);
@@ -865,7 +870,7 @@ namespace bim_base.data.CIM
                 itemsLossCode);
 
             msgPopup.WindowState = FormWindowState.Maximized;
-            msgPopup.MaximumSize = new System.Drawing.Size(1024, 628);
+            msgPopup.MaximumSize = new System.Drawing.Size(1024, 768);
             msgPopup.StartPosition = FormStartPosition.CenterScreen;
             msgPopup.TopMost = true;
             DialogResult result = msgPopup.ShowDialog();

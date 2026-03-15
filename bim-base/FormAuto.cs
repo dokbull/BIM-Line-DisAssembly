@@ -1,4 +1,8 @@
-﻿using System;
+﻿using bim_base.data.CIM;
+using Lib.UI.Generic.DarkMode;
+using Lib.UI.Generic.DarkMode.Forms;
+using Lib.UI.Generic.Icons;
+using System;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -29,7 +33,40 @@ namespace bim_base
         private void FormAuto_Load(object sender, EventArgs e)
         {
             uiTimer.Enabled = true;
+
+            Automation.Instance.ReceivedOperatorCallEvent += Instance_ReceivedOperatorCallEvent;    
         }
+
+        private async void Instance_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
+        {
+            main.setOutput(OUTPUT.BUZZER_1, true);
+
+            bool isSignalTowerBlink = true;
+            await Task.Run(async () =>
+            {
+                while(isSignalTowerBlink)
+                {
+                    main.setOutput(OUTPUT.TOWER_Y, true);
+                    await Task.Delay(500);
+                    main.setOutput(OUTPUT.TOWER_Y, false);
+                    await Task.Delay(500);
+                }
+
+            }).ConfigureAwait(true);
+
+            DarkMessageBox popup = DarkMessageBox.CreateMessageBox(
+               "Operator Call",
+               EnumMessageBoxIcons.Warning,
+               $"{_OpCallNum} : {_OpCallText}",
+               EnumMessageBoxButtons.OK);
+            popup.MaximumSize = new Size(1024, 768);
+            popup.ShowDialog();
+
+            isSignalTowerBlink = false;
+            main.setOutput(OUTPUT.BUZZER_1, true);
+            main.setOutput(OUTPUT.TOWER_Y, false);
+        }
+
 
         public void onShow(bool enable)
         {
