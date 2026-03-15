@@ -76,6 +76,16 @@ public class ModelInfo
         }
     }
 
+    public void setTeachPos(int index, POS pos)
+    {
+        m_teachPos[index] = pos;
+    }
+
+    public void setTeachPos(POS[] pos)
+    {
+        m_teachPos = pos;
+    }
+
     public string teachPosString(int teachPos)
     {
         return teachPosString((TEACH_POS)teachPos);
