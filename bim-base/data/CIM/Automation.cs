@@ -831,7 +831,6 @@ namespace bim_base.data.CIM
 
         public void AlarmReleased(ALARM _alarmID)
         {
-            
             // TODO CHECK LHJ : 주소 확인, 어떤 Data를 작성해야 할지 확인
             this.WriteWord(WRITE_W.BIT_400_CAD4_Alarm, $"{0}");
 
@@ -914,27 +913,32 @@ namespace bim_base.data.CIM
         #endregion
 
         #region Public Method : CIM RMS
-        int CommandHoldTimeMs = 5000;
+        //int CommandHoldTimeMs = 5000;
 
         // PPID Change (JOB Change)
-        public void PpidChange()
+        public bool PpidChange()
         {
-            //장비 정지 후 ppid 변경 요청
-            //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
+            ModelInfo info = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
 
-            ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
-            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
+            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = info.modelName();
 
-            Task.Run(() =>
-            {
-                this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, CommandHoldTimeMs);
+            Task<bool> asyncHS = this.HandShakeSignal(
+                WRITE_B.PPIDCHANGE_21,
+                true,
+                READ_B.PPIDCHANGE_21,
+                true,
+                HANDSHAKE_TIMEOUT_SECONDS);
 
-                m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
-            });
+            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
+
+            if (!asyncHS.Result)
+                return false;
+
+            return true;
         }
 
         // PPID 생성
-        public void PpidCreate(string ppid)
+        public bool PpidCreate(string ppid)
         {
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
 
@@ -946,12 +950,22 @@ namespace bim_base.data.CIM
 
             WriteTeachPos(INFO);
 
-            Task.Run(() =>
-            {
-                this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, CommandHoldTimeMs);
 
-                m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
-            });
+            Task<bool> asyncHS = this.HandShakeSignal(
+                WRITE_B.PPIDCHANGE_21,
+                true,
+                READ_B.PPIDCHANGE_21,
+                true,
+                HANDSHAKE_TIMEOUT_SECONDS);
+
+            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
+
+            if (!asyncHS.Result)
+                return false;
+
+            m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+
+            return true;
         }
 
         void WriteTeachPos(ModelInfo info)
@@ -979,7 +993,7 @@ namespace bim_base.data.CIM
         }
 
         // PPID 삭제
-        public void PpidDelete(string ppid)
+        public bool PpidDelete(string ppid)
         {
             ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
@@ -989,16 +1003,25 @@ namespace bim_base.data.CIM
 
             //WriteTeachPos(INFO);
 
-            Task.Run(() =>
-            {
-                this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, CommandHoldTimeMs);
+            Task<bool> asyncHS = this.HandShakeSignal(
+                WRITE_B.PPIDCHANGE_21,
+                true,
+                READ_B.PPIDCHANGE_21,
+                true,
+                HANDSHAKE_TIMEOUT_SECONDS);
 
-                m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
-            });
+            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
+
+            if (!asyncHS.Result)
+                return false;
+
+            m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+
+            return true;
         }
 
 
-        public void RecipeDownload()
+        public bool RecipeDownload()
         {
             int nSelectedIdx = -1;
             string sRecipeName;
@@ -1036,14 +1059,23 @@ namespace bim_base.data.CIM
 
                 WriteTeachPos(INFO);
 
-                Task.Run(() =>
-                {
-                    this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, CommandHoldTimeMs);
+                Task<bool> asyncHS = this.HandShakeSignal(
+                    WRITE_B.PPIDCHANGE_21,
+                    true,
+                    READ_B.PPIDCHANGE_21,
+                    true,
+                    HANDSHAKE_TIMEOUT_SECONDS);
 
-                    m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
-                });
+                asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
+
+                if (!asyncHS.Result)
+                    return false;
+
+                m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
 
             }
+
+            return true;
         }
 
         POS[] ReadTeachPos()
@@ -1073,11 +1105,8 @@ namespace bim_base.data.CIM
             return p;
         }
 
-        public void ParameterChange()
+        public bool ParameterChange()
         {
-            //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
-
-
             ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
@@ -1086,12 +1115,21 @@ namespace bim_base.data.CIM
 
             WriteTeachPos(INFO);
 
-            Task.Run(() =>
-            {
-                this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, CommandHoldTimeMs);
+            Task<bool> asyncHS = this.HandShakeSignal(
+                WRITE_B.PPIDCHANGE_21,
+                true,
+                READ_B.PPIDCHANGE_21,
+                true,
+                HANDSHAKE_TIMEOUT_SECONDS);
 
-                m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
-            });
+            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
+
+            if (!asyncHS.Result)
+                return false;
+
+            m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+
+            return true;
         }
 
         public void ParameterQuery()
@@ -1127,13 +1165,14 @@ namespace bim_base.data.CIM
 
                 _ = Task.Run(async () =>
                 {
-                    await Task.Delay(CommandHoldTimeMs).ConfigureAwait(true);
+                    await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS);
                     m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, false);
                 });
+
             }
         }
 
-        public void PpidListRequest()
+        public void PpidListQuery()
         {
             //ModelInfo
             if (m_Reader.readBit(CIMRead.READ_B.CURRENTEQUIPPPIDLISTREQUEST_56) == true)
@@ -1157,12 +1196,59 @@ namespace bim_base.data.CIM
 
                 _ = Task.Run(async () =>
                 {
-                    await Task.Delay(CommandHoldTimeMs).ConfigureAwait(true);
+                    await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS);
                     m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
                 });
             }
         }
 
+        #endregion
+
+        #region Public Method : CIM ECM
+        public void EquipConstantQuery()
+        {
+            //if (m_Reader.readBit(CIMRead.READ_B.EQUIPCONSTANTNAMELIST_53) == true)
+            {
+
+                //double[] vel = new double[(int)AXIS.MAX];
+                //double[] acc = new double[(int)AXIS.MAX];
+
+                //for (int i = 0; i < (int)AXIS.MAX; i++)
+                //{
+                //    AXIS axis = (AXIS)i;
+
+                //    vel[i] = Conf.vel(axis);
+                //    acc[i] = Conf.acc(axis);
+                //} 
+
+
+                //ModelInfo Mc = Common.MC;
+                //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = Mc.modelName();
+
+                //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 0;
+                //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = Mc.modelName();
+
+                //WriteTeachPos(Mc);
+            }
+        }
+
+        public void ConstantnameListQuery()
+        {
+            if (m_Reader.readBit(CIMRead.READ_B.EQUIPCONSTANTNAMELIST_53) == true)
+            {
+                ModelInfo Mc = Common.MC;
+
+                //어디에 써야 되는지 모름.........
+
+                //m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
+
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS);
+                    m_Writer.setBit(WRITE_B.EQUIPCONSTANTNAMELIST_53, true);    //시퀀스 다이어 그램 화살표 이상.
+                });
+            }
+        }
         #endregion
     }
 }
