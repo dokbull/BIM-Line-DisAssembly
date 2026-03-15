@@ -501,7 +501,7 @@ namespace bim_base.data.CIM
                 _ = Task.Run(async () =>
                 {
                     await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true);
-                    m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
+                    
                 });
             }
             catch
@@ -510,9 +510,131 @@ namespace bim_base.data.CIM
             }
             finally
             {
-
+                m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
                 this.RemoveRequestProcState(EnumRequestProcState.RequestPpidList);
             }
+        }
+
+        private void RequestRecipeDownload()
+        {
+            int nSelectedIdx = -1;
+            string sRecipeName;
+
+            try
+            {
+                if (this.AddRequestProcState(EnumRequestProcState.RequestRecipeDownload) == false)
+                    return;
+
+                //ModelInfo
+                if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMSEND_54) == true)
+                {
+                    sRecipeName = m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text?.Trim() ?? "";
+
+                    for (int i = 0; i < Common.MODEL.Count(); i++)
+                    {
+                        ModelInfo info = Common.MODEL_INFO(i);
+
+                        if (info.modelName().Trim() == sRecipeName)
+                        {
+                            nSelectedIdx = i;
+                            break;
+                        }
+                    }
+
+                    POS[] pos = ReadTeachPos();
+
+                    for (int i = 0; i < (int)TEACH_POS.MAX; i++)
+                    {
+                        Common.MODEL[nSelectedIdx].setTeachPos(i, pos[i]);
+                    }
+
+                    m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND_54, true);
+
+                    ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
+
+                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 1;
+                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
+
+                    WriteTeachPos(INFO);
+
+                    Task<bool> asyncHS = this.HandShakeSignal(
+                        WRITE_B.PPIDCHANGE_21,
+                        true,
+                        READ_B.PPIDCHANGE_21,
+                        true,
+                        HANDSHAKE_TIMEOUT_SECONDS);
+
+                    asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
+
+                    //if (!asyncHS.Result)
+                    //    return false;
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+                this.RemoveRequestProcState(EnumRequestProcState.RequestRecipeDownload);
+            }
+
+        }
+
+        private void RequestParameterQuery()
+        {
+            string sReqPPID = "";
+            int nSelectedIdx = -1;
+
+            try
+            {
+                if (this.AddRequestProcState(EnumRequestProcState.RequestParameterQuery) == false)
+                    return;
+
+                //Request PPID WORD(W4217) 다른 영역인데..
+                if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMREQUEST_55) == true)
+                {
+                    sReqPPID = m_Reader.wordData(CIMRead.READ_W.ASCII_20_D1F0_ReqPPID).text;
+
+                    for (int i = 0; i < Common.MODEL.Count(); i++)
+                    {
+                        ModelInfo info = Common.MODEL_INFO(i);
+
+                        if (info.modelName().Trim() == sReqPPID)
+                        {
+                            nSelectedIdx = i;
+                            break;
+                        }
+                    }
+
+                    ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
+                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
+
+                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 0;
+                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
+
+                    WriteTeachPos(INFO);
+
+                    m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, true);
+
+                    _ = Task.Run(async () =>
+                    {
+                        await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS);
+                    });
+                }
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, false);
+                this.RemoveRequestProcState(EnumRequestProcState.RequestParameterQuery);
+            }
+
         }
 
         #endregion
@@ -534,6 +656,9 @@ namespace bim_base.data.CIM
             tasks.Add(Task.Run(() => this.RequestOperatorCall()));
             tasks.Add(Task.Run(() => this.RequestInterlcokState()));
             tasks.Add(Task.Run(() => this.RequestPpidList()));
+
+            tasks.Add(Task.Run(() => this.RequestRecipeDownload()));
+            tasks.Add(Task.Run(() => this.RequestParameterQuery()));
 
             await Task.WhenAll(tasks).ConfigureAwait(true); ;
 
@@ -1000,7 +1125,6 @@ namespace bim_base.data.CIM
 
             WriteTeachPos(INFO);
 
-
             Task<bool> asyncHS = this.HandShakeSignal(
                 WRITE_B.PPIDCHANGE_21,
                 true,
@@ -1070,64 +1194,6 @@ namespace bim_base.data.CIM
             return true;
         }
 
-
-        public bool RecipeDownload()
-        {
-            int nSelectedIdx = -1;
-            string sRecipeName;
-
-            //ModelInfo
-            if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMSEND_54) == true)
-            {
-                sRecipeName = m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text?.Trim() ?? "";
-
-                for (int i = 0; i < Common.MODEL.Count(); i++)
-                {
-                    ModelInfo info = Common.MODEL_INFO(i);
-
-                    if (info.modelName().Trim() == sRecipeName)
-                    {
-                        nSelectedIdx = i;
-                        break;
-                    }
-                }
-
-                POS[] pos = ReadTeachPos();
-
-                for (int i = 0; i < (int)TEACH_POS.MAX; i++)
-                {
-                    Common.MODEL[nSelectedIdx].setTeachPos(i, pos[i]);
-                }
-
-                m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND_54, true);
-
-                ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
-                m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
-
-                m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 1;
-                m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
-
-                WriteTeachPos(INFO);
-
-                Task<bool> asyncHS = this.HandShakeSignal(
-                    WRITE_B.PPIDCHANGE_21,
-                    true,
-                    READ_B.PPIDCHANGE_21,
-                    true,
-                    HANDSHAKE_TIMEOUT_SECONDS);
-
-                asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-
-                if (!asyncHS.Result)
-                    return false;
-
-                m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
-
-            }
-
-            return true;
-        }
-
         POS[] ReadTeachPos()
         {
             int baseEnum = (int)READ_W.ASCII_20_DF96_PICK_PP_WAIT_NAME;
@@ -1180,46 +1246,6 @@ namespace bim_base.data.CIM
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
 
             return true;
-        }
-
-        public void ParameterQuery()
-        {
-            string sReqPPID = "";
-            int nSelectedIdx = -1;
-
-            //Request PPID WORD(W4217) 다른 영역인데..
-            if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMREQUEST_55) == true)
-            {
-                sReqPPID = m_Reader.wordData(CIMRead.READ_W.ASCII_20_D1F0_ReqPPID).text;
-
-                for (int i = 0; i < Common.MODEL.Count(); i++)
-                {
-                    ModelInfo info = Common.MODEL_INFO(i);
-
-                    if (info.modelName().Trim() == sReqPPID)
-                    {
-                        nSelectedIdx = i;
-                        break;
-                    }
-                }
-
-                ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
-                m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
-
-                m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 0;
-                m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
-
-                WriteTeachPos(INFO);
-
-                m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, true);
-
-                _ = Task.Run(async () =>
-                {
-                    await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS);
-                    m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, false);
-                });
-
-            }
         }
 
         #endregion
