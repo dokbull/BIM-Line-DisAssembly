@@ -674,6 +674,7 @@ namespace bim_base
             }
 
             m_isAuto = value;
+            Automation.Instance.EqControlMode = (this.m_isAuto ? CIMEnumeric.EnumEqControlMode.Auto : CIMEnumeric.EnumEqControlMode.Manual);
         }
 
         public void pause()

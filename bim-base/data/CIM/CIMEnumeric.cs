@@ -84,5 +84,17 @@ namespace bim_base.data.CIM
             LightAlarm = EnumAlarmLevel.LightAlarm,
             HeavyAlarm = EnumAlarmLevel.HeavyAlarm,
         }
+
+        public enum EnumEqControlMode
+        {
+            /// <summary>
+            /// 설비가 자동 운전 모드인 경우
+            /// </summary>
+            Auto = 1,
+            /// <summary>
+            /// 설비가 수동 운전 모드인 경우
+            /// </summary>
+            Manual = 2,
+        }
     }
 }

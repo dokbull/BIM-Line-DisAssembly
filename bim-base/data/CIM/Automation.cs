@@ -81,6 +81,8 @@ namespace bim_base.data.CIM
 
         public EnumAlarmState AlarmState { get; private set; } = EnumAlarmState.None;
 
+        public EnumEqControlMode EqControlMode { get; set; } = EnumEqControlMode.Manual;
+
         #endregion
 
         #region Event
