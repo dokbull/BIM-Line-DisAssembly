@@ -334,6 +334,28 @@ public class CIMWrite
         NORMALDATACOLLECTION2_322,
         RESERVE_323,
 
+        PlugRemove_CV_In_Sensor = 0x0276,
+        PlugRemove_CV_Detect_Sensor,
+        PlugRemove_CV_Out_Sensor,
+        Detach_CV_Input_In_Sensor,
+        Detach_CV_Input_Out_Sensor,
+        Detach_CV_Output_In_Sensor,
+        Detach_CV_Output_Out_Sensor,
+        Detach_CV_Panel_Left_Output_In_Sensor,
+        Detach_CV_Panel_Output_Out_Sensor,
+        Detach_CV_Panel_Right_Output_In_Sensor,
+
+        Detach_Transfer_Grip_Detect_Sensor = 0x02D4,
+        Detach_Reverse_Input_Detect_Sensor,
+        Detach_Stage_Deassign_Detect_Sensor,
+        Detach_Transfer_Jig_Cover_Grip_Sensor,
+        Detach_Transfer_Jig_Output_Grip_Sensor,
+        RESERVE_2D9,//Detach_Reverse_Jig_Output_Detect_Sensor,    //
+        Detach_Buffer_Detect_Sensor,
+        Detach_Transfer_Panel_Output_Vaccum_Sensor,
+        Detach_Reverse_Panel_Front_Output_Detect_Sensor,
+        Detach_Reverse_Panel_Rear_Output_Detect_Sensor,
+
         MAX,
     }
 
@@ -2221,6 +2243,41 @@ public class CIMWrite
         DEC_2_A336_InPpYAcc,
         #endregion "ECM Param <<"
 
+        #region "FDC Param >>"
+        DEC_2_B500_Tack1,
+        DEC_2_B502_Tack2,
+        DEC_2_B504_Tack3,
+        DEC_2_B506_Tack4,
+        DEC_2_B508_Tack5,
+        DEC_2_B50A_Tack6,
+        DEC_2_B50C_Tack7,
+        DEC_2_B50E_Tack8,
+        DEC_2_B510_Tack9,
+        DEC_2_B512_Tack10,
+        DEC_2_B514_Tack11,
+        DEC_2_B516_Tack12,
+        DEC_2_B518_Tack13,
+        DEC_2_B51A_Tack14,
+        DEC_2_B51C_Tack15,
+        DEC_2_B51E_Tack16,
+        DEC_2_B520_Tack17,
+        DEC_2_B522_Tack18,
+        DEC_2_B524_Tack19,
+        DEC_2_B526_Tack20,
+        DEC_2_B528_Tack21,
+        DEC_2_B52A_Tack22,
+        DEC_2_B52C_Tack23,
+        DEC_2_B52E_Tack24,
+        DEC_2_B530_Tack25,
+        DEC_2_B532_Tack26,
+        DEC_2_B534_Tack27,
+        DEC_2_B536_Tack28,
+        DEC_2_B538_Tack29,
+        DEC_2_B53A_Tack30,
+        DEC_2_B53E_TackRealTime,
+        
+        #endregion "FDC Param <<"
+
         NONE_1324_AFD4_SVIDPARAMETER,
         DEC_60_B500_TACTTIME,
         NONE_3416_B53C_SVIDPARAMETER,
@@ -2350,7 +2407,8 @@ public class CIMWrite
     static string m_path = "";
     CLogManager m_cimLog = null;
 
-    bool[] m_bit = new bool[32 * 16];
+    //bool[] m_bit = new bool[32 * 16];
+    bool[] m_bit = new bool[32 * 16 * 2];
     bool[] m_agoBit = new bool[32 * 16];
 
     WORD_DATA[] m_wordData = new WORD_DATA[(int)WRITE_W.MAX];

@@ -32,7 +32,7 @@ namespace bim_base.data.CIM
         public delegate void OnReleaseInterlockEventHandler(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage);
         public delegate void OnAutomationAlarmEventHandler();
         public delegate bool OnGetSampleExistEventHandler();
-        public delegate (Dictionary<INPUT, bool> Inputs, Dictionary<OUTPUT, bool> Outputs, List<TimeSpan> TackTime) OnGetFaultDetectionClassificationEventHandler();
+        public delegate (Dictionary<INPUT, bool> Inputs, Dictionary<OUTPUT, bool> Outputs, List<long> TackTime) OnGetFaultDetectionClassificationEventHandler();
 
         #endregion
 
@@ -719,12 +719,36 @@ namespace bim_base.data.CIM
 
                 var fdc = GetFaultDetectionClassificationEvent.Invoke();
 
-                // TODO CHECK LHJ to LYJ: FDC 결과에 따른 UI 처리 필요 (melsec adress에 작성)
+                int Index = (int)WRITE_B.PlugRemove_CV_In_Sensor;
 
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_IN]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_MID]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_OUT]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.ALIGN_CV_IN]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.ALIGN_CV_OUT]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_IN]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_OUT]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_IN_1]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_IN_2]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_OUT]);
 
-                //fdc.Inputs
-                //fdc.Outputs
-                //fdc.TackTime
+                Index = (int)WRITE_B.Detach_Transfer_Grip_Detect_Sensor;
+
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_IN_PP_GRIP]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_IN_REVERSE_DETECT]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_SHUTTLE_STAGE_2_DETECT]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_OUT_PP_GRIP_1]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_OUT_PP_GRIP_2]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_SHUTTLE_STAGE_3_DETECT]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_OUT]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_PP_VAC]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_REVERSE_DETECT_1]);
+                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_REVERSE_DETECT_2]);
+
+                for(int i = 0; i < fdc.TackTime.Count -1; i++)
+                    m_Writer.wordData((WRITE_W)(WRITE_W.DEC_2_B500_Tack1+1)).value = (int)fdc.TackTime[i];
+
+                m_Writer.wordData((WRITE_W)(WRITE_W.DEC_2_B53E_TackRealTime)).value = (int)fdc.TackTime[fdc.TackTime.Count - 1];
             }
             catch
             {

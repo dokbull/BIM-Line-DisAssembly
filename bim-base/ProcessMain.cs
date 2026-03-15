@@ -122,7 +122,6 @@ namespace bim_base
 
             Conf.load();
 
-
             Debug.setPath(Common.LOG_PATH, "dev-log");
             m_alarmManager = new CLogManager("alarm", Common.LOG_PATH);
             m_setupLogMgr = new CLogManager("setup", Common.LOG_PATH);
@@ -229,22 +228,45 @@ namespace bim_base
 
         private (Dictionary<INPUT, bool> Inputs,
          Dictionary<OUTPUT, bool> Outputs,
-         List<TimeSpan> TackTime) GetFDCData()
+         //List<TimeSpan> TackTime) GetFDCData()
+         List<long> TackTime) GetFDCData()
         {
             var inputs = new Dictionary<INPUT, bool>();
             var outputs = new Dictionary<OUTPUT, bool>();
-            var tack = new List<TimeSpan>();
+            //var tack = new List<TimeSpan>();  //편의상 바꿈
+            List<long> tack = new List<long>();
 
-            // 가짜 데이터
-            //inputs[INPUT.START_SW] = true;
-            //inputs[INPUT.STOP_SW] = false;
+            inputs[INPUT.MOLD_LD_CV_IN] = m_input[(int)INPUT.MOLD_LD_CV_IN];
+            inputs[INPUT.MOLD_LD_CV_MID] = m_input[(int)INPUT.MOLD_LD_CV_MID];
+            inputs[INPUT.MOLD_LD_CV_OUT] = m_input[(int)INPUT.MOLD_LD_CV_OUT];
+            inputs[INPUT.ALIGN_CV_IN] = m_input[(int)INPUT.ALIGN_CV_IN];
+            inputs[INPUT.ALIGN_CV_OUT] = m_input[(int)INPUT.ALIGN_CV_OUT];
+            inputs[INPUT.MOLD_ULD_CV_IN] = m_input[(int)INPUT.MOLD_ULD_CV_IN];
+            inputs[INPUT.MOLD_ULD_CV_OUT] = m_input[(int)INPUT.MOLD_ULD_CV_OUT];
+            inputs[INPUT.UB_ULD_CV_IN_1] = m_input[(int)INPUT.UB_ULD_CV_IN_1];
+            inputs[INPUT.UB_ULD_CV_IN_2] = m_input[(int)INPUT.UB_ULD_CV_IN_2];
+            inputs[INPUT.UB_ULD_CV_OUT] = m_input[(int)INPUT.UB_ULD_CV_OUT];
 
-            //outputs[OUTPUT.BUZZER] = false;
-            //outputs[OUTPUT.TOWER_G] = true;
 
-            tack.Add(TimeSpan.FromMilliseconds(1200));
-            tack.Add(TimeSpan.FromMilliseconds(1180));
-            tack.Add(TimeSpan.FromMilliseconds(1215));
+            inputs[INPUT.MOLD_IN_PP_GRIP] = m_input[(int)INPUT.MOLD_IN_PP_GRIP];
+            inputs[INPUT.MOLD_IN_REVERSE_DETECT] = m_input[(int)INPUT.MOLD_IN_REVERSE_DETECT];
+            inputs[INPUT.MOLD_SHUTTLE_STAGE_2_DETECT] = m_input[(int)INPUT.MOLD_SHUTTLE_STAGE_2_DETECT];
+            inputs[INPUT.MOLD_OUT_PP_GRIP_1] = m_input[(int)INPUT.MOLD_OUT_PP_GRIP_1];
+            inputs[INPUT.MOLD_OUT_PP_GRIP_2] = m_input[(int)INPUT.MOLD_OUT_PP_GRIP_2];
+            inputs[INPUT.MOLD_SHUTTLE_STAGE_3_DETECT] = m_input[(int)INPUT.MOLD_SHUTTLE_STAGE_3_DETECT];
+            inputs[INPUT.UB_OUT_PP_VAC] = m_input[(int)INPUT.MOLD_ULD_CV_OUT];
+            inputs[INPUT.UB_OUT_PP_VAC] = m_input[(int)INPUT.UB_OUT_PP_VAC];
+            inputs[INPUT.UB_OUT_REVERSE_DETECT_1] = m_input[(int)INPUT.UB_OUT_REVERSE_DETECT_1];
+            inputs[INPUT.UB_OUT_REVERSE_DETECT_2] = m_input[(int)INPUT.UB_OUT_REVERSE_DETECT_2];
+
+            tack.AddRange(tactTimeList());
+
+            while (tack.Count < 30)
+            {
+                tack.Add(0);
+            }
+
+            tack.Add(getElaspedTactTime());
 
             return (inputs, outputs, tack);
         }
