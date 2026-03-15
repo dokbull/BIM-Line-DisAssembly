@@ -15,6 +15,9 @@ namespace bim_base.data.CIM
             OperatorCall,
             RequestInterlcokState,
             RequestPpidList,
+            RequestRecipeDownload,
+            RequestParameterQuery,
+
         }
 
         public enum EnumAvailabilityState

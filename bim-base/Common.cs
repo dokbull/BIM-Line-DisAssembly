@@ -56,6 +56,11 @@ public class Common
         return m_instance;
     }
 
+    public static ModelInfo MC_MODEL()
+    {
+        return MC;
+    }
+
     public static ModelInfo MODEL_INFO(string name)
     {
         for (int i = 0; i < MODEL.Count; i++)

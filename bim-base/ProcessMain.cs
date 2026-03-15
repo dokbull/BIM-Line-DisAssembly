@@ -523,7 +523,7 @@ namespace bim_base
                 }
 
                 //Automation.Instance.PpidListRequest();
-                Automation.Instance.PpidChange();
+                //Automation.Instance.PpidChange();
 
                 watchFrenic();
                 watchEmergency();
