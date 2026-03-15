@@ -407,12 +407,6 @@
     <Compile Include="FormMonitor.Designer.cs">
       <DependentUpon>FormMonitor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormTeach\FormTeachPP.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormTeach\FormTeachPP.Designer.cs">
-      <DependentUpon>FormTeachPP.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormTeach\FormTeachOutPP.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -964,9 +958,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormBottom.resx">
       <DependentUpon>FormBottom.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormTeach\FormTeachPP.resx">
-      <DependentUpon>FormTeachPP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTeach\FormTeachOutPP.resx">
       <DependentUpon>FormTeachOutPP.cs</DependentUpon>

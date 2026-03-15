@@ -6,17 +6,17 @@ namespace bim_base
     public partial class FormTeach : Form
     {
         ProcessMain main = null;
-        FormTeachPP FORM_IN_PP = null;
-        FormTeachPP FORM_MOLD_PP = null;
-        FormTeachPP FORM_UB_PP = null;
+        FormTeachInPP FORM_IN_PP = null;
+        FormTeachTrayPP FORM_MOLD_PP = null;
+        FormTeachOutPP FORM_UB_PP = null;
 
         int mSelForm = -1;
         public FormTeach(ProcessMain procMain)
         {
             main = procMain;
-            FORM_IN_PP = new FormTeachPP(main);
-            FORM_MOLD_PP = new FormTeachPP(main);
-            FORM_UB_PP = new FormTeachPP(main);
+            FORM_IN_PP = new FormTeachInPP(main);
+            FORM_MOLD_PP = new FormTeachTrayPP(main);
+            FORM_UB_PP = new FormTeachOutPP(main);
             InitializeComponent();
 
             addAllForm();

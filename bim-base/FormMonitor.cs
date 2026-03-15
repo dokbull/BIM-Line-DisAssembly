@@ -11,13 +11,11 @@ namespace bim_base
     public partial class FormMonitor : Form
     {
         ProcessMain main = null;
-        FormTeachPP _teachppAttach = null;
 
         int mSelForm = -1;
         public FormMonitor(ProcessMain procMain)
         {
             main = procMain;
-            _teachppAttach = new FormTeachPP(main);
             InitializeComponent();                     
         }
         private void FormTeach_Load(object sender, EventArgs e)
