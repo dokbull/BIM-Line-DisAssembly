@@ -31,6 +31,7 @@ namespace bim_base.data.CIM
         public delegate void OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
         public delegate void OnReleaseInterlockEventHandler(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage);
         public delegate void OnAutomationAlarmEventHandler();
+        public delegate bool OnGetSampleExistEventHandler();
         public delegate (Dictionary<INPUT, bool> Inputs, Dictionary<OUTPUT, bool> Outputs, List<TimeSpan> TackTime) OnGetFaultDetectionClassificationEventHandler();
 
         #endregion
@@ -107,6 +108,8 @@ namespace bim_base.data.CIM
         public event OnReleaseInterlockEventHandler ReleaseInterlockEvent;
 
         public event OnAutomationAlarmEventHandler AutomationAlarmEvent;
+
+        public event OnGetSampleExistEventHandler GetSampleExistEvent;
 
         public event OnGetFaultDetectionClassificationEventHandler GetFaultDetectionClassificationEvent;
 
@@ -695,7 +698,7 @@ namespace bim_base.data.CIM
 
         #endregion
 
-        #region Private Method : FDC
+        #region Private Method : Status
 
         private void RedrawFaultDetectionClassification()
         {
@@ -726,6 +729,32 @@ namespace bim_base.data.CIM
             }
         }
 
+        private void ScanSampleExist()
+        {
+            try
+            {
+                if (this.AddRequestProcState(EnumRequestProcState.SampleExistStatus) == false)
+                    return;
+
+                if (this.GetSampleExistEvent == null)
+                    return;
+
+                bool isExist= this.GetSampleExistEvent.Invoke();
+
+                this.SetEqState(isExist ? EnumRunState.Run : EnumRunState.Idle);
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                this.RemoveRequestProcState(EnumRequestProcState.SampleExistStatus);
+
+            }
+            
+        }
+
         #endregion
 
         #region Public Method
@@ -750,6 +779,8 @@ namespace bim_base.data.CIM
             tasks.Add(Task.Run(() => this.RequestParameterQuery()));
 
             tasks.Add(Task.Run(() => this.RedrawFaultDetectionClassification()));
+            tasks.Add(Task.Run(() => this.ScanSampleExist()));
+            
 
             //await Task.WhenAll(tasks).ConfigureAwait(true); ;
 
@@ -1042,14 +1073,11 @@ namespace bim_base.data.CIM
             }
         }
 
-        public void AlarmOccured(ALARM _alarmID, EnumAlarmLevel _alarmLevel)
+        public void AlarmOccured(EnumAlarmLevel _alarmLevel, int _alarmID, string _description)
         {
 
-            if ((int)_alarmID < 0 || (int)_alarmID > Enum.GetNames(typeof(ALARM)).Length)
-                throw new ArgumentOutOfRangeException($"Failed to report alarm. Becauese Invalid AlarmID {_alarmID}.{nameof(_alarmID)}");
-
-            int wordIDX = (int)_alarmID / BIT_COUNT;
-            int bitIDX = (int)_alarmID % BIT_COUNT;
+            int wordIDX = _alarmID / BIT_COUNT;
+            int bitIDX = _alarmID % BIT_COUNT;
             List<bool> wordToBits = new List<bool>();
 
             // 모든 비트를 false로 설정하고, 해당 인덱스만 true로 설정
@@ -1062,6 +1090,7 @@ namespace bim_base.data.CIM
             int writeValue = this.BitsToInt(wordToBits);
 
             this.WriteWord(WRITE_W.BIT_400_CAD4_Alarm, $"{writeValue}");
+            //this.WriteWord(WRITE_W., $"{_description}");
 
             switch (_alarmLevel)
             {
@@ -1078,7 +1107,7 @@ namespace bim_base.data.CIM
 
         }
 
-        public void AlarmReleased(ALARM _alarmID)
+        public void AlarmReleased(int _alarmID, string _description)
         {
             // TODO CHECK LHJ : 주소 확인, 어떤 Data를 작성해야 할지 확인
             this.WriteWord(WRITE_W.BIT_400_CAD4_Alarm, $"{0}");

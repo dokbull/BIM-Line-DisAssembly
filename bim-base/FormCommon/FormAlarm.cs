@@ -1,4 +1,5 @@
-﻿using System;
+﻿using bim_base.data.CIM;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,6 +30,9 @@ namespace bim_base
             errActLabel.Text = String.Format("{0}", Alarm.actionEng(code));
 
             updateIOMark();
+
+            // TODO CHECK LHJ to HJP : 경알람 추가시 처리 필요
+            Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.HeavyAlarm, code, desc);
         }
 
         private void alarmResetButton_Click(object sender, EventArgs e)
@@ -45,6 +49,8 @@ namespace bim_base
         {
             if (main.isAlarm() == false)
             {
+                Automation.Instance.AlarmReleased(main.lastAlarmCode(), main.lastAlarmDesc());
+
                 DialogResult = DialogResult.OK;
                 Close();
             }

@@ -41,6 +41,20 @@ namespace bim_base
             Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;
             Automation.Instance.ReceivedInterlockEvent += Automation_ReceivedInterlockEvent;
             Automation.Instance.ReleaseInterlockEvent += Automation_ReleaseInterlockEvent;
+            Automation.Instance.GetSampleExistEvent += Automation_GetSampleExistEvent;
+        }
+
+        private bool Automation_GetSampleExistEvent()
+        {
+            CSTATION[] station = main.station();
+
+            bool isExist = false;
+            foreach (var item in station)
+            {
+                isExist |= (item.type() != CSTATION.TYPE.EMPTY);
+            }
+
+            return isExist;
         }
 
         private async void Automation_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
