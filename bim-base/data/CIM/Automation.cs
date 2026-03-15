@@ -60,6 +60,7 @@ namespace bim_base.data.CIM
 
         //private RMS m_RMS = new RMS();
 
+        private object m_RunScanLock = new object();
 
         #endregion
 
@@ -294,21 +295,28 @@ namespace bim_base.data.CIM
 
         private bool AddRequestProcState(EnumRequestProcState state)
         {
-            if (this.RequestProcStateList.Contains(state))
-                return false;
+            lock (this.m_RunScanLock)
+            {
+
+                if (this.RequestProcStateList.Contains(state))
+                    return false;
 
 
-            this.RequestProcStateList.Add(state);
-            return true;
+                this.RequestProcStateList.Add(state);
+                return true;
+            }
         }
 
         private void RemoveRequestProcState(EnumRequestProcState state)
         {
-            if (this.RequestProcStateList.Contains(state) == false)
-                return;
+            lock (this.m_RunScanLock)
+            {
+                if (this.RequestProcStateList.Contains(state) == false)
+                    return;
 
 
-            this.RequestProcStateList.Remove(state);
+                this.RequestProcStateList.Remove(state);
+            }
         }
 
 
@@ -514,7 +522,7 @@ namespace bim_base.data.CIM
         ///////////////////////////////////////////////////////////////////////////////////////////
         //PPID RULE
         //Manual 일때는 원격제어 변경 불가 NG
-        //Auto일때 91 ~100으로 변경할려고 하면 NG 
+        //Auto일때 90 ~ 99으로 변경할려고 하면 NG 
         //0~ 89 원격용
         //TT_ 		//로 시작 
         //90~99
@@ -552,7 +560,6 @@ namespace bim_base.data.CIM
                 _ = Task.Run(async () =>
                 {
                     await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true);
-                    
                 });
             }
             catch
@@ -707,12 +714,13 @@ namespace bim_base.data.CIM
                 if (this.AddRequestProcState(EnumRequestProcState.FDC) == false)
                     return;
 
-                if (this.GetFaultDetectionClassificationEvent == null)
+                if (GetFaultDetectionClassificationEvent == null)
                     return;
 
-                var fdc = this.GetFaultDetectionClassificationEvent.Invoke();
+                var fdc = GetFaultDetectionClassificationEvent.Invoke();
 
                 // TODO CHECK LHJ to LYJ: FDC 결과에 따른 UI 처리 필요 (melsec adress에 작성)
+
 
                 //fdc.Inputs
                 //fdc.Outputs
@@ -765,7 +773,8 @@ namespace bim_base.data.CIM
 
             this.IsRun = true;
 
-            this.SyncCommCCIE();
+            // TODO CHECK LHJ : 사전 테스트 끝나고 다시 복귀 필요
+            //this.SyncCommCCIE();
 
             List<Task> tasks = new List<Task>();
 
@@ -1369,7 +1378,6 @@ namespace bim_base.data.CIM
         {
             //if (m_Reader.readBit(CIMRead.READ_B.EQUIPCONSTANTNAMELIST_53) == true)
             {
-
                 //double[] vel = new double[(int)AXIS.MAX];
                 //double[] acc = new double[(int)AXIS.MAX];
 

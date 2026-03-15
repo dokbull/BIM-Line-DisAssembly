@@ -220,8 +220,34 @@ namespace bim_base
                 m_station[i] = new CSTATION(st);
             }
 
+            //Automation automation = new Automation();
+            Automation.Instance.GetFaultDetectionClassificationEvent += GetFDCData;
+
             m_thread = new Thread(run);
         }
+
+        private (Dictionary<INPUT, bool> Inputs,
+         Dictionary<OUTPUT, bool> Outputs,
+         List<TimeSpan> TackTime) GetFDCData()
+        {
+            var inputs = new Dictionary<INPUT, bool>();
+            var outputs = new Dictionary<OUTPUT, bool>();
+            var tack = new List<TimeSpan>();
+
+            // 가짜 데이터
+            //inputs[INPUT.START_SW] = true;
+            //inputs[INPUT.STOP_SW] = false;
+
+            //outputs[OUTPUT.BUZZER] = false;
+            //outputs[OUTPUT.TOWER_G] = true;
+
+            tack.Add(TimeSpan.FromMilliseconds(1200));
+            tack.Add(TimeSpan.FromMilliseconds(1180));
+            tack.Add(TimeSpan.FromMilliseconds(1215));
+
+            return (inputs, outputs, tack);
+        }
+        
 
         public void setOutputToggle(OUTPUT _output)
         {
@@ -513,7 +539,8 @@ namespace bim_base
 
                     commDIO();
                     commAIO();
-                    Automation.Instance.RunScan();
+                    // TODO CHECK LHJ : 사전 테스트 끝나고 복구 필요
+                    //Automation.Instance.RunScan();
 
                     foreach (ExtAxis axis in m_axis)
                     {
@@ -521,6 +548,9 @@ namespace bim_base
                     }
                     m_once = false;
                 }
+
+                // TODO CHECK LHJ : 사전 테스트 끝나고 삭제 필요
+                Automation.Instance.RunScan();
 
                 //Automation.Instance.PpidListRequest();
                 //Automation.Instance.PpidChange();
@@ -920,6 +950,15 @@ namespace bim_base
         {
             m_isTactTimeUpdate = false;
             m_tactTimeList.Clear();
+        }
+
+        /// <summary>
+        /// return at Tact Time List (max 30)
+        /// </summary>
+        /// <returns></returns>
+        public List<long>tactTimeList()
+        {
+            return m_tactTimeList;
         }
 
         /// <summary>
