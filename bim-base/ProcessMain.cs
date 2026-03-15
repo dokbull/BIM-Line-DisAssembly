@@ -902,7 +902,7 @@ namespace bim_base
 
             lock (m_cycleTimeList)
             {
-                if (m_cycleTimeList.Count > 100)
+                if (m_cycleTimeList.Count > 30)
                     m_cycleTimeList.Remove(0);
 
                 m_cycleTimeList.Add(cycleTime);
