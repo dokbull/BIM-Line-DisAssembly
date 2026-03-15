@@ -27,9 +27,9 @@ namespace bim_base.data.CIM
 
         public delegate void OnReceivedTerminalDisplayEventHandler(int _MessageNum, string _MessageText);
         public delegate void OnReceivedOperatorCallEventHandler(int _OpCallNum, string _OpCallText);
-        public delegate bool OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
+        public delegate Task<bool> OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
         public delegate bool OnRequestAutoNormalModeEventHandler();
-        public delegate bool OnAutomationAlarmEventHandler();
+        public delegate void OnAutomationAlarmEventHandler();
 
         #endregion
 
@@ -45,6 +45,7 @@ namespace bim_base.data.CIM
 
         private const int HANDSHAKE_TIMEOUT_SECONDS = 5;
         private const int BIT_COUNT = 16;
+        private const int HISTORY_MAX_COUNT = 100;
 
         #endregion
 
@@ -86,6 +87,7 @@ namespace bim_base.data.CIM
         public EnumEqControlMode EqControlMode { get; set; } = EnumEqControlMode.Manual;
 
         public List<HistoryItem> OperatorCallHistory { get; private set; } = new List<HistoryItem>();
+        public List<HistoryItem> InterlockHistory { get; private set; } = new List<HistoryItem>();
 
         #endregion
 
@@ -401,7 +403,7 @@ namespace bim_base.data.CIM
                     return;
 
                 this.OperatorCallHistory.Add(new HistoryItem(DateTime.Now, $"{opCallNum}", strOpCallText));
-                if(this.OperatorCallHistory.Count > 100)
+                if(this.OperatorCallHistory.Count > HISTORY_MAX_COUNT)
                 {
                     this.OperatorCallHistory.RemoveAt(0);
                 }
@@ -423,7 +425,7 @@ namespace bim_base.data.CIM
             }
         }
 
-        private void RequestInterlcokState()
+        private async void RequestInterlcokState()
         {
             try
             {
@@ -443,17 +445,24 @@ namespace bim_base.data.CIM
                 if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
                     return;
 
-                // TODO CHECK LHJ : 인터락 요청 발생 이력 관리 필요. 인터락 메세지 팝업, 시그널타워 red/yellow blink, 부저 발생
-                if (this.ReceivedInterlockEvent == null) 
-                    return;
 
-                bool isValid = ReceivedInterlockEvent.Invoke(interlockID, strMessage, rcmd);
+                if (this.ReceivedInterlockEvent == null) 
+                    throw new Exception("ReceivedInterlockEvent is not set.");
+
+                // TODO : 최소 2개 이상의 이벤트가 발생. 모두 처리되었을 때의 return 반환값에 따른 처리 테스트 필요
+                bool isValid = await ReceivedInterlockEvent.Invoke(interlockID, strMessage, rcmd).ConfigureAwait(true);
 
                 this.WriteBit(WRITE_B.INTERLOCK_5, true);
                 Task.Run(() => this.SleepWithDoEvent(1)).Wait();
                 this.WriteBit(WRITE_B.INTERLOCK_5, false);
 
                 if (isValid == false) return;
+
+                this.InterlockHistory.Add(new HistoryItem(DateTime.Now, strID, $"{rcmd} Interlock (RCMD={(int)rcmd}) : {strMessage}"));
+                if (this.InterlockHistory.Count > HISTORY_MAX_COUNT)
+                {
+                    this.InterlockHistory.RemoveAt(0);
+                }
 
                 this.SetEqState(EnumInterlockState.On);
                 this.SetEqState(EnumMoveState.Pause);

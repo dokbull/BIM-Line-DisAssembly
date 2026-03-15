@@ -3,12 +3,16 @@ using Lib.UI.Generic.DarkMode;
 using Lib.UI.Generic.DarkMode.Forms;
 using Lib.UI.Generic.Icons;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static bim_base.data.CIM.CIMEnumeric;
+using static LSFenet_MOBIS.FNET;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace bim_base
@@ -34,7 +38,8 @@ namespace bim_base
         {
             uiTimer.Enabled = true;
 
-            Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;    
+            Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;
+            Automation.Instance.ReceivedInterlockEvent += Automation_ReceivedInterlockEvent;
         }
 
         private async void Automation_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
@@ -60,12 +65,65 @@ namespace bim_base
                $"{_OpCallNum} : {_OpCallText}",
                EnumMessageBoxButtons.OK);
             popup.MaximumSize = new Size(1024, 768);
+            popup.WindowState = FormWindowState.Maximized;
             popup.ShowDialog();
 
             isSignalTowerBlink = false;
-            main.setOutput(OUTPUT.BUZZER_1, true);
+            main.setOutput(OUTPUT.BUZZER_1, false);
             main.setOutput(OUTPUT.TOWER_Y, false);
         }
+
+        private async Task<bool> Automation_ReceivedInterlockEvent(int _ID, string _Message, EnumInterlockRCMD _RCMD)
+        {
+            // TODO CHECK LHJ : RCMD별로 메인 SW에서 인터락 처리 필요
+            switch (_RCMD)
+            {
+                case EnumInterlockRCMD.TransferStop:
+                    break;
+                case EnumInterlockRCMD.LoadingStop:
+                    break;
+                case EnumInterlockRCMD.StepStop:
+                    break;
+                case EnumInterlockRCMD.OWNStop:
+                    break;
+                default:
+                    return false;
+            }
+
+            main.setOutput(OUTPUT.BUZZER_1, true);
+
+            bool isSignalTowerBlink = true;
+            await Task.Run(async () =>
+            {
+                while (isSignalTowerBlink)
+                {
+                    main.setOutput(OUTPUT.TOWER_R, true);
+                    main.setOutput(OUTPUT.TOWER_Y, true);
+                    await Task.Delay(500);
+                    main.setOutput(OUTPUT.TOWER_R, false);
+                    main.setOutput(OUTPUT.TOWER_Y, false);
+                    await Task.Delay(500);
+                }
+
+            }).ConfigureAwait(true);
+
+            DarkMessageBox popup = DarkMessageBox.CreateMessageBox(
+               "Interlock",
+               EnumMessageBoxIcons.Warning,
+                $"{_RCMD} Interlock (RCMD={(int)_RCMD}) : {_Message}",
+               EnumMessageBoxButtons.OK);
+            popup.MaximumSize = new Size(1024, 768);
+            popup.WindowState = FormWindowState.Maximized;
+            popup.ShowDialog();
+
+            isSignalTowerBlink = false;
+            main.setOutput(OUTPUT.BUZZER_1, false);
+            main.setOutput(OUTPUT.TOWER_R, false);
+            main.setOutput(OUTPUT.TOWER_Y, false);
+
+            return true;
+        }
+
 
 
         public void onShow(bool enable)
@@ -164,7 +222,7 @@ namespace bim_base
 
         private void productInfoButton_VisibleChanged(object sender, EventArgs e)
         {
-            Button btn = (Button)sender;
+            System.Windows.Forms.Button btn = (System.Windows.Forms.Button)sender;
             TacTimeLayout.Visible = btn.Visible;
             setCountLayout.Visible = btn.Visible;
         }

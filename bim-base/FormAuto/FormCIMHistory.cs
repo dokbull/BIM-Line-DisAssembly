@@ -7,10 +7,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using static bim_base.data.CIM.CIMEnumeric;
+using static LSFenet_MOBIS.FNET;
 
 namespace bim_base
 {
@@ -59,30 +62,46 @@ namespace bim_base
                 this.gridHistory.Rows.Add(rowDate.ToArray());
             }
 
-            Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;    
+            Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;
+            Automation.Instance.ReceivedInterlockEvent += Automation_ReceivedInterlockEvent;
 
         }
 
 
-        private async void Automation_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
+        private void Automation_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
         {
             List<string> rowDate = new List<string>();
 
             switch (this.m_HistoryType)
             {
-                case EnumCimHistoryType.OperatorCall:
-                    rowDate.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                    rowDate.Add(_OpCallNum.ToString());
-                    rowDate.Add(_OpCallText);
-                    break;
-                case EnumCimHistoryType.InterlockOccured:
-                    break;
-                case EnumCimHistoryType.InterlockReleased:
-                    break;
-                default:
-                    break;
+                case EnumCimHistoryType.OperatorCall: break;
+                default: return;
             }
+
+            rowDate.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            rowDate.Add(_OpCallNum.ToString());
+            rowDate.Add(_OpCallText);
             this.gridHistory.Rows.Add(rowDate.ToArray());
+        }
+
+        
+
+        private Task<bool> Automation_ReceivedInterlockEvent(int _OpCallNum, string _OpCallText, EnumInterlockRCMD _RCMD)
+        {
+            List<string> rowDate = new List<string>();
+
+            switch (this.m_HistoryType)
+            {
+                case EnumCimHistoryType.InterlockReleased: break;
+                default: return Task.FromResult(true);
+            }
+
+            rowDate.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            rowDate.Add(_OpCallNum.ToString());
+            rowDate.Add($"{_RCMD} Interlock (RCMD={(int)_RCMD}) : {_OpCallText}");
+            this.gridHistory.Rows.Add(rowDate.ToArray());
+
+            return Task.FromResult(true);
         }
     }
 }
