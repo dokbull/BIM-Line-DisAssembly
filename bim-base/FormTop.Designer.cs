@@ -53,6 +53,7 @@
             this.lbCurrentDate = new System.Windows.Forms.Label();
             this.lbMessage2 = new System.Windows.Forms.Label();
             this.lbMessage3 = new System.Windows.Forms.Label();
+            this.lblTerminalDisplay = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -118,9 +119,9 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 166F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 123F));
+            this.tableLayoutPanel1.Controls.Add(this.lblTerminalDisplay, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.BT_BUZZER, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.lbMessage1, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lbScreenName, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 3, 2);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 3, 1);
             this.tableLayoutPanel1.Controls.Add(this.picLogo, 0, 0);
@@ -131,6 +132,7 @@
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.lbMessage2, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.lbMessage3, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lbScreenName, 2, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -183,13 +185,14 @@
             // lbScreenName
             // 
             this.lbScreenName.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.lbScreenName.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbScreenName.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbScreenName.ForeColor = System.Drawing.Color.Black;
             this.lbScreenName.Location = new System.Drawing.Point(197, 0);
             this.lbScreenName.Margin = new System.Windows.Forms.Padding(0);
             this.lbScreenName.Name = "lbScreenName";
-            this.tableLayoutPanel1.SetRowSpan(this.lbScreenName, 3);
-            this.lbScreenName.Size = new System.Drawing.Size(381, 70);
+            this.tableLayoutPanel1.SetRowSpan(this.lbScreenName, 2);
+            this.lbScreenName.Size = new System.Drawing.Size(381, 46);
             this.lbScreenName.TabIndex = 1140;
             this.lbScreenName.Text = "Auto Screen";
             this.lbScreenName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -407,6 +410,20 @@
             this.lbMessage3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lbMessage3.Visible = false;
             // 
+            // lblTerminalDisplay
+            // 
+            this.lblTerminalDisplay.BackColor = System.Drawing.Color.White;
+            this.lblTerminalDisplay.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblTerminalDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTerminalDisplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTerminalDisplay.ForeColor = System.Drawing.Color.Black;
+            this.lblTerminalDisplay.Location = new System.Drawing.Point(197, 46);
+            this.lblTerminalDisplay.Margin = new System.Windows.Forms.Padding(0);
+            this.lblTerminalDisplay.Name = "lblTerminalDisplay";
+            this.lblTerminalDisplay.Size = new System.Drawing.Size(381, 24);
+            this.lblTerminalDisplay.TabIndex = 1149;
+            this.lblTerminalDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // FormTop
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -452,5 +469,6 @@
         private System.Windows.Forms.Label lbMessage2;
         private System.Windows.Forms.Label lbMessage3;
         public SUserControls.ColorButton BT_BUZZER;
+        private System.Windows.Forms.Label lblTerminalDisplay;
     }
 }
