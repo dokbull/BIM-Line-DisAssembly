@@ -17,7 +17,7 @@ namespace bim_base.data.CIM
             RequestPpidList,
             RequestRecipeDownload,
             RequestParameterQuery,
-
+            FDC,
         }
 
         public enum EnumAvailabilityState

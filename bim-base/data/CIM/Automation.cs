@@ -31,6 +31,7 @@ namespace bim_base.data.CIM
         public delegate void OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
         public delegate void OnReleaseInterlockEventHandler(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage);
         public delegate void OnAutomationAlarmEventHandler();
+        public delegate (Dictionary<INPUT, bool> Inputs, Dictionary<OUTPUT, bool> Outputs, List<TimeSpan> TackTime) OnGetFaultDetectionClassificationEventHandler();
 
         #endregion
 
@@ -106,6 +107,8 @@ namespace bim_base.data.CIM
         public event OnReleaseInterlockEventHandler ReleaseInterlockEvent;
 
         public event OnAutomationAlarmEventHandler AutomationAlarmEvent;
+
+        public event OnGetFaultDetectionClassificationEventHandler GetFaultDetectionClassificationEvent;
 
         #endregion
 
@@ -692,6 +695,39 @@ namespace bim_base.data.CIM
 
         #endregion
 
+        #region Private Method : FDC
+
+        private void RedrawFaultDetectionClassification()
+        {
+            try
+            {
+                if (this.AddRequestProcState(EnumRequestProcState.FDC) == false)
+                    return;
+
+                if (this.GetFaultDetectionClassificationEvent == null)
+                    return;
+
+                var fdc = this.GetFaultDetectionClassificationEvent.Invoke();
+
+                // TODO CHECK LHJ to LYJ: FDC 결과에 따른 UI 처리 필요 (melsec adress에 작성)
+
+                //fdc.Inputs
+                //fdc.Outputs
+                //fdc.TackTime
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+                this.RemoveRequestProcState(EnumRequestProcState.FDC);
+
+            }
+        }
+
+        #endregion
+
         #region Public Method
 
         public async void RunScan()
@@ -713,7 +749,9 @@ namespace bim_base.data.CIM
             tasks.Add(Task.Run(() => this.RequestRecipeDownload()));
             tasks.Add(Task.Run(() => this.RequestParameterQuery()));
 
-            await Task.WhenAll(tasks).ConfigureAwait(true); ;
+            tasks.Add(Task.Run(() => this.RedrawFaultDetectionClassification()));
+
+            //await Task.WhenAll(tasks).ConfigureAwait(true); ;
 
             this.IsRun = false;
         }
