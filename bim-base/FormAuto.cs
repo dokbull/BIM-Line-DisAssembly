@@ -40,6 +40,7 @@ namespace bim_base
 
             Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;
             Automation.Instance.ReceivedInterlockEvent += Automation_ReceivedInterlockEvent;
+            Automation.Instance.ReleaseInterlockEvent += Automation_ReleaseInterlockEvent;
         }
 
         private async void Automation_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
@@ -73,9 +74,9 @@ namespace bim_base
             main.setOutput(OUTPUT.TOWER_Y, false);
         }
 
-        private async Task<bool> Automation_ReceivedInterlockEvent(int _ID, string _Message, EnumInterlockRCMD _RCMD)
+        private async void Automation_ReceivedInterlockEvent(int _ID, string _Message, EnumInterlockRCMD _RCMD)
         {
-            // TODO CHECK LHJ : RCMD별로 메인 SW에서 인터락 처리 필요
+            // TODO CHECK LHJ to HJP : RCMD별로 메인 SW에서 인터락 처리 필요
             switch (_RCMD)
             {
                 case EnumInterlockRCMD.TransferStop:
@@ -87,7 +88,7 @@ namespace bim_base
                 case EnumInterlockRCMD.OWNStop:
                     break;
                 default:
-                    return false;
+                    return;
             }
 
             main.setOutput(OUTPUT.BUZZER_1, true);
@@ -110,7 +111,7 @@ namespace bim_base
             DarkMessageBox popup = DarkMessageBox.CreateMessageBox(
                "Interlock",
                EnumMessageBoxIcons.Warning,
-                $"{_RCMD} Interlock (RCMD={(int)_RCMD}) : {_Message}",
+               _Message,
                EnumMessageBoxButtons.OK);
             popup.MaximumSize = new Size(1024, 768);
             popup.WindowState = FormWindowState.Maximized;
@@ -120,11 +121,26 @@ namespace bim_base
             main.setOutput(OUTPUT.BUZZER_1, false);
             main.setOutput(OUTPUT.TOWER_R, false);
             main.setOutput(OUTPUT.TOWER_Y, false);
-
-            return true;
         }
 
-
+        private async void Automation_ReleaseInterlockEvent(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage)
+        {
+            // TODO CHECK LHJ to HJP : RCMD별로 메인 SW에서 인터락 해제 처리 필요
+            switch (_RCMD)
+            {
+                case EnumInterlockRCMD.TransferStop:
+                    break;
+                case EnumInterlockRCMD.LoadingStop:
+                    break;
+                case EnumInterlockRCMD.StepStop:
+                    break;
+                case EnumInterlockRCMD.OWNStop:
+                    break;
+                default:
+                    return;
+            }
+        }
+        
 
         public void onShow(bool enable)
         {

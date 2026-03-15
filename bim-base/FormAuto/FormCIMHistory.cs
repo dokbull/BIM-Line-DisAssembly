@@ -64,6 +64,7 @@ namespace bim_base
 
             Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;
             Automation.Instance.ReceivedInterlockEvent += Automation_ReceivedInterlockEvent;
+            Automation.Instance.ReleaseInterlockEvent += Automation_ReleaseInterlockEvent;
 
         }
 
@@ -86,22 +87,40 @@ namespace bim_base
 
         
 
-        private Task<bool> Automation_ReceivedInterlockEvent(int _OpCallNum, string _OpCallText, EnumInterlockRCMD _RCMD)
+        private void Automation_ReceivedInterlockEvent(int _ID, string _Message, EnumInterlockRCMD _RCMD)
+        {
+            List<string> rowDate = new List<string>();
+
+            switch (this.m_HistoryType)
+            {
+                case EnumCimHistoryType.InterlockOccured: break;
+                default: return;
+            }
+
+            _Message = $"{_RCMD} Interlock (RCMD={(int)_RCMD}) : {_Message}";
+
+            rowDate.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            rowDate.Add(_ID.ToString());
+            rowDate.Add(_Message);
+            this.gridHistory.Rows.Add(rowDate.ToArray());
+
+        }
+
+        private void Automation_ReleaseInterlockEvent(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage)
         {
             List<string> rowDate = new List<string>();
 
             switch (this.m_HistoryType)
             {
                 case EnumCimHistoryType.InterlockReleased: break;
-                default: return Task.FromResult(true);
+                default: return;
             }
 
             rowDate.Add(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            rowDate.Add(_OpCallNum.ToString());
-            rowDate.Add($"{_RCMD} Interlock (RCMD={(int)_RCMD}) : {_OpCallText}");
+            rowDate.Add(_ID.ToString());
+            rowDate.Add(_LogMessage);
             this.gridHistory.Rows.Add(rowDate.ToArray());
 
-            return Task.FromResult(true);
         }
     }
 }

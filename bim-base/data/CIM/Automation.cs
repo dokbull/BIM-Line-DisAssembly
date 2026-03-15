@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
@@ -27,8 +28,8 @@ namespace bim_base.data.CIM
 
         public delegate void OnReceivedTerminalDisplayEventHandler(int _MessageNum, string _MessageText);
         public delegate void OnReceivedOperatorCallEventHandler(int _OpCallNum, string _OpCallText);
-        public delegate Task<bool> OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
-        public delegate bool OnRequestAutoNormalModeEventHandler();
+        public delegate void OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
+        public delegate void OnReleaseInterlockEventHandler(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage);
         public delegate void OnAutomationAlarmEventHandler();
 
         #endregion
@@ -102,7 +103,7 @@ namespace bim_base.data.CIM
         /// <summary>
         /// 인터락 모드 해제 및 AUTO로 정상 가등 모드로 운영 요청
         /// </summary>
-        public event OnRequestAutoNormalModeEventHandler RequestAutoNormalModeEvent;
+        public event OnReleaseInterlockEventHandler ReleaseInterlockEvent;
 
         public event OnAutomationAlarmEventHandler AutomationAlarmEvent;
 
@@ -445,27 +446,50 @@ namespace bim_base.data.CIM
                 if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
                     return;
 
-
-                if (this.ReceivedInterlockEvent == null) 
-                    throw new Exception("ReceivedInterlockEvent is not set.");
-
-                // TODO : 최소 2개 이상의 이벤트가 발생. 모두 처리되었을 때의 return 반환값에 따른 처리 테스트 필요
-                bool isValid = await ReceivedInterlockEvent.Invoke(interlockID, strMessage, rcmd).ConfigureAwait(true);
-
-                this.WriteBit(WRITE_B.INTERLOCK_5, true);
-                Task.Run(() => this.SleepWithDoEvent(1)).Wait();
-                this.WriteBit(WRITE_B.INTERLOCK_5, false);
-
-                if (isValid == false) return;
-
-                this.InterlockHistory.Add(new HistoryItem(DateTime.Now, strID, $"{rcmd} Interlock (RCMD={(int)rcmd}) : {strMessage}"));
+                // Set Interlock
+                string logMessage = $"{rcmd} Interlock (RCMD={(int)rcmd}) : {strMessage}";
+                this.InterlockHistory.Add(new HistoryItem(DateTime.Now, strID, logMessage));
                 if (this.InterlockHistory.Count > HISTORY_MAX_COUNT)
                 {
                     this.InterlockHistory.RemoveAt(0);
                 }
 
+                this.WriteBit(WRITE_B.INTERLOCK_5, true);
                 this.SetEqState(EnumInterlockState.On);
                 this.SetEqState(EnumMoveState.Pause);
+
+                if (this.ReceivedInterlockEvent == null)
+                    throw new Exception("ReceivedInterlockEvent is not set.");
+
+                // Show Popup + Signal Tower ON + Buzzor ON 
+                await Task.Run(() => ReceivedInterlockEvent.Invoke(interlockID, logMessage, rcmd)).ConfigureAwait(true);
+
+                // Interlock Released (=Clear Popup)
+                this.WriteBit(WRITE_B.INTERLOCK_5, false);
+
+                // TODO CHECK LHJ : 인터락 해제 시 사용할 Word 영역 및 Data 확인 및 수정 필요
+                this.WriteWord(WRITE_W.ASCII_60_104A_InterlockMessageConfirm, strMessage);
+                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
+
+                this.WaitBitSignal(READ_B.INTERLOCKCONFIRM_42, true, HANDSHAKE_TIMEOUT_SECONDS);
+                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
+
+                logMessage = $"{rcmd} Release Interlock (RCMD={(int)rcmd}) : {strMessage}";
+                this.InterlockHistory.Add(new HistoryItem(DateTime.Now, strID, logMessage));
+                if (this.InterlockHistory.Count > HISTORY_MAX_COUNT)
+                {
+                    this.InterlockHistory.RemoveAt(0);
+                }
+
+                if (this.ReleaseInterlockEvent == null)
+                    throw new Exception("RequestAutoNormalModeEvent is not set.");
+
+                this.ReleaseInterlockEvent?.Invoke(interlockID, rcmd, logMessage);
+
+                this.SetEqState(EnumInterlockState.Off);
+                this.SetEqState(EnumMoveState.Runnning);
+
+
             }
             catch
             {
@@ -968,23 +992,6 @@ namespace bim_base.data.CIM
         {
             try
             {
-                // TODO CHECK LHJ : 인터락 해제 시 사용할 Word 영역 및 Data 확인 및 수정 필요
-                this.WriteWord(WRITE_W.ASCII_60_104A_InterlockMessageConfirm, _message);
-                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
-
-                this.WaitBitSignal(READ_B.INTERLOCKCONFIRM_42, true, HANDSHAKE_TIMEOUT_SECONDS);
-                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
-
-                if(this.RequestAutoNormalModeEvent == null)
-                    throw new Exception("RequestAutoNormalModeEvent is not set.");
-
-                if(this.RequestAutoNormalModeEvent.Invoke() == false)
-                    throw new Exception("Failed to changing Auto-Normal Mode");
-
-
-                this.SetEqState(EnumInterlockState.Off);
-                this.SetEqState(EnumMoveState.Runnning);
-
                 return true;
             }
             catch
