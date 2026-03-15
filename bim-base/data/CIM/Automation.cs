@@ -29,6 +29,7 @@ namespace bim_base.data.CIM
         public delegate void OnReceivedOperatorCallEventHandler(int _OpCallNum, string _OpCallText);
         public delegate bool OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
         public delegate bool OnRequestAutoNormalModeEventHandler();
+        public delegate bool OnAutomationAlarmEventHandler();
 
         #endregion
 
@@ -101,6 +102,7 @@ namespace bim_base.data.CIM
         /// </summary>
         public event OnRequestAutoNormalModeEventHandler RequestAutoNormalModeEvent;
 
+        public event OnAutomationAlarmEventHandler AutomationAlarmEvent;
 
         #endregion
 
