@@ -284,8 +284,8 @@ namespace bim_base
 
             ngCountLabel.Text = main.outputCount().ToString();
             totalCountLabel.Text = main.outputCount().ToString();
-            lastTactLabel.Text = (main.getLastCycleTime()).ToString("0.0") + " s";
-            avgTactLabel.Text = (main.getAvgCycleTime()).ToString("0.0") + " s";
+            lastTactLabel.Text = (main.getLastCycleTime() / 1000.0d).ToString("0.0") + " s";
+            avgTactLabel.Text = (main.getAvgCycleTime() / 1000.0d).ToString("0.0") + " s";
 
             // TOWER LAMP
             towerR.BackColor = main.output(OUTPUT.TOWER_R) ? Color.DarkRed : Color.White;
