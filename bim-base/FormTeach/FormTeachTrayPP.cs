@@ -16,12 +16,14 @@ namespace bim_base
     public partial class FormTeachTrayPP : Form
     {
         ProcessMain main = null;
+        ModelInfo m_mc = null;
         ModelInfo m_model = null;
 
         public FormTeachTrayPP(ProcessMain procMain)
         {
             InitializeComponent();
             main = procMain;
+            m_mc = Common.MC_MODEL();
             m_model = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
 
             List<ExtAxis> axisList = new List<ExtAxis>();
@@ -40,10 +42,9 @@ namespace bim_base
 
             g.Selection.EnableMultiSelection = false;
 
-            g.setRowCol(5, 5, true, true);
+            g.setRowCol(5, 9, true, true);
             g.setTextAlignment(DevAge.Drawing.ContentAlignment.MiddleCenter);
-            g.setHeader(new string[] { "", "PP X [mm]", "BASE X [mm]", "PP Y [mm]", "PP Z [mm]" });
-            g.setHeaderColor(Color.Black, Color.White);
+            g.setHeader(new string[] { "", "MC X", "TEACH", "MC XB", "TEACH", "MC ZL", "TEACH",  "MC ZR", "TEACH" }); g.setHeaderColor(Color.Black, Color.White);
 
             List<string> rowList = new List<string>();
 
@@ -62,10 +63,26 @@ namespace bim_base
 
             ui_timer.Enabled = true;
         }
+        List<POS> getMcPosData()
+        {
+            List<POS> posList = new List<POS>();
+
+            POS WAIT = m_mc.teachData(TEACH_POS.MOLD_PP_WAIT);
+            POS LEFT = m_mc.teachData(TEACH_POS.MOLD_PP_LEFT);
+            POS RIGHT = m_mc.teachData(TEACH_POS.MOLD_PP_RIGHT);
+
+            posList.Add(WAIT);
+            posList.Add(LEFT);
+            posList.Add(RIGHT);
+
+            return posList;
+        }
+
 
         private List<POS> getPosData()
         {
             List<POS> posList = new List<POS>();
+
             POS WAIT = m_model.teachData(TEACH_POS.MOLD_PP_WAIT);
             POS LEFT = m_model.teachData(TEACH_POS.MOLD_PP_LEFT);
             POS RIGHT = m_model.teachData(TEACH_POS.MOLD_PP_RIGHT);
@@ -87,22 +104,33 @@ namespace bim_base
             double posZ2 = main.axis(AXIS.MOLD_PP_ZR).pos();
 
             g.setValue(1, 1, posX1.ToString("0.00"));
-            g.setValue(1, 2, posX2.ToString("0.00"));
-            g.setValue(1, 3, posZ1.ToString("0.00"));
-            g.setValue(1, 4, posZ2.ToString("0.00"));
-            g.setBackColor(1, 1, main.axis(AXIS.MOLD_PP_X).isMoving() ? Color.Lime : Color.White);
-            g.setBackColor(1, 2, main.axis(AXIS.BASE_X).isMoving() ? Color.Lime : Color.White);
-            g.setBackColor(1, 3, main.axis(AXIS.MOLD_PP_ZL).isMoving() ? Color.Lime : Color.White);
-            g.setBackColor(1, 4, main.axis(AXIS.MOLD_PP_ZR).isMoving() ? Color.Lime : Color.White);
+            g.setValue(1, 2, "-");
+            g.setValue(1, 3, posX2.ToString("0.00"));
+            g.setValue(1, 4, "-");
+            g.setValue(1, 5, posZ1.ToString("0.00"));
+            g.setValue(1, 6, "-");
+            g.setValue(1, 7, posZ2.ToString("0.00"));
+            g.setValue(1, 8, "-");
 
+            g.setBackColor(1, 1, main.axis(AXIS.MOLD_PP_X).isMoving() ? Color.Lime : Color.White);
+            g.setBackColor(1, 3, main.axis(AXIS.BASE_X).isMoving() ? Color.Lime : Color.White);
+            g.setBackColor(1, 5, main.axis(AXIS.MOLD_PP_ZL).isMoving() ? Color.Lime : Color.White);
+            g.setBackColor(1, 7, main.axis(AXIS.MOLD_PP_ZR).isMoving() ? Color.Lime : Color.White);
+
+            List<POS> mcList = getMcPosData();
             List<POS> posList = getPosData();
 
-            for (int i = 0; i < posList.Count; i++)
+            for (int i = 0; i < mcList.Count; i++)
             {
-                g.setValue(2 + i, 1, posList[i].x.ToString("0.00"));
-                g.setValue(2 + i, 2, posList[i].xB.ToString("0.00"));
-                g.setValue(2 + i, 3, posList[i].zL.ToString("0.00"));
-                g.setValue(2 + i, 4, posList[i].zR.ToString("0.00"));
+                g.setValue(2 + i, 1, mcList[i].x.ToString("0.00"));
+                g.setValue(2 + i, 3, mcList[i].xB.ToString("0.00"));
+                g.setValue(2 + i, 5, mcList[i].zL.ToString("0.00"));
+                g.setValue(2 + i, 7, mcList[i].zR.ToString("0.00"));
+
+                g.setValue(2 + i, 2, posList[i].x.ToString("0.00"));
+                g.setValue(2 + i, 4, posList[i].xB.ToString("0.00"));
+                g.setValue(2 + i, 6, posList[i].zL.ToString("0.00"));
+                g.setValue(2 + i, 8, posList[i].zR.ToString("0.00"));
             }
         }
 
@@ -110,16 +138,14 @@ namespace bim_base
         {
             POS pos = m_model.teachPos(target);
 
-            double tarX = pos.x;
-            double tarY = pos.y;
-            double tarZ = pos.z;
-#if false
-            if (tarX < 0) tarX = 0.0d;
-            if (tarY < 0) tarY = 0.0d;
-            if (tarZ < 0) tarZ = 0.0d;
-#endif
+            double tarX1 = pos.x;
+            double tarX2 = pos.xB;
+            double tarZ1 = pos.zL;
+            double tarZ2 = pos.zR;
+
             CMessageBox msgBox = new CMessageBox(Common.TITLE, "MOVE ?" +
-                "\r\n" + "X:" + tarX.ToString("0.00") + " Y:" + tarY.ToString("0.00") + " Z:" + tarZ.ToString("0.00"), MessageBoxButtons.OKCancel);
+                "\r\n" + "X:" + tarX1.ToString("0.00") + " XB:" + tarX2.ToString("0.00") 
+                + " ZL:" + tarZ1.ToString("0.00") + " ZR:" + tarZ2.ToString("0.00"), MessageBoxButtons.OKCancel);
             bool ret = msgBox.showDialog();
 
             if (ret == false)
@@ -153,52 +179,57 @@ namespace bim_base
         }
         private void xSave(int idx)
         {
-            TEACH_POS teachPos = (TEACH_POS.MOLD_PP_WAIT + idx - 2);  //FIXME@JW header, current 라인 제외
+            TEACH_POS teachPos = (TEACH_POS.MOLD_PP_WAIT + idx - 2);  
+
             if (checkIncludeEnum(teachPos) == false)
                 return;
 
+            POS mc = m_mc.teachPos(teachPos);
             POS pos = m_model.teachData(teachPos);
 
-            pos.x = Util.toDouble(motorPosGrid.cell(1, 1).Value.ToString());
+            pos.x = Util.toDouble(motorPosGrid.cell(1, 1).Value.ToString()) - mc.x;
             
             m_model.saveTeachPos(pos);
         }
 
         private void xbSave(int idx)
         {
-            TEACH_POS teachPos = (TEACH_POS.MOLD_PP_WAIT + idx - 2);  //FIXME@JW header, current 라인 제외
+            TEACH_POS teachPos = (TEACH_POS.MOLD_PP_WAIT + idx - 2);  
             if (checkIncludeEnum(teachPos) == false)
                 return;
 
+            POS mc = m_mc.teachPos(teachPos);
             POS pos = m_model.teachData(teachPos);
 
-            pos.xB = Util.toDouble(motorPosGrid.cell(1, 2).Value.ToString());
+            pos.xB = Util.toDouble(motorPosGrid.cell(1, 3).Value.ToString()) - mc.xB;
 
             m_model.saveTeachPos(pos);
         }
 
         private void z1Save(int idx)
         {
-            TEACH_POS teachPos = (TEACH_POS.MOLD_PP_WAIT + idx - 2);  //FIXME@JW header, current 라인 제외
+            TEACH_POS teachPos = (TEACH_POS.MOLD_PP_WAIT + idx - 2);  
             if (checkIncludeEnum(teachPos) == false)
                 return;
 
+            POS mc = m_mc.teachPos(teachPos);
             POS pos = m_model.teachData(teachPos);
 
-            pos.zL = Util.toDouble(motorPosGrid.cell(1, 3).Value.ToString());
+            pos.zL = Util.toDouble(motorPosGrid.cell(1, 5).Value.ToString()) - mc.zL;
             
             m_model.saveTeachPos(pos);
         }
 
         private void z2Save(int idx)
         {
-            TEACH_POS teachPos = (TEACH_POS.MOLD_PP_WAIT + idx - 2);  //FIXME@JW header, current 라인 제외
+            TEACH_POS teachPos = (TEACH_POS.MOLD_PP_WAIT + idx - 2);  
             if (checkIncludeEnum(teachPos) == false)
                 return;
 
+            POS mc = m_mc.teachPos(teachPos);
             POS pos = m_model.teachData(teachPos);
 
-            pos.zR = Util.toDouble(motorPosGrid.cell(1, 4).Value.ToString());
+            pos.zR = Util.toDouble(motorPosGrid.cell(1, 7).Value.ToString()) - mc.zR;
 
             m_model.saveTeachPos(pos);
         }
@@ -256,25 +287,6 @@ namespace bim_base
                 return;
 
             movePosition(teachPos, ACT.WAIT);
-        }
-
-        private void zUpButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void zDownButton_Click(object sender, EventArgs e)
-        {
-            int row = getGridSelectPos();
-
-            if (row < 2)
-                return;
-
-            TEACH_POS teachPos = (TEACH_POS)(row - 2);  //FIXME@JW header, current 라인 제외
-            if (checkIncludeEnum(teachPos) == false)
-                return;
-
-            POS pos = m_model.teachPos(teachPos);
         }
 
         private void ui_timer_Tick(object sender, EventArgs e)
