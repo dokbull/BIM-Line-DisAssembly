@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static bim_base.data.CIM.CIMEnumeric;
 
 namespace bim_base
 {
@@ -31,8 +32,6 @@ namespace bim_base
 
             updateIOMark();
 
-            // TODO CHECK LHJ to HJP : 경알람 추가시 처리 필요
-            Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.HeavyAlarm, code, desc);
         }
 
         private void alarmResetButton_Click(object sender, EventArgs e)
@@ -49,8 +48,6 @@ namespace bim_base
         {
             if (main.isAlarm() == false)
             {
-                Automation.Instance.AlarmReleased(main.lastAlarmCode(), main.lastAlarmDesc());
-
                 DialogResult = DialogResult.OK;
                 Close();
             }

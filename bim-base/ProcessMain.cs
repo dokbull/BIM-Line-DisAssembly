@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using static bim_base.data.CIM.CIMEnumeric;
 
 namespace bim_base
 {
@@ -377,6 +378,9 @@ namespace bim_base
                 setBuzzerOn();
                 writeBottomHistory(Alarm.messageEng(alarm));
             }
+
+            // TODO CHECK LHJ to HJP : 경알람 추가시 처리 필요
+            Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.HeavyAlarm, this.m_lastAlarm.code, this.m_lastAlarm.desc);
         }
 
         private void setBuzzerOn() { setOutput(OUTPUT.BUZZER_1, true); }
@@ -454,6 +458,8 @@ namespace bim_base
             m_lastAlarm = null;
 
             FormMain.inst().clearAlarm();
+
+            Automation.Instance.AlarmReleased(this.m_lastAlarm.code, this.m_lastAlarm.desc);
         }
 
         public int lastAlarmCode()
@@ -705,6 +711,19 @@ namespace bim_base
 
             m_isAuto = value;
             Automation.Instance.EqControlMode = (this.m_isAuto ? CIMEnumeric.EnumEqControlMode.Auto : CIMEnumeric.EnumEqControlMode.Manual);
+            switch (Automation.Instance.EqControlMode)
+            {
+                case EnumEqControlMode.Auto: 
+                    Automation.Instance.SetEqState(EnumMoveState.Runnning);
+                    break;
+                case EnumEqControlMode.Manual: 
+                    Automation.Instance.SetEqState(EnumMoveState.Pause);
+
+                    // TODO CHECK LHJ -> HJP : EnmumEqStopByOperatorType.Teaching 추가 필요
+                    Automation.Instance.EqStopByOperator(EnmumEqStopByOperatorType.Manual);
+                    break;
+                default: break;
+            }
         }
 
         public void pause()

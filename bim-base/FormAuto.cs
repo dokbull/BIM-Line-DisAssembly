@@ -236,6 +236,7 @@ namespace bim_base
                 main.resume();
                 main.setAuto(true);
             }
+
         }
 
         private void StopButton_Click(object sender, EventArgs e)
