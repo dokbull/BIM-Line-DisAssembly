@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B4F572B6-C190-49C4-A64D-6F58012DD886}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Lib.UI.Generic</RootNamespace>
+    <AssemblyName>Library.UI.Generic</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ControlFunc\DarkModeFunc.cs" />
+    <Compile Include="ControlFunc\PropertyGridFunc.cs" />
+    <Compile Include="DarkMode\Common\EnumMessageBoxButtons.cs" />
+    <Compile Include="DarkMode\Common\EnumMessageBoxDefaultButton.cs" />
+    <Compile Include="DarkMode\Controls\DarkExpandPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkExpandPanel.Designer.cs">
+      <DependentUpon>DarkExpandPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkSplitPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkSplitPanel.Designer.cs">
+      <DependentUpon>DarkSplitPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkProgressBar.Designer.cs">
+      <DependentUpon>DarkProgressBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkPropertyGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkPropertyGrid.Designer.cs">
+      <DependentUpon>DarkPropertyGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkMenuStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkMenuStrip.Designer.cs">
+      <DependentUpon>DarkMenuStrip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkNumericUpDown.Designer.cs">
+      <DependentUpon>DarkNumericUpDown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkGroupBox .cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkGroupBox .Designer.cs">
+      <DependentUpon>DarkGroupBox .cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkTableLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkTableLayoutPanel.Designer.cs">
+      <DependentUpon>DarkTableLayoutPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkFlowLayoutPanel .cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkFlowLayoutPanel .Designer.cs">
+      <DependentUpon>DarkFlowLayoutPanel .cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkPictureBox.Designer.cs">
+      <DependentUpon>DarkPictureBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkComboBox.Designer.cs">
+      <DependentUpon>DarkComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkCheckBox.Designer.cs">
+      <DependentUpon>DarkCheckBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkTabControl.Designer.cs">
+      <DependentUpon>DarkTabControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkRadioButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkRadioButton.Designer.cs">
+      <DependentUpon>DarkRadioButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkButton.Designer.cs">
+      <DependentUpon>DarkButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkLabel.Designer.cs">
+      <DependentUpon>DarkLabel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkMaskedTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkMaskedTextBox.Designer.cs">
+      <DependentUpon>DarkMaskedTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkPanel.Designer.cs">
+      <DependentUpon>DarkPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkTextBox.Designer.cs">
+      <DependentUpon>DarkTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkFormTitle.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Controls\DarkFormTitle.Designer.cs">
+      <DependentUpon>DarkFormTitle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Controls\Parts\EnumTitleButton.cs" />
+    <Compile Include="DarkMode\Controls\Parts\EnumTitleOptionAlignment.cs" />
+    <Compile Include="DarkMode\Forms\DarkForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Forms\DarkForm.Designer.cs">
+      <DependentUpon>DarkForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Forms\DarkLoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Forms\DarkLoginForm.Designer.cs">
+      <DependentUpon>DarkLoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DarkMode\Forms\DarkMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DarkMode\Forms\DarkMessageBox.Designer.cs">
+      <DependentUpon>DarkMessageBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Icon\IconImages.cs" />
+    <Compile Include="Icon\EnumMessageBoxIcons.cs" />
+    <Compile Include="Icon\EnumProcessingIcons.cs" />
+    <Compile Include="Icon\EnumSettingIcons.cs" />
+    <Compile Include="Icon\EnumSensorIcons.cs" />
+    <Compile Include="Icon\EnumLoginKeyIcons.cs" />
+    <Compile Include="Icon\EnumPermissionIcons.cs" />
+    <Compile Include="Icon\EnumFileSaveIcons.cs" />
+    <Compile Include="Icon\EnumDirectoryIcons.cs" />
+    <Compile Include="Icon\EnumIconsAll.cs" />
+    <Compile Include="DarkMode\Common\iDarkMode.cs" />
+    <Compile Include="Icon\EnumPrintIcons.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DarkMode\Controls\DarkExpandPanel.resx">
+      <DependentUpon>DarkExpandPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkMaskedTextBox.resx">
+      <DependentUpon>DarkMaskedTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkSplitPanel.resx">
+      <DependentUpon>DarkSplitPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkPropertyGrid.resx">
+      <DependentUpon>DarkPropertyGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkMenuStrip.resx">
+      <DependentUpon>DarkMenuStrip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkNumericUpDown.resx">
+      <DependentUpon>DarkNumericUpDown.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkGroupBox .resx">
+      <DependentUpon>DarkGroupBox .cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkTableLayoutPanel.resx">
+      <DependentUpon>DarkTableLayoutPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkFlowLayoutPanel .resx">
+      <DependentUpon>DarkFlowLayoutPanel .cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkPictureBox.resx">
+      <DependentUpon>DarkPictureBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkComboBox.resx">
+      <DependentUpon>DarkComboBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkCheckBox.resx">
+      <DependentUpon>DarkCheckBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkRadioButton.resx">
+      <DependentUpon>DarkRadioButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkButton.resx">
+      <DependentUpon>DarkButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkPanel.resx">
+      <DependentUpon>DarkPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkTabControl.resx">
+      <DependentUpon>DarkTabControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkFormTitle.resx">
+      <DependentUpon>DarkFormTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Controls\DarkTextBox.resx">
+      <DependentUpon>DarkTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Forms\DarkForm.resx">
+      <DependentUpon>DarkForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Forms\DarkLoginForm.resx">
+      <DependentUpon>DarkLoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DarkMode\Forms\DarkMessageBox.resx">
+      <DependentUpon>DarkMessageBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icons\Check.ico" />
+    <Content Include="Resources\Icons\DirectoryError.ico" />
+    <Content Include="Resources\Icons\DirectoryOK.ico" />
+    <Content Include="Resources\Icons\DirectorySearch.ico" />
+    <Content Include="Resources\Icons\Error.ico" />
+    <Content Include="Resources\Icons\EXIT.png" />
+    <Content Include="Resources\Icons\FileSave.ico" />
+    <Content Include="Resources\Icons\FileSaveError.ico" />
+    <Content Include="Resources\Icons\FileSaveInfomation.ico" />
+    <Content Include="Resources\Icons\FileSaveOK.ico" />
+    <Content Include="Resources\Icons\FileSaveWarning.ico" />
+    <Content Include="Resources\Icons\Information.ico" />
+    <Content Include="Resources\Icons\Lock.ico" />
+    <Content Include="Resources\Icons\LockError.ico" />
+    <Content Include="Resources\Icons\LockInformation.ico" />
+    <Content Include="Resources\Icons\LockOK.ico" />
+    <Content Include="Resources\Icons\LocKOpen.ico" />
+    <Content Include="Resources\Icons\LockSetting.png" />
+    <Content Include="Resources\Icons\LockWarning.ico" />
+    <Content Include="Resources\Icons\LoginKey.ico" />
+    <Content Include="Resources\Icons\LoginKeyAdd.ico" />
+    <Content Include="Resources\Icons\LoginKeyError.ico" />
+    <Content Include="Resources\Icons\OK.png" />
+    <Content Include="Resources\Icons\Pause.ico" />
+    <Content Include="Resources\Icons\Print.ico" />
+    <Content Include="Resources\Icons\PrintError.ico" />
+    <Content Include="Resources\Icons\PrintInformation.ico" />
+    <Content Include="Resources\Icons\PrintOK.ico" />
+    <Content Include="Resources\Icons\PrintWarning.ico" />
+    <Content Include="Resources\Icons\Question.ico" />
+    <Content Include="Resources\Icons\QurestionWithInformation.ico" />
+    <Content Include="Resources\Icons\SensorOFF.png" />
+    <Content Include="Resources\Icons\SensorON.png" />
+    <Content Include="Resources\Icons\Setting.ico" />
+    <Content Include="Resources\Icons\SettingError.ico" />
+    <Content Include="Resources\Icons\SettingInformation.ico" />
+    <Content Include="Resources\Icons\SettingOK.ico" />
+    <Content Include="Resources\Icons\SettingSearch.ico" />
+    <Content Include="Resources\Icons\SettingWarning.ico" />
+    <Content Include="Resources\Icons\StarProcessing.ico" />
+    <Content Include="Resources\Icons\Start.ico" />
+    <Content Include="Resources\Icons\Stop.ico" />
+    <Content Include="Resources\Icons\Stopped.ico" />
+    <Content Include="Resources\Icons\StopSign.ico" />
+    <Content Include="Resources\Icons\TalkAbout.ico" />
+    <Content Include="Resources\Icons\Warning.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Library.Generic\Library.Generic.csproj">
+      <Project>{6aacf9f5-f8ba-47c7-901b-e797f1b28d5d}</Project>
+      <Name>Library.Generic</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

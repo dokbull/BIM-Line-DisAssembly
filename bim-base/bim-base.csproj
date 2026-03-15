@@ -76,12 +76,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Library.Generic">
-      <HintPath>..\packages\dokbull.Library\Library.Generic.dll</HintPath>
-    </Reference>
-    <Reference Include="Library.UI.Generic">
-      <HintPath>..\packages\dokbull.Library\Library.UI.Generic.dll</HintPath>
-    </Reference>
     <Reference Include="MelsecLibrary">
       <HintPath>..\MelsecLibrary.dll</HintPath>
     </Reference>
@@ -1375,6 +1369,16 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Library.Generic\Library.Generic.csproj">
+      <Project>{6aacf9f5-f8ba-47c7-901b-e797f1b28d5d}</Project>
+      <Name>Library.Generic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Library.UI.Generic\Library.UI.Generic.csproj">
+      <Project>{b4f572b6-c190-49c4-a64d-6f58012dd886}</Project>
+      <Name>Library.UI.Generic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
