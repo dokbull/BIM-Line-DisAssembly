@@ -76,6 +76,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Library.Generic">
+      <HintPath>..\packages\dokbull.Library\Library.Generic.dll</HintPath>
+    </Reference>
+    <Reference Include="Library.UI.Generic">
+      <HintPath>..\packages\dokbull.Library\Library.UI.Generic.dll</HintPath>
+    </Reference>
     <Reference Include="MelsecLibrary">
       <HintPath>..\MelsecLibrary.dll</HintPath>
     </Reference>

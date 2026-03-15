@@ -98,7 +98,7 @@ namespace bim_base.data.CIM
             Manual = 2,
         }
 
-        public enum EnumSampleProcessingState
+        public enum EnumProcessingState
         {
             /// <summary>
             /// 설비가 샘플(CELL)을 처리하지 않고 있는 상태
@@ -108,6 +108,13 @@ namespace bim_base.data.CIM
             /// 설비가 샘플(CELL)을 처리하고 있는 상태
             /// </summary>
             Run = 2,
+        }
+
+        public enum EnmumEqStopByOperatorType
+        {
+            Alarm = 1,
+            Manual = 2,
+            Teaching = 3,
         }
     }
 }

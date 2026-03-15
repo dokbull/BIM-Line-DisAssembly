@@ -1,4 +1,5 @@
 ﻿using lib.plc;
+using Lib.UI.Generic.DarkMode.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,6 +84,8 @@ namespace bim_base.data.CIM
 
         public EnumEqControlMode EqControlMode { get; set; } = EnumEqControlMode.Manual;
 
+
+
         #endregion
 
         #region Event
@@ -97,6 +100,8 @@ namespace bim_base.data.CIM
         /// 인터락 모드 해제 및 AUTO로 정상 가등 모드로 운영 요청
         /// </summary>
         public event OnRequestAutoNormalModeEventHandler RequestAutoNormalModeEvent;
+
+
         #endregion
 
         #region Private Method
@@ -328,7 +333,7 @@ namespace bim_base.data.CIM
 
                 bool alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
-                await this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
+                await this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true); ;
 
             }
             catch
@@ -475,7 +480,7 @@ namespace bim_base.data.CIM
             tasks.Add(Task.Run(() => this.RequestOperatorCall()));
             tasks.Add(Task.Run(() => this.RequestInterlcokState()));
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).ConfigureAwait(true); ;
 
             this.IsRun = false;
         }
@@ -597,7 +602,7 @@ namespace bim_base.data.CIM
             }
             ;
 
-            bool asyncResult = await Task.Run(() => function());
+            bool asyncResult = await Task.Run(() => function()).ConfigureAwait(true);
 
             if (_isOnError && asyncResult == false)
             {
@@ -704,7 +709,7 @@ namespace bim_base.data.CIM
             try
             {
                 this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
-                await this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_SECONDS);
+                await this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true); 
 
             }
             catch
@@ -722,7 +727,7 @@ namespace bim_base.data.CIM
                 // TODO CHECK LHJ : Operator Call은 ID가 존재하는데, ID는 어떻게 관리할지? 일단은 메시지만 전달하는 형태로 구현
 
                 this.WriteWord(WRITE_W.ASCII_60_259C_UnitOPCallConfirmOPCallMessage, _message);
-                await this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_SECONDS);
+                await this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true);
 
             }
             catch
@@ -819,11 +824,70 @@ namespace bim_base.data.CIM
             // TODO CHECK LHJ : Alarm 조회 기능에 대한 시나리오 구현 필요한지 확인
         }
 
+        /// <summary>
+        /// Safety Door Open 등과 같이 설비가 비정상적으로 정지해야 하는 상황에서 터치화면에 팝업 메세지를 띄우고, 설비를 정지시키는 기능
+        /// </summary>
+        public void EqStopByOperator(EnmumEqStopByOperatorType _stopType)
+        {
+            this.WriteBit(WRITE_B.TPMLOSSREADY_19, true);
+
+            // Loss Code Popup
+            Dictionary<string, string> itemsLossCode = new Dictionary<string, string>();
+            foreach (var item in Enum.GetNames(typeof(EnmumEqStopByOperatorType)))
+            {
+                EnmumEqStopByOperatorType _type = (EnmumEqStopByOperatorType)Enum.Parse(typeof(EnmumEqStopByOperatorType), item);
+
+                itemsLossCode.Add($"{(int)_type}", $"{_type}");
+            }
+
+            DarkMessageBox msgPopup = DarkMessageBox.CreateMessageBox(
+                "TPM Loss", 
+                Lib.UI.Generic.Icons.EnumMessageBoxIcons.Warning, 
+                "Loss Code를 선택하세요", 
+                Lib.UI.Generic.DarkMode.EnumMessageBoxButtons.OK,
+                itemsLossCode);
+
+            msgPopup.WindowState = FormWindowState.Maximized;
+            msgPopup.MaximumSize = new System.Drawing.Size(1024, 628);
+            msgPopup.StartPosition = FormStartPosition.CenterScreen;
+            msgPopup.TopMost = true;
+            DialogResult result = msgPopup.ShowDialog();
+
+            this.WriteWord(WRITE_W.DEC_2_120F_TMPLossCode, msgPopup.SelectedItem.ID);
+            this.WriteWord(WRITE_W.ASCII_20_1211_TMPLossDescp, msgPopup.SelectedItem.Text);
+
+            msgPopup.Close();
+
+            this.WaitBitSignal(READ_B.TPMLOSSREADY_19, true, HANDSHAKE_TIMEOUT_SECONDS);
+
+            this.WriteBit(WRITE_B.TPMLOSSREADY_19, false);
+        }
+
 
         #endregion
 
         #region Public Method : CIM Sample Processing 
 
+        public async void LoadingCellTrackIn()
+        {
+            // TODO 어떤 Data를 써야 할지 확인
+            //this.WriteWord(WRITE_W.trackin)
+
+            Task<bool> tResult = this.HandShakeSignal(WRITE_B.CELLSTARTPORT1_28, true, READ_B.CELLSTARTPORT1_28, true, HANDSHAKE_TIMEOUT_SECONDS);
+            await tResult.ConfigureAwait(true);
+
+        }
+
+        public async void UnloadingCellTrackOut()
+        {
+            // TODO 어떤 Data를 써야 할지 확인
+            //this.WriteWord(WRITE_W.trackin)
+
+            // TODO 어떤 DV Data를 써야 할지 확인
+
+            Task<bool> tResult = this.HandShakeSignal(WRITE_B.CELLCOMPPORT1_34, true, READ_B.CELLCOMPPORT1_34, true, HANDSHAKE_TIMEOUT_SECONDS);
+            await tResult.ConfigureAwait(true);
+        }
 
         #endregion
 
@@ -1041,7 +1105,7 @@ namespace bim_base.data.CIM
 
                 _ = Task.Run(async () =>
                 {
-                    await Task.Delay(CommandHoldTimeMs);
+                    await Task.Delay(CommandHoldTimeMs).ConfigureAwait(true);
                     m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, false);
                 });
             }
@@ -1071,7 +1135,7 @@ namespace bim_base.data.CIM
 
                 _ = Task.Run(async () =>
                 {
-                    await Task.Delay(CommandHoldTimeMs);
+                    await Task.Delay(CommandHoldTimeMs).ConfigureAwait(true);
                     m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
                 });
             }
