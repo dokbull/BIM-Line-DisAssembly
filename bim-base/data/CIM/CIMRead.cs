@@ -1328,6 +1328,18 @@ public class CIMRead
         }
     }
 
+    // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
+    public void setBit(int index, bool value)
+    {
+        m_bit[index] = value;
+    }
+
+    // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
+    public void setBit(READ_B addr, bool value)
+    {
+        setBit((int)addr, value);
+    }
+
     public bool[] data()
     {
         return m_bit;

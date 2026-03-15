@@ -454,6 +454,12 @@ namespace bim_base.data.CIM
             m_Writer.setBit(addr, value);
         }
 
+        // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
+        public void WriteBit(CIMRead.READ_B addr, bool value)
+        {
+            m_Reader.setBit(addr, value);
+        }
+
         public bool ReadBit(CIMWrite.WRITE_B addr)
         {
             return m_Writer.bit(addr);

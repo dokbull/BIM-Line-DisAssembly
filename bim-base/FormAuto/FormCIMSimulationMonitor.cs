@@ -93,6 +93,29 @@ namespace bim_base
 
         private void gridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+            // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
+            if (e.ColumnIndex == 1)
+            {
+                DataGridViewCell inputValueCell = gridView.Rows[e.RowIndex].Cells[0];
+
+                CMessageBox msgBox = new CMessageBox(Common.TITLE, inputValueCell.Value.ToString() + " change value?", MessageBoxButtons.OKCancel);
+                bool ret = msgBox.showDialog();
+
+                if (ret == false)
+                    return;
+
+                bool value = true;
+
+                if (inputValueCell.Style.BackColor == Color.Lime)
+                    value = false;
+
+                int idx = e.RowIndex;
+
+                CIMRead.READ_B addr = (CIMRead.READ_B)idx;
+
+                main.setCimBit(addr, value);
+            }
+
             if (e.ColumnIndex == 3)
             {
                 DataGridViewCell outputValueCell = gridView.Rows[e.RowIndex].Cells[2];

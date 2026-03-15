@@ -1059,6 +1059,12 @@ namespace bim_base
             Automation.Instance.WriteBit(addr, value);
         }
 
+        // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
+        public void setCimBit(CIMRead.READ_B addr, bool value)
+        {
+            Automation.Instance.WriteBit(addr, value);
+        }
+
         public bool readCimBit(CIMWrite.WRITE_B addr)
         {
             return Automation.Instance.ReadBit(addr);
