@@ -10,6 +10,7 @@ namespace bim_base.data.CIM
     {
         internal enum EnumRequestProcState
         {
+            Alive,
             TerminalDisplay,
             OperatorCall,
             RequestInterlcokState,
@@ -95,6 +96,18 @@ namespace bim_base.data.CIM
             /// 설비가 수동 운전 모드인 경우
             /// </summary>
             Manual = 2,
+        }
+
+        public enum EnumSampleProcessingState
+        {
+            /// <summary>
+            /// 설비가 샘플(CELL)을 처리하지 않고 있는 상태
+            /// </summary>
+            Idle = 1,
+            /// <summary>
+            /// 설비가 샘플(CELL)을 처리하고 있는 상태
+            /// </summary>
+            Run = 2,
         }
     }
 }

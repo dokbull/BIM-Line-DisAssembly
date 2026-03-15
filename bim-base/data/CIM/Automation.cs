@@ -319,6 +319,27 @@ namespace bim_base.data.CIM
             return value;
         }
 
+        private async void Alive()
+        {
+            try
+            {
+                if (this.AddRequestProcState(EnumRequestProcState.Alive) == false)
+                    return;
+
+                bool alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
+
+                await this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
+
+            }
+            catch
+            {
+            }
+            finally
+            {
+                this.RemoveRequestProcState(EnumRequestProcState.Alive);
+            }
+        }
+
         #endregion
 
         #region Private Method : CIM Request
@@ -439,7 +460,7 @@ namespace bim_base.data.CIM
 
         #region Public Method
 
-        public void RunScan()
+        public async void RunScan()
         {
             if (this.IsRun) return;
 
@@ -447,10 +468,14 @@ namespace bim_base.data.CIM
 
             this.SyncCommCCIE();
 
-            Task.Run(() => this.RequestTerminalDisplay());
-            Task.Run(() => this.RequestOperatorCall());
-            Task.Run(() => this.RequestInterlcokState());
+            List<Task> tasks = new List<Task>();
 
+            tasks.Add(Task.Run(() => this.Alive()));
+            tasks.Add(Task.Run(() => this.RequestTerminalDisplay()));
+            tasks.Add(Task.Run(() => this.RequestOperatorCall()));
+            tasks.Add(Task.Run(() => this.RequestInterlcokState()));
+
+            await Task.WhenAll(tasks);
 
             this.IsRun = false;
         }
@@ -620,15 +645,6 @@ namespace bim_base.data.CIM
 
             this.IsInitialized = true;
 
-            bool alive = false;
-            
-            while (this.IsInitialized)
-            {
-                alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
-
-                Task<bool> asyncAlive = Task.Run(() => this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS));
-                asyncAlive.Wait();
-            }
             return true;
         }    
         
@@ -798,10 +814,18 @@ namespace bim_base.data.CIM
             this.SetEqState(EnumMoveState.Runnning);
         }
 
-        // TODO CHECK LHJ : Alarm 조회 기능에 대한 시나리오 구현 필요한지 확인
+        public void AlarmListRequest()
+        {
+            // TODO CHECK LHJ : Alarm 조회 기능에 대한 시나리오 구현 필요한지 확인
+        }
+
 
         #endregion
 
+        #region Public Method : CIM Sample Processing 
+
+
+        #endregion
 
         #region Public Method : CIM RMS
         int CommandHoldTimeMs = 5000;
