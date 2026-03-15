@@ -41,6 +41,7 @@ namespace bim_base.data.CIM
         #region Constants
 
         private const int HANDSHAKE_TIMEOUT_SECONDS = 5;
+        private const int BIT_COUNT = 16;
 
         #endregion
 
@@ -77,6 +78,7 @@ namespace bim_base.data.CIM
 
         public List<EnumRequestProcState> RequestProcStateList { get; private set; } = new List<EnumRequestProcState>();
 
+        public EnumAlarmState AlarmState { get; private set; } = EnumAlarmState.None;
 
         #endregion
 
@@ -288,6 +290,30 @@ namespace bim_base.data.CIM
 
 
             this.RequestProcStateList.Remove(state);
+        }
+
+
+        private int BitsToInt(List<bool> _bits, bool _lsbFirst = true)
+        {
+            if (_bits == null) throw new ArgumentNullException(nameof(_bits));
+            if (_bits.Count != BIT_COUNT) throw new ArgumentException("bits must have length 16", nameof(_bits));
+
+            int value = 0;
+            if (_lsbFirst)
+            {
+                for (int i = 0; i < BIT_COUNT; i++)
+                {
+                    if (_bits[i]) value |= (1 << i); // index 0 -> bit0(LSB)
+                }
+            }
+            else
+            {
+                for (int i = 0; i < BIT_COUNT; i++)
+                {
+                    if (_bits[i]) value |= (1 << ((BIT_COUNT - 1) - i)); // index 0 -> bit15(MSB)
+                }
+            }
+            return value;
         }
 
         #endregion
@@ -628,7 +654,7 @@ namespace bim_base.data.CIM
 
 
 
-#endregion
+        #endregion
 
         #region Public Method : CIM Equipment State
 
@@ -721,43 +747,58 @@ namespace bim_base.data.CIM
             }
         }
 
-        public void AlarmOccured(ALARM _alarmID)
+        public void AlarmOccured(ALARM _alarmID, EnumAlarmLevel _alarmLevel)
         {
-            //const int BIT_COUNT = 16;
-            //int idx = (int)_alarmID;
 
-            //try
-            //{
-            //    if (idx < 0 || idx > Enum.GetNames(typeof(ALARM)).Length) 
-            //        throw new ArgumentOutOfRangeException($"Failed to report alarm. Becauese Invalid AlarmID {_alarmID}.{nameof(_alarmID)}");
+            if ((int)_alarmID < 0 || (int)_alarmID > Enum.GetNames(typeof(ALARM)).Length)
+                throw new ArgumentOutOfRangeException($"Failed to report alarm. Becauese Invalid AlarmID {_alarmID}.{nameof(_alarmID)}");
 
-            //    this.WriteWord(WRITE_W.alarm)
-            //}
-            //catch
-            //{
+            int wordIDX = (int)_alarmID / BIT_COUNT;
+            int bitIDX = (int)_alarmID % BIT_COUNT;
+            List<bool> wordToBits = new List<bool>();
 
-            //}
+            // 모든 비트를 false로 설정하고, 해당 인덱스만 true로 설정
+            for (int i = 0; i < BIT_COUNT; i++) //for (int i = BIT_COUNT - 1; i >= 0; i--) 
+            {
+                wordToBits.Add(i == bitIDX);
+            }
 
-           
-            //// 연속된 WRITE_B 열거값의 시작값(실제 이름으로 교체)
-            //int baseWriteB = (int)WRITE_B.ALARMBIT_0;
+            // TODO CHECK LHJ : bit 순서가 역순인지 여부 확인 필요
+            int writeValue = this.BitsToInt(wordToBits);
 
-            //// 모든 비트를 false로 설정하고, 해당 인덱스만 true로 설정
-            //for (int i = 0; i < BIT_COUNT; i++)
-            //{
-            //    var bitAddr = (WRITE_B)(baseWriteB + i);
-            //    this.WriteBit(bitAddr, i == idx);
-            //}
+            this.WriteWord(WRITE_W.BIT_400_CAD4_Alarm, $"{writeValue}");
 
-            //this.WriteWord(WRITE_W.ASCII_10_1040_AlarmID, idx.ToString());
-            //this.WriteWord(WRITE_W.ASCII_60_104A_AlarmMessage, _alarmID.ToString());
+            switch (_alarmLevel)
+            {
+                case EnumAlarmLevel.HeavyAlarm:
+                    this.AlarmState = EnumAlarmState.HeavyAlarm;
+                    this.SetEqState(EnumAvailabilityState.Down);
+                    this.SetEqState(EnumMoveState.Pause);
+                    break;
+                case EnumAlarmLevel.LightAlarm:
+                default:
+                    this.AlarmState = EnumAlarmState.LightAlarm;
+                    break;
+            }
 
-            //this.WriteBit(WRITE_B.ALARMSEND_43, true);
-            //Task.Run(() => this.SleepWithDoEvent(1)).Wait();
-            //this.WriteBit(WRITE_B.ALARMSEND_43, false);
         }
 
+        public void AlarmReleased(ALARM _alarmID)
+        {
+            
+            // TODO CHECK LHJ : 주소 확인, 어떤 Data를 작성해야 할지 확인
+            this.WriteWord(WRITE_W.BIT_400_CAD4_Alarm, $"{0}");
+
+            this.AlarmState = EnumAlarmState.None;
+
+            this.SetEqState(EnumAvailabilityState.Up);
+            this.SetEqState(EnumMoveState.Runnning);
+        }
+
+        // TODO CHECK LHJ : Alarm 조회 기능에 대한 시나리오 구현 필요한지 확인
+
         #endregion
+
 
         #region Public Method : CIM RMS
 

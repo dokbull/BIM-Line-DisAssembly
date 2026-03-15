@@ -70,5 +70,19 @@ namespace bim_base.data.CIM
             StepStop = 13,
             OWNStop = 14,
         }
+
+        public enum EnumAlarmLevel
+        {
+            //None = 0, : 0사용 불가
+            LightAlarm = 1,
+            HeavyAlarm = 2,
+        }
+
+        public enum EnumAlarmState
+        {
+            None = 0, 
+            LightAlarm = EnumAlarmLevel.LightAlarm,
+            HeavyAlarm = EnumAlarmLevel.HeavyAlarm,
+        }
     }
 }
