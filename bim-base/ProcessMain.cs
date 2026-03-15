@@ -923,6 +923,15 @@ namespace bim_base
         }
 
         /// <summary>
+        /// return at Tact Time List (max 30)
+        /// </summary>
+        /// <returns></returns>
+        public List<long>tactTimeList()
+        {
+            return m_tactTimeList;
+        }
+
+        /// <summary>
         /// return at elasped Tact Time. (ms)
         /// </summary>
         /// <returns></returns>
