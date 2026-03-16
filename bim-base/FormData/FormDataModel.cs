@@ -29,29 +29,29 @@ namespace bim_base
         {
             modelList.Items.Clear();
 
-            List<string> items = new List<string>();
-
             for (int i = 0; i < Common.MODEL.Count; i++)
             {
                 ModelInfo INFO = Common.MODEL[i];
 
-                items.Add(INFO.modelName());
+                if (INFO.isUse() == true)
+                {
+                    modelList.Items.Add(INFO.modelName());
+                }
             }
-
-            for (int i = 0; i < items.Count; i++)
-                modelList.Items.Add(items[i]);
 
             int count = modelList.Items.Count;
 
             if (count > 0)
             {
+                ModelInfo CURR_MODEL = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
+
                 int index = 0;
 
                 for (int i = 0; i < count; i++)
                 {
                     string name = modelList.Items[i].ToString();
 
-                    if (Conf.CURR_MODEL_IDX == i)
+                    if (name == CURR_MODEL.modelName())
                     {
                         index = i;
                         break;
@@ -59,20 +59,21 @@ namespace bim_base
                 }
 
                 modelList.SelectedIndex = index;
-                currentModelLabel.Text = Common.MODEL_INFO(Conf.CURR_MODEL_IDX).modelName();
-
-                uiTimer.Enabled = true;
+                currentModelLabel.Text = CURR_MODEL.modelName();
             }
         }
 
         private void changeButton_Click(object sender, EventArgs e)
         {
-            int idx = modelList.SelectedIndex;
-            int modelIdx = Conf.CURR_MODEL_IDX;
+            string name = newModelName.Text;
 
-            if (idx == modelIdx)
+            ModelInfo selModel = Common.MODEL_INFO(name);
+
+            int modelIdx = selModel.index();
+
+            if (Conf.CURR_MODEL_IDX == modelIdx)
             {
-                CMessageBox errMsg = new CMessageBox(Common.TITLE, "SAME NAME." , MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
+                CMessageBox errMsg = new CMessageBox(Common.TITLE, "SAME MODEL INDEX." , MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
                 errMsg.ShowDialog();
                 return;
             }
@@ -81,25 +82,17 @@ namespace bim_base
             if (msgBox.ShowDialog() != DialogResult.OK)
                 return;
 
-            Conf.CURR_MODEL_IDX = idx;
-            currentModelLabel.Text = Common.MODEL_INFO(idx).modelName();
+            Conf.CURR_MODEL_IDX = modelIdx;
+            currentModelLabel.Text = Common.MODEL_INFO(modelIdx).modelName();
 
-            CMessageBox resMsg = new CMessageBox(Common.TITLE, "SUCCESS " + idx, MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
+            CMessageBox resMsg = new CMessageBox(Common.TITLE, "SUCCESS", MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
             resMsg.ShowDialog();
 
-            main.writeSetupLog("FormSubDataModel::changeButton_Click name:" + idx + " bfModel:" + modelIdx);
-
-            refreshModelName();
+            main.writeSetupLog("FormSubDataModel::changeButton_Click name:" + selModel.modelName());
         }
 
         private void newModelName_Click(object sender, EventArgs e)
         {
-            FormKeyboard dlg = new FormKeyboard();
-            DialogResult res = dlg.ShowDialog();
-            if (res == DialogResult.OK)
-            {
-                newModelName.Text = dlg.getKeyword();
-            }
         }
 
         private void modelList_SelectedIndexChanged(object sender, EventArgs e)
@@ -146,6 +139,11 @@ namespace bim_base
 
             CMessageBox resMsg = new CMessageBox(Common.TITLE, "SUCCESS " + idx, MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
             resMsg.ShowDialog();
+        }
+
+        private void currentModelLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

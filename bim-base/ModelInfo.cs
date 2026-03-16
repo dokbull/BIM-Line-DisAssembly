@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +32,6 @@ public enum TEACH_POS
 public class POS
 {
     public string name;
-    public bool use;
 
     public double x = 0;
     public double y = 0;
@@ -50,6 +50,8 @@ public class POS
 public class ModelInfo
 {
     int m_index = 0;
+    bool m_use = true;
+
     string m_modelName = "EMPTY";
 
     CSettings m_setting = null;
@@ -122,6 +124,9 @@ public class ModelInfo
 
     public void load()
     {
+        loadModelName(); 
+        loadModelUse();
+
         for (int i = 0; i < m_teachPos.Length; i++)
         {
             string name = m_teachPos[i].name;
@@ -210,6 +215,28 @@ public class ModelInfo
         }
     }
 
+    public int index()
+    {
+        return m_index;
+    }
+
+    public void saveModelUse(bool value)
+    {
+        m_use = value;
+        m_setting.setValue("MODEL", "USE", value);
+    }
+
+
+    public void loadModelUse()
+    {
+        m_use = m_setting.getValue("MODEL", "USE", true);
+    }
+
+    public bool isUse()
+    {
+        return m_use;
+    }
+
     public void saveModelName(string name)
     {
         m_modelName = name;
@@ -244,6 +271,44 @@ public class ModelInfo
         m_setting.setValue("POSITION", pos.name + "_ZR", pos.zR);
         m_setting.setValue("POSITION", pos.name + "_XB", pos.xB);
         m_setting.setValue("POSITION", pos.name + "_VEL", pos.vel);
+    }
+
+    public bool createModel(string modelName, bool resetValue)
+    {
+        if (m_use == true)
+            return false;
+
+        saveModelName(modelName);
+
+        saveModelUse(true);
+
+        if (resetValue)
+            clearTeachPos();
+
+        return true;
+    }
+
+    public bool deleteModel(string modelName, bool resetValue)
+    {
+        if (modelName != m_modelName)
+            return false;
+
+        saveModelUse(false);
+
+        if (resetValue)
+            clearTeachPos();
+
+        return true;
+    }
+
+    public void clearTeachPos()
+    {
+        for (int i = 0; i < (int)TEACH_POS.MAX; i++)
+        {
+            m_teachPos[i] = new POS();
+            m_teachPos[i].name = ((TEACH_POS)i).ToString();
+            saveTeachPos(m_teachPos[i]);
+        }
     }
 
     public POS teachPos(TEACH_POS posEnum)
