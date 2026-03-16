@@ -477,10 +477,9 @@ namespace bim_base
             Automation.Instance.AlarmReleased(this.m_lastAlarm.code, this.m_lastAlarm.desc);
 
             m_isAlarm = false;
-            m_lastAlarm = null;
 
             FormMain.inst().clearAlarm();
-
+            m_lastAlarm = null;
         }
 
         public int lastAlarmCode()

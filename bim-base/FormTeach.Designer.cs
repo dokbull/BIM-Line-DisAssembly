@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.inPPButton = new System.Windows.Forms.Button();
             this.peelingTapeButton = new System.Windows.Forms.Button();
             this.PPbutton = new System.Windows.Forms.Button();
@@ -35,12 +36,18 @@
             this.RPPButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.ppTab = new MyButton.ButtonPress();
-            this.traytab = new MyButton.ButtonPress();
-            this.TeachPanel = new System.Windows.Forms.Panel();
+            this.outPPTab = new MyButton.ButtonPress();
+            this.moldPPTab = new MyButton.ButtonPress();
+            this.inPPTab = new MyButton.ButtonPress();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.uiTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // inPPButton
@@ -75,7 +82,6 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = null;
             this.pictureBox1.Location = new System.Drawing.Point(12, 12);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(14, 10);
@@ -99,7 +105,7 @@
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.TeachPanel, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.tabControl1, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
@@ -113,14 +119,13 @@
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Controls.Add(this.ppTab, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.traytab, 0, 0);
+            this.tableLayoutPanel2.ColumnCount = 3;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.Controls.Add(this.outPPTab, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.moldPPTab, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.inPPTab, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
@@ -130,62 +135,125 @@
             this.tableLayoutPanel2.Size = new System.Drawing.Size(1022, 40);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
-            // ppTab
+            // outPPTab
             // 
-            this.ppTab.BorderLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
-            this.ppTab.Checked = false;
-            this.ppTab.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
-            this.ppTab.ColorPress = System.Drawing.Color.Blue;
-            this.ppTab.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ppTab.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ppTab.ForeColor = System.Drawing.Color.White;
-            this.ppTab.GradientBottom = System.Drawing.Color.Gray;
-            this.ppTab.GradientTop = System.Drawing.Color.Gray;
-            this.ppTab.ImagePress = null;
-            this.ppTab.ImageRelease = null;
-            this.ppTab.Location = new System.Drawing.Point(512, 2);
-            this.ppTab.Margin = new System.Windows.Forms.Padding(1);
-            this.ppTab.Name = "ppTab";
-            this.ppTab.Offset_Image_X = 5;
-            this.ppTab.SetPress = false;
-            this.ppTab.Size = new System.Drawing.Size(508, 36);
-            this.ppTab.TabIndex = 1;
-            this.ppTab.Text = "CONVEYOR";
-            this.ppTab.UseVisualStyleBackColor = true;
-            this.ppTab.Click += new System.EventHandler(this.ppTab_Click);
+            this.outPPTab.BorderLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
+            this.outPPTab.Checked = false;
+            this.outPPTab.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
+            this.outPPTab.ColorPress = System.Drawing.Color.Blue;
+            this.outPPTab.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.outPPTab.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.outPPTab.ForeColor = System.Drawing.Color.White;
+            this.outPPTab.GradientBottom = System.Drawing.Color.Gray;
+            this.outPPTab.GradientTop = System.Drawing.Color.Gray;
+            this.outPPTab.ImagePress = null;
+            this.outPPTab.ImageRelease = null;
+            this.outPPTab.Location = new System.Drawing.Point(682, 2);
+            this.outPPTab.Margin = new System.Windows.Forms.Padding(1);
+            this.outPPTab.Name = "outPPTab";
+            this.outPPTab.Offset_Image_X = 5;
+            this.outPPTab.SetPress = false;
+            this.outPPTab.Size = new System.Drawing.Size(338, 36);
+            this.outPPTab.TabIndex = 2;
+            this.outPPTab.Text = "OUT PP";
+            this.outPPTab.UseVisualStyleBackColor = true;
+            this.outPPTab.Click += new System.EventHandler(this.outPPTab_Click);
             // 
-            // traytab
+            // moldPPTab
             // 
-            this.traytab.BorderLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
-            this.traytab.Checked = false;
-            this.traytab.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
-            this.traytab.ColorPress = System.Drawing.Color.Blue;
-            this.traytab.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.traytab.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.traytab.ForeColor = System.Drawing.Color.White;
-            this.traytab.GradientBottom = System.Drawing.Color.Gray;
-            this.traytab.GradientTop = System.Drawing.Color.Gray;
-            this.traytab.ImagePress = null;
-            this.traytab.ImageRelease = null;
-            this.traytab.Location = new System.Drawing.Point(2, 2);
-            this.traytab.Margin = new System.Windows.Forms.Padding(1);
-            this.traytab.Name = "traytab";
-            this.traytab.Offset_Image_X = 5;
-            this.traytab.SetPress = false;
-            this.traytab.Size = new System.Drawing.Size(507, 36);
-            this.traytab.TabIndex = 0;
-            this.traytab.Text = "TRANSFER";
-            this.traytab.UseVisualStyleBackColor = true;
-            this.traytab.Click += new System.EventHandler(this.traytab_Click);
+            this.moldPPTab.BorderLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
+            this.moldPPTab.Checked = false;
+            this.moldPPTab.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
+            this.moldPPTab.ColorPress = System.Drawing.Color.Blue;
+            this.moldPPTab.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.moldPPTab.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.moldPPTab.ForeColor = System.Drawing.Color.White;
+            this.moldPPTab.GradientBottom = System.Drawing.Color.Gray;
+            this.moldPPTab.GradientTop = System.Drawing.Color.Gray;
+            this.moldPPTab.ImagePress = null;
+            this.moldPPTab.ImageRelease = null;
+            this.moldPPTab.Location = new System.Drawing.Point(342, 2);
+            this.moldPPTab.Margin = new System.Windows.Forms.Padding(1);
+            this.moldPPTab.Name = "moldPPTab";
+            this.moldPPTab.Offset_Image_X = 5;
+            this.moldPPTab.SetPress = false;
+            this.moldPPTab.Size = new System.Drawing.Size(337, 36);
+            this.moldPPTab.TabIndex = 1;
+            this.moldPPTab.Text = "MOLD PP";
+            this.moldPPTab.UseVisualStyleBackColor = true;
+            this.moldPPTab.Click += new System.EventHandler(this.moldPPTab_Click);
             // 
-            // TeachPanel
+            // inPPTab
             // 
-            this.TeachPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TeachPanel.Location = new System.Drawing.Point(0, 40);
-            this.TeachPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.TeachPanel.Name = "TeachPanel";
-            this.TeachPanel.Size = new System.Drawing.Size(1022, 584);
-            this.TeachPanel.TabIndex = 2;
+            this.inPPTab.BorderLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
+            this.inPPTab.Checked = false;
+            this.inPPTab.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
+            this.inPPTab.ColorPress = System.Drawing.Color.Blue;
+            this.inPPTab.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.inPPTab.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.inPPTab.ForeColor = System.Drawing.Color.White;
+            this.inPPTab.GradientBottom = System.Drawing.Color.Gray;
+            this.inPPTab.GradientTop = System.Drawing.Color.Gray;
+            this.inPPTab.ImagePress = null;
+            this.inPPTab.ImageRelease = null;
+            this.inPPTab.Location = new System.Drawing.Point(2, 2);
+            this.inPPTab.Margin = new System.Windows.Forms.Padding(1);
+            this.inPPTab.Name = "inPPTab";
+            this.inPPTab.Offset_Image_X = 5;
+            this.inPPTab.SetPress = false;
+            this.inPPTab.Size = new System.Drawing.Size(337, 36);
+            this.inPPTab.TabIndex = 0;
+            this.inPPTab.Text = "IN PP";
+            this.inPPTab.UseVisualStyleBackColor = true;
+            this.inPPTab.Click += new System.EventHandler(this.inPPTab_Click);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tabControl1.Location = new System.Drawing.Point(3, 43);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1016, 578);
+            this.tabControl1.TabIndex = 2;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1008, 549);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1008, 549);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(1008, 549);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "tabPage3";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // uiTimer
+            // 
+            this.uiTimer.Enabled = true;
+            this.uiTimer.Tick += new System.EventHandler(this.uiTimer_Tick);
             // 
             // FormTeach
             // 
@@ -206,6 +274,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -218,8 +287,13 @@
         private System.Windows.Forms.Button RPPButton;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Panel TeachPanel;
-        private MyButton.ButtonPress ppTab;
-        private MyButton.ButtonPress traytab;
+        private MyButton.ButtonPress inPPTab;
+        private MyButton.ButtonPress outPPTab;
+        private MyButton.ButtonPress moldPPTab;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Timer uiTimer;
     }
 }
