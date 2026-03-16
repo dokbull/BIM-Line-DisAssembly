@@ -582,7 +582,6 @@ namespace bim_base.data.CIM
         {
             try
             {
-
                 //ModelInfo
                 if (m_Reader.readBit(CIMRead.READ_B.CURRENTEQUIPPPIDLISTREQUEST_56) == false)
                     return;
@@ -623,7 +622,6 @@ namespace bim_base.data.CIM
 
             try
             {
-
                 //ModelInfo
                 if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMSEND_54) == true)
                 {
@@ -692,21 +690,23 @@ namespace bim_base.data.CIM
                 //Request PPID WORD(W4217) 다른 영역인데..
                 if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMREQUEST_55) == true)
                 {
-                    sReqPPID = m_Reader.wordData(CIMRead.READ_W.ASCII_20_D1F0_ReqPPID).text;
+                    //ReqPPIDINDEX  를 읽어서 레시피번호(인덱스)의 파라미터 값을 씀
+                    //sReqPPID = m_Reader.wordData(CIMRead.READ_W.ASCII_20_D1F0_ReqPPID).text;
+                    nSelectedIdx = m_Reader.wordData(CIMRead.READ_W.DEC_1_D206_ReqPPIDINDEX).value;
 
-                    for (int i = 0; i < Common.MODEL.Count(); i++)
-                    {
-                        ModelInfo info = Common.MODEL_INFO(i);
+                    //for (int i = 0; i < Common.MODEL.Count(); i++)
+                    //{
+                    //    ModelInfo info = Common.MODEL_INFO(i);
 
-                        if (info.modelName().Trim() == sReqPPID)
-                        {
-                            nSelectedIdx = i;
-                            break;
-                        }
-                    }
+                    //    if (info.modelName().Trim() == sReqPPID)
+                    //    {
+                    //        nSelectedIdx = i;
+                    //        break;
+                    //    }
+                    //}
 
                     //알람 발생
-                    if (nSelectedIdx == -1)
+                    if (nSelectedIdx < 0 && nSelectedIdx > 99)
                         return;
 
                     ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
@@ -1250,6 +1250,12 @@ namespace bim_base.data.CIM
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 1;
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
 
+            //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
+            //1-90 -> 상위에서 받는거. TT_ X
+            //91-99-> 내부에서 만드는거 TT_로 시작
+            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = "91O"; //추후 문서 보고 수정 필요.
+           
+
             WriteTeachPos(INFO);
 
             if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
@@ -1284,6 +1290,30 @@ namespace bim_base.data.CIM
             }
         }
 
+        void WriteMcPos(ModelInfo info)
+        {
+            int baseEnum = (int)WRITE_W.ASCII_20_A1C4_PickPpWaitName;
+
+            for (int i = 0; i < (int)TEACH_POS.MAX; i++)
+            {
+                POS p = info.teachPos((TEACH_POS)i);
+
+                int idx = baseEnum + i * 8;
+
+                m_Writer.wordData((WRITE_W)(idx + 0)).text = p.name;
+
+                m_Writer.wordData((WRITE_W)(idx + 1)).value = (int)(p.x * 1000);
+                m_Writer.wordData((WRITE_W)(idx + 2)).value = (int)(p.y * 1000);
+                m_Writer.wordData((WRITE_W)(idx + 3)).value = (int)(p.z * 1000);
+
+                m_Writer.wordData((WRITE_W)(idx + 4)).value = (int)(p.zL * 1000);
+                m_Writer.wordData((WRITE_W)(idx + 5)).value = (int)(p.zR * 1000);
+
+                m_Writer.wordData((WRITE_W)(idx + 6)).value = (int)(p.xB * 1000);
+                m_Writer.wordData((WRITE_W)(idx + 7)).value = (int)p.vel;
+            }
+        }
+
         // PPID 삭제
         public bool PpidDelete(/*string ppid*/)
         {
@@ -1296,9 +1326,12 @@ namespace bim_base.data.CIM
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 2;
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
 
+            //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
+            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = "91G"; //추후 문서 보고 수정 필요.
+            
             //WriteTeachPos(INFO);
 
-            if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
                 return false;
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
@@ -1346,7 +1379,10 @@ namespace bim_base.data.CIM
 
             WriteTeachPos(INFO);
 
-            if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = "91C"; //추후 문서 보고 수정 필요.
+            //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
+
+            if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
                 return false;
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
@@ -1362,6 +1398,16 @@ namespace bim_base.data.CIM
             if (this.IsInitialized == false)
                 return;
 
+            //레시피 설정교체시 업데이트 끝...
+            //EquipmentConstantParameterChangeEvent 값변경시에 이 필드만 활성화 시켜주면됨. 
+            //리플라이 bit 확인후 바로 끔.
+
+            m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true);
+
+            if (m_Reader.readBit(CIMRead.READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24) == true)
+            {
+                m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, false);
+            }
             //if (m_Reader.readBit(CIMRead.READ_B.EQUIPCONSTANTNAMELIST_53) == true)
             {
                 //double[] vel = new double[(int)AXIS.MAX];
@@ -1394,10 +1440,19 @@ namespace bim_base.data.CIM
             if (m_Reader.readBit(CIMRead.READ_B.EQUIPCONSTANTNAMELIST_53) == true)
             {
                 ModelInfo Mc = Common.MC;
+                //데이터 필드 업데이트 
 
-                //어디에 써야 되는지 모름.........
 
-                //m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
+                //ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
+                //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
+
+                //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 0;
+                //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
+
+                WriteMcPos(Mc);
+                //속도값 추가
+
+                m_Writer.setBit(WRITE_B.EQUIPCONSTANTNAMELIST_53, true);
 
                 this.SleepWithDoEvent(1);
 

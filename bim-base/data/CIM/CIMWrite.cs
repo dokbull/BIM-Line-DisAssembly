@@ -959,7 +959,7 @@ public class CIMWrite
         ASCII_10_2134_PairCellProcessCompReasonCode_3,
         ASCII_20_213E_PairCellProcessCompDescription_3,
         NONE_647_2152_Reserve,
-        NONE_3_23D9_ParameterChange2RecipeNumber,
+        ASCII_3_23D9_ParameterChange2RecipeNumber,
         NONE_4_23DC_Reserve,
         ASCII_10_23E0_InspectionResultReportProcessNAME,
         ASCII_200_23EA_InspectionResultReportCellID,
