@@ -2385,6 +2385,7 @@ public class CIMWrite
         public WRITE_W addr = WRITE_W.MAX;
         public WRITE_TYPE type = WRITE_TYPE.NONE;
 
+        public int startAddress;
         public int length;
 
         public int value;
@@ -2402,6 +2403,7 @@ public class CIMWrite
             if (split[0] == "DEC")
                 type = WRITE_TYPE.DEC;
 
+            startAddress = Convert.ToInt32(split[1], 16);
             length = Util.toInt32(split[1]);
         }
     }
@@ -2483,8 +2485,6 @@ public class CIMWrite
 
     public void toArrayW(ref int[] arr)
     {
-        int writeAddress = 0;
-
         for (int i = 0; i < m_wordData.Length; i++)
         {
             WORD_DATA data = m_wordData[i];
@@ -2511,7 +2511,6 @@ public class CIMWrite
 
                 if (text == null)
                 {
-                    writeAddress += data.length;
                     continue;
                 }
 
@@ -2533,6 +2532,8 @@ public class CIMWrite
                     value[j] = b0 | (b1 << 8);
                 }
             }
+
+            int writeAddress = data.startAddress;
 
             for (int j = 0; j < length; j++)
             {

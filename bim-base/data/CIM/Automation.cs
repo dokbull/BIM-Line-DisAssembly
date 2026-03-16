@@ -1305,13 +1305,13 @@ namespace bim_base.data.CIM
                 if (this.WaitBitSignal(READ_B.SPECIFICVALIDATIONDATASEND1_223, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
                     throw new Exception("Error TrackInLoadingCell. Not Received S3F103");
 
-                string specDataJigID =  this.ReadWord(READ_W.ASCII_20_1256_SpecificValidationCarrierID1);
-                string specDataCellID = this.ReadWord(READ_W.ASCII_40_126A_SpecificValidationCellID1);
-                string specDataUiqueType = this.ReadWord(READ_W.ASCII_10_1292_SpecificValidationUniqueType1);
-                string specDataProductID = this.ReadWord(READ_W.ASCII_20_129C_SpecificValidationProductID1);
-                string specDataStepID = this.ReadWord(READ_W.ASCII_20_12B0_SpecificValidationStepID1);
-                string specDataReplyStatus = this.ReadWord(READ_W.ASCII_2_12C4_SpecificValidationReplyStatus1);
-                string specDataReplyText = this.ReadWord(READ_W.ASCII_60_12C6_SpecificValidationReplyText1);
+                string specDataJigID =  this.ReadWord(READ_W.ASCII_20_11256_SpecificValidationCarrierID1);
+                string specDataCellID = this.ReadWord(READ_W.ASCII_40_1126A_SpecificValidationCellID1);
+                string specDataUiqueType = this.ReadWord(READ_W.ASCII_10_11292_SpecificValidationUniqueType1);
+                string specDataProductID = this.ReadWord(READ_W.ASCII_20_1129C_SpecificValidationProductID1);
+                string specDataStepID = this.ReadWord(READ_W.ASCII_20_112B0_SpecificValidationStepID1);
+                string specDataReplyStatus = this.ReadWord(READ_W.ASCII_2_112C4_SpecificValidationReplyStatus1);
+                string specDataReplyText = this.ReadWord(READ_W.ASCII_60_112C6_SpecificValidationReplyText1);
 
                 // Pass or Fail
                 if(specDataReplyStatus.ToUpper() != EnumJobProcessType.Pass.ToString().ToUpper())
@@ -1414,13 +1414,13 @@ namespace bim_base.data.CIM
                 if (this.WaitBitSignal(READ_B.SPECIFICVALIDATIONDATASEND1_223, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
                     return EnumJobProcessType.Fail;
 
-                string specDataJigID = this.ReadWord(READ_W.ASCII_20_1256_SpecificValidationCarrierID1);
-                string specDataCellID = this.ReadWord(READ_W.ASCII_40_126A_SpecificValidationCellID1);
-                string specDataUiqueType = this.ReadWord(READ_W.ASCII_10_1292_SpecificValidationUniqueType1);
-                string specDataProductID = this.ReadWord(READ_W.ASCII_20_129C_SpecificValidationProductID1);
-                string specDataStepID = this.ReadWord(READ_W.ASCII_20_12B0_SpecificValidationStepID1);
-                string specDataReplyStatus = this.ReadWord(READ_W.ASCII_2_12C4_SpecificValidationReplyStatus1);
-                string specDataReplyText = this.ReadWord(READ_W.ASCII_60_12C6_SpecificValidationReplyText1);
+                string specDataJigID = this.ReadWord(READ_W.ASCII_20_11256_SpecificValidationCarrierID1);
+                string specDataCellID = this.ReadWord(READ_W.ASCII_40_1126A_SpecificValidationCellID1);
+                string specDataUiqueType = this.ReadWord(READ_W.ASCII_10_11292_SpecificValidationUniqueType1);
+                string specDataProductID = this.ReadWord(READ_W.ASCII_20_1129C_SpecificValidationProductID1);
+                string specDataStepID = this.ReadWord(READ_W.ASCII_20_112B0_SpecificValidationStepID1);
+                string specDataReplyStatus = this.ReadWord(READ_W.ASCII_2_112C4_SpecificValidationReplyStatus1);
+                string specDataReplyText = this.ReadWord(READ_W.ASCII_60_112C6_SpecificValidationReplyText1);
 
                 // Pass or Fail
                 if (specDataReplyStatus.ToUpper() != EnumJobProcessType.Pass.ToString().ToUpper())
