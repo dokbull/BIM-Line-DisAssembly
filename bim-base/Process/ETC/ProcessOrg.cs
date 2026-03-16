@@ -496,7 +496,7 @@ namespace bim_base
                         main.procLoaderCvWork().resetWork();
                         main.procAlignCvWork().resetWork();
                         main.procOutMoldCvWork().resetWork();
-                        main.processOutUbCvWork().resetWork();
+                        main.procOutUbCvWork().resetWork();
 
                         main.procInWork().resetWork();
                         main.procMoldReverseWork().resetWork();

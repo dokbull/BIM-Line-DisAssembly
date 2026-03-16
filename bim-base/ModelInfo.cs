@@ -30,6 +30,7 @@ public enum TEACH_POS
 public class POS
 {
     public string name;
+    public bool use;
 
     public double x = 0;
     public double y = 0;

@@ -114,7 +114,7 @@ namespace bim_base
             ProcessOutUbCvWork UB_CV;
 
             UB_PP = main.procUbPP();
-            UB_CV = main.processOutUbCvWork();
+            UB_CV = main.procOutUbCvWork();
 
             CSTATION ST_REVERSE_FRONT = main.station(CSTATION.STATION.UB_REVERSE_FRONT);
             CSTATION ST_REVERSE_REAR = main.station(CSTATION.STATION.UB_REVERSE_REAR);

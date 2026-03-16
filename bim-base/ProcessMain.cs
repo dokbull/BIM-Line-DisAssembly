@@ -46,6 +46,10 @@ namespace bim_base
         ProcessMoldBase m_procMoldBase = null;
         ProcessUbPP m_procUbPP = null;
 
+        ProcessManualInPP m_procManualInPP = null;
+        ProcessManualMoldPP m_procManualMoldPP = null;
+        ProcessManualUbPP m_procManualUbPP = null;
+
         ProcessOrg m_procOrg = null;
 
         Thread m_thread = null;
@@ -208,6 +212,10 @@ namespace bim_base
             m_procMoldPP = new ProcessMoldPP(this);
             m_procMoldBase = new ProcessMoldBase(this);
             m_procUbPP = new ProcessUbPP(this);
+
+            m_procManualInPP = new ProcessManualInPP(this);
+            m_procManualMoldPP = new ProcessManualMoldPP(this);
+            m_procManualUbPP = new ProcessManualUbPP(this);
 
             m_procOrg = new ProcessOrg(this);
 
@@ -623,9 +631,13 @@ namespace bim_base
 
         public void runWork()
         {
-            if (m_isAuto == true)
-            {
+            // READY PROCESS
+            m_procOrg.run();
 
+            // RETURN CV PROCESS
+
+            if (m_isAuto == true) // AUTO PROCESS
+            {
                 for (int i = 0; i < m_axis.Count; i++)
                 {
                     if (m_axis[i].name().Contains("Z"))
@@ -639,28 +651,31 @@ namespace bim_base
                         m_axis[i].setAbsSpeed(1000.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
                     }
                 }
+
+                // WORK PROCESS
+                m_procLoaderCvWork.run();
+                m_procAlignCvWork.run();
+                m_procInWork.run();
+                m_procMoldReverseWork.run();
+                m_procMoldWork.run();
+                m_procShuttleWork.run();
+                m_procUbWork.run();
+                m_procUbReverseWork.run();
+                m_procOutMoldCvWork.run();
+                m_procOutUbCvWork.run();
+
+                // PART PROCESS
+                m_procInPP.run();
+                m_procMoldPP.run();
+                m_procMoldBase.run();
+                m_procUbPP.run();
             }
-
-            // READY PROCESS
-            m_procOrg.run();
-
-            // WORK PROCESS
-            m_procLoaderCvWork.run();
-            m_procAlignCvWork.run();
-            m_procInWork.run();
-            m_procMoldReverseWork.run();
-            m_procMoldWork.run();
-            m_procShuttleWork.run();
-            m_procUbWork.run();
-            m_procUbReverseWork.run();
-            m_procOutMoldCvWork.run();
-            m_procOutUbCvWork.run();
-
-            // PART PROCESS
-            m_procInPP.run();
-            m_procMoldPP.run();
-            m_procMoldBase.run();
-            m_procUbPP.run();
+            else // MANUAL PROCESS
+            {
+                m_procManualInPP.run();
+                m_procManualMoldPP.run();
+                m_procManualUbPP.run();
+            }
         }
 
         public void setCycleStop()
@@ -1038,7 +1053,11 @@ namespace bim_base
         public ProcessUbWork procUbWork() {  return m_procUbWork; }
         public ProcessUbReverseWork procUbReverseWork() {  return m_procUbReverseWork; }
         public ProcessOutMoldCvWork procOutMoldCvWork() { return m_procOutMoldCvWork; } 
-        public ProcessOutUbCvWork processOutUbCvWork() { return m_procOutUbCvWork; }
+        public ProcessOutUbCvWork procOutUbCvWork() { return m_procOutUbCvWork; }
+
+        public ProcessManualInPP procManualInPP() { return m_procManualInPP; }
+        public ProcessManualMoldPP procManualMoldPP() {  return m_procManualMoldPP; }
+        public ProcessManualUbPP procManualUbPP() { return m_procManualUbPP; }
 
 
         public ProcessInPP procInPP() { return m_procInPP; }

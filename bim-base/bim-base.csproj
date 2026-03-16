@@ -451,6 +451,9 @@
     <Compile Include="data\CSTATION.cs" />
     <Compile Include="data\CInterlock.cs" />
     <Compile Include="lib\TimerDelay.cs" />
+    <Compile Include="Process\Part\Manual\ProcessManualInPP.cs" />
+    <Compile Include="Process\Part\Manual\ProcessManualMoldPP.cs" />
+    <Compile Include="Process\Part\ProcessUbPP.cs" />
     <Compile Include="Process\ProcessLoaderCvWork.cs" />
     <Compile Include="Process\ProcessOutUbCvWork.cs" />
     <Compile Include="Process\ProcessOutMoldCvWork.cs" />
@@ -462,7 +465,7 @@
     <Compile Include="Process\ProcessMoldReverseWork.cs" />
     <Compile Include="Process\Part\ProcessMoldBase.cs" />
     <Compile Include="Process\Part\ProcessMoldPP.cs" />
-    <Compile Include="Process\Part\ProcessUbPP.cs" />
+    <Compile Include="Process\Part\Manual\ProcessManualUbPP.cs" />
     <Compile Include="Process\ETC\ProcessOrg.cs" />
     <Compile Include="Process\Part\ProcessInPP.cs" />
     <Compile Include="Process\ProcessInWork.cs" />

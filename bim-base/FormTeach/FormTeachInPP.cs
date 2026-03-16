@@ -120,23 +120,24 @@ namespace bim_base
             }
         }
 
-        private void movePosition(TEACH_POS target, ACT gripAction)
+        private void movePosition(TEACH_POS target)
         {
             POS mc = m_mc.teachPos(target);
             POS pos = m_model.teachPos(target);
 
-            double tarX = mc.x + pos.x;
             double tarY = mc.y + pos.y;
             double tarZ = mc.z + pos.z;
 
             CMessageBox msgBox = new CMessageBox(Common.TITLE, "MOVE ?" +
-                "\r\n" + "X:" + tarX.ToString("0.00") + " Y:" + tarY.ToString("0.00") + " Z:" + tarZ.ToString("0.00"), MessageBoxButtons.OKCancel);
+                "\r\n" + "Y:" + tarY.ToString("0.00") + " Z:" + tarZ.ToString("0.00"), MessageBoxButtons.OKCancel);
             bool ret = msgBox.showDialog();
 
             if (ret == false)
                 return;
 
-            //main.procManualPP().start(target, gripAction);
+            ExtAxis Y = main.axis(AXIS.IN_PP_Y);
+
+            main.procManualInPP().start(target, Y.checkPos(tarY));
         }
 
         private int getGridSelectPos()
@@ -234,7 +235,7 @@ namespace bim_base
             if (checkIncludeEnum(teachPos) == false)
                 return;
 
-            movePosition(teachPos, ACT.WAIT);
+            movePosition(teachPos);
         }
 
         private void ui_timer_Tick(object sender, EventArgs e)
