@@ -245,24 +245,164 @@ namespace bim_base
             updateGird();
         }
 
-        private void gripOnButton_Click(object sender, EventArgs e)
+        private void ppGripOnButton_Click(object sender, EventArgs e)
         {
             bool ret = CMessageBox.showMessage("Do you want to GRIP ON ?");
 
             if (ret == false)
                 return;
 
-            //main.procManualPP().setGripOn();
+            main.setOutput(OUTPUT.MOLD_IN_PP_GRIP, true);
+            main.setOutput(OUTPUT.MOLD_IN_PP_UNGRIP, false);
         }
 
-        private void gripOffButton_Click(object sender, EventArgs e)
+        private void ppGripOffButton_Click(object sender, EventArgs e)
         {
             bool ret = CMessageBox.showMessage("Do you want to GRIP OFF ?");
 
             if (ret == false)
                 return;
 
-            //main.procManualPP().setGripOff();
+            main.setOutput(OUTPUT.MOLD_IN_PP_GRIP, false);
+            main.setOutput(OUTPUT.MOLD_IN_PP_UNGRIP, true);
+        }
+
+        private void fwdButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to FWD ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.ALIGN_CV_ALIGN_FWD, true);
+            main.setOutput(OUTPUT.ALIGN_CV_ALIGN_BWD, false);
+        }
+
+        private void bwdButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to BWD ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.ALIGN_CV_ALIGN_FWD, false);
+            main.setOutput(OUTPUT.ALIGN_CV_ALIGN_BWD, true);
+        }
+
+        private void upButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to UP ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.ALIGN_CV_MOLD_UP, true);
+            main.setOutput(OUTPUT.ALIGN_CV_MOLD_DOWN, false);
+        }
+
+        private void downButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to DOWN ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.ALIGN_CV_MOLD_UP, false);
+            main.setOutput(OUTPUT.ALIGN_CV_MOLD_DOWN, true);
+        }
+
+        private void reverseGripOnButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to GRIP ON ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.MOLD_IN_REVERSE_GRIP, true);
+            main.setOutput(OUTPUT.MOLD_IN_REVERSE_UNGRIP, false);
+        }
+
+        private void reverseGripOffButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to GRIP OFF ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.MOLD_IN_REVERSE_GRIP, false);
+            main.setOutput(OUTPUT.MOLD_IN_REVERSE_UNGRIP, true);
+        }
+
+        private void reverseTurnButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to TURN ?");
+
+            if (ret == false)
+                return;
+
+            if (main.input(INPUT.MOLD_IN_REVERSE_GRIP) == false)
+            {
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not turn without grip", MessageBoxButtons.OK);
+                error.showDialog();
+                return;
+            }
+
+            if (main.input(INPUT.MOLD_SHUTTLE_UP) == false)
+            {
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not turn without up", MessageBoxButtons.OK);
+                error.showDialog();
+                return;
+            }
+
+            main.setOutput(OUTPUT.MOLD_IN_REVERSE_TURN, true);
+            main.setOutput(OUTPUT.MOLD_IN_REVERSE_RETURN, false);
+        }
+
+        private void reverseReturnButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to RETURN ?");
+
+            if (ret == false)
+                return;
+
+            if (main.input(INPUT.MOLD_SHUTTLE_UP) == false)
+            {
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not return without up", MessageBoxButtons.OK);
+                error.showDialog();
+                return;
+            }
+
+            main.setOutput(OUTPUT.MOLD_IN_REVERSE_TURN, false);
+            main.setOutput(OUTPUT.MOLD_IN_REVERSE_RETURN, true);
+        }
+
+        private void reverseUpButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to UP ?");
+
+            if (ret == false)
+                return;
+
+            if (main.input(INPUT.MOLD_IN_REVERSE_TURN) == false)
+            {
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not up without turn", MessageBoxButtons.OK);
+                error.showDialog();
+                return;
+            }
+
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_UP, true);
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_DOWN, false);
+        }
+
+        private void reverseDownButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to DOWN ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_UP, false);
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_DOWN, true);
         }
     }
 }

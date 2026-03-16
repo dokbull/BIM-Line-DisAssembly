@@ -13,13 +13,13 @@ using System.Windows.Forms;
 
 namespace bim_base
 {
-    public partial class FormTeachTrayPP : Form
+    public partial class FormTeachMoldPP : Form
     {
         ProcessMain main = null;
         ModelInfo m_mc = null;
         ModelInfo m_model = null;
 
-        public FormTeachTrayPP(ProcessMain procMain)
+        public FormTeachMoldPP(ProcessMain procMain)
         {
             InitializeComponent();
             main = procMain;
@@ -328,6 +328,137 @@ namespace bim_base
                 return;
 
             z2Save(row);
+        }
+
+        private void bwdButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to WD ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.ALIGN_CV_ALIGN_FWD, true);
+            main.setOutput(OUTPUT.ALIGN_CV_ALIGN_BWD, false);
+        }
+
+        private void leftGripOnButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to GRIP ON ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.MOLD_OUT_PP_GRIP_1, true);
+            main.setOutput(OUTPUT.MOLD_OUT_PP_UNGRIP_1, false);
+        }
+
+        private void leftGripOffButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to GRIP OFF ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.MOLD_OUT_PP_UNGRIP_1, true);
+            main.setOutput(OUTPUT.MOLD_OUT_PP_GRIP_1, false);
+        }
+
+        private void rightGripOnButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to GRIP ON ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.MOLD_OUT_PP_GRIP_2, true);
+            main.setOutput(OUTPUT.MOLD_OUT_PP_UNGRIP_2, false);
+        }
+
+        private void rightGripOffButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to GRIP OFF ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.MOLD_OUT_PP_UNGRIP_2, true);
+            main.setOutput(OUTPUT.MOLD_OUT_PP_GRIP_2, false);
+        }
+
+        private void upButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to UP ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.SHUTTLE_SERVO_MOLD_UP, true);
+            main.setOutput(OUTPUT.SHUTTLE_SERVO_MOLD_DOWN, false);
+        }
+
+        private void downButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to DOWN ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.SHUTTLE_SERVO_MOLD_DOWN, true);
+            main.setOutput(OUTPUT.SHUTTLE_SERVO_MOLD_UP, false);
+        }
+
+        private void holdOnButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to HOLD ON ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_PUSHER_FWD, true);
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_PUSHER_BWD, false);
+        }
+
+        private void holdOffButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to HOLD OFF ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_PUSHER_BWD, true);
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_PUSHER_FWD, false);
+        }
+
+        private void openerFwdButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to OPENER FWD ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_UNLOCK_FWD, true);
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_UNLOCK_BWD, false);
+        }
+
+        private void openerBwdButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to OPENER BWD ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_UNLOCK_BWD, true);
+            main.setOutput(OUTPUT.SHUTTLE_MOLD_UNLOCK_FWD, false);
+        }
+
+        private void coverLockButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void coverUnlockButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

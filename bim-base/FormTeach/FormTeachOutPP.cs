@@ -249,24 +249,202 @@ namespace bim_base
             updateGird();
         }
 
-        private void gripOnButton_Click(object sender, EventArgs e)
+        private void ppVacOnButton_Click(object sender, EventArgs e)
         {
-            bool ret = CMessageBox.showMessage("Do you want to GRIP ON ?");
+            bool ret = CMessageBox.showMessage("Do you want to VAC ON ?");
 
             if (ret == false)
                 return;
 
-            //main.procManualPP().setGripOn();
+            main.setOutput(OUTPUT.UB_OUT_PP_VAC, true);
         }
 
-        private void gripOffButton_Click(object sender, EventArgs e)
+        private void ppVacOffButton_Click(object sender, EventArgs e)
         {
-            bool ret = CMessageBox.showMessage("Do you want to GRIP OFF ?");
+            bool ret = CMessageBox.showMessage("Do you want to VAC OFF ?");
 
             if (ret == false)
                 return;
 
-            //main.procManualPP().setGripOff();
+            main.setOutput(OUTPUT.UB_OUT_PP_VAC, false);
+        }
+
+        private void fwdButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to FWD ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_PP_FWD, true);
+            main.setOutput(OUTPUT.UB_OUT_PP_BWD, false);
+        }
+
+        private void bwdButton_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to BWD ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_PP_FWD, false);
+            main.setOutput(OUTPUT.UB_OUT_PP_BWD, true);
+        }
+
+        private void reverseVacOnButton1_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to VAC ON ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_VAC_1, true);
+        }
+
+        private void reverseVacOffButton1_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to VAC OFF ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_VAC_1, false);
+        }
+
+        private void reverseTurnButton1_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to TURN ?");
+
+            if (ret == false)
+                return;
+
+            if (main.input(INPUT.UB_OUT_REVERSE_UP_1) == false)
+            {
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not turn without up", MessageBoxButtons.OK);
+                error.showDialog();
+                return;
+            }
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_TURN_1, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_RETURN_1, false);
+        }
+
+        private void reverseReturnButton1_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to RETURN ?");
+
+            if (ret == false)
+                return;
+
+            if (main.input(INPUT.UB_OUT_REVERSE_UP_1) == false)
+            {
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not return without up", MessageBoxButtons.OK);
+                error.showDialog();
+                return;
+            }
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_RETURN_1, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_TURN_1, false);
+        }
+
+        private void reverseUpButton1_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to UP ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_UP_1, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_DOWN_1, false);
+        }
+
+        private void reverseDownButton1_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to DOWN ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_DOWN_1, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_UP_1, false);
+        }
+
+        private void reverseVacOnButton2_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to VAC ON ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_VAC_2, true);
+        }
+
+        private void reverseVacOffButton2_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to VAC OFF ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_VAC_2, false);
+        }
+
+        private void reverseTurnButton2_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to TURN ?");
+
+            if (ret == false)
+                return;
+
+            if (main.input(INPUT.UB_OUT_REVERSE_UP_2) == false)
+            {
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not turn without up", MessageBoxButtons.OK);
+                error.showDialog();
+                return;
+            }
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_TURN_2, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_RETURN_2, false);
+        }
+
+        private void reverseReturnButton2_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to RETURN ?");
+
+            if (ret == false)
+                return;
+
+            if (main.input(INPUT.UB_OUT_REVERSE_UP_2) == false)
+            {
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not return without up", MessageBoxButtons.OK);
+                error.showDialog();
+                return;
+            }
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_RETURN_1, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_TURN_1, false);
+        }
+
+        private void reverseUpButton2_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to UP ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_UP_2, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_DOWN_2, false);
+        }
+
+        private void reverseDownButton2_Click(object sender, EventArgs e)
+        {
+            bool ret = CMessageBox.showMessage("Do you want to DOWN ?");
+
+            if (ret == false)
+                return;
+
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_DOWN_1, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_UP_1, false);
         }
     }
 }

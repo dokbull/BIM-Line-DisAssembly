@@ -413,11 +413,11 @@
     <Compile Include="FormTeach\FormTeachOutPP.Designer.cs">
       <DependentUpon>FormTeachOutPP.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormTeach\FormTeachTrayPP.cs">
+    <Compile Include="FormTeach\FormTeachMoldPP.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormTeach\FormTeachTrayPP.Designer.cs">
-      <DependentUpon>FormTeachTrayPP.cs</DependentUpon>
+    <Compile Include="FormTeach\FormTeachMoldPP.Designer.cs">
+      <DependentUpon>FormTeachMoldPP.cs</DependentUpon>
     </Compile>
     <Compile Include="lib\extControl\CIOButton.cs">
       <SubType>Component</SubType>
@@ -965,8 +965,8 @@
     <EmbeddedResource Include="FormTeach\FormTeachInPP.resx">
       <DependentUpon>FormTeachInPP.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormTeach\FormTeachTrayPP.resx">
-      <DependentUpon>FormTeachTrayPP.cs</DependentUpon>
+    <EmbeddedResource Include="FormTeach\FormTeachMoldPP.resx">
+      <DependentUpon>FormTeachMoldPP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTop.resx">
       <DependentUpon>FormTop.cs</DependentUpon>
