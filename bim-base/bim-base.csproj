@@ -1355,8 +1355,6 @@
     <Content Include="Resource\NV_TT_Paddingless.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="FormLog\" />
-    <Folder Include="FormSystem\" />
     <Folder Include="lib\motion\3rdparty\" />
   </ItemGroup>
   <ItemGroup>

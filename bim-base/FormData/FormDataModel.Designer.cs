@@ -35,6 +35,7 @@
             this.modelList = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.modelNameChange = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.currentModelLabel = new System.Windows.Forms.Label();
@@ -42,7 +43,6 @@
             this.changeButton = new System.Windows.Forms.Button();
             this.exitButton = new System.Windows.Forms.Button();
             this.uiTimer = new System.Windows.Forms.Timer(this.components);
-            this.modelNameChange = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -143,6 +143,18 @@
             this.tableLayoutPanel4.Size = new System.Drawing.Size(456, 197);
             this.tableLayoutPanel4.TabIndex = 0;
             // 
+            // modelNameChange
+            // 
+            this.modelNameChange.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.modelNameChange.Location = new System.Drawing.Point(3, 133);
+            this.modelNameChange.Name = "modelNameChange";
+            this.modelNameChange.Size = new System.Drawing.Size(146, 61);
+            this.modelNameChange.TabIndex = 8;
+            this.modelNameChange.Text = "Name Change";
+            this.modelNameChange.UseVisualStyleBackColor = true;
+            this.modelNameChange.Visible = false;
+            this.modelNameChange.Click += new System.EventHandler(this.modelNameChange_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -166,7 +178,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(146, 59);
             this.label3.TabIndex = 1;
-            this.label3.Text = "New Name";
+            this.label3.Text = "Change Model";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // currentModelLabel
@@ -181,6 +193,7 @@
             this.currentModelLabel.Size = new System.Drawing.Size(298, 59);
             this.currentModelLabel.TabIndex = 6;
             this.currentModelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.currentModelLabel.Click += new System.EventHandler(this.currentModelLabel_Click);
             // 
             // newModelName
             // 
@@ -222,17 +235,6 @@
             // uiTimer
             // 
             this.uiTimer.Tick += new System.EventHandler(this.uiTimer_Tick);
-            // 
-            // modelNameChange
-            // 
-            this.modelNameChange.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.modelNameChange.Location = new System.Drawing.Point(3, 133);
-            this.modelNameChange.Name = "modelNameChange";
-            this.modelNameChange.Size = new System.Drawing.Size(146, 61);
-            this.modelNameChange.TabIndex = 8;
-            this.modelNameChange.Text = "Name Change";
-            this.modelNameChange.UseVisualStyleBackColor = true;
-            this.modelNameChange.Click += new System.EventHandler(this.modelNameChange_Click);
             // 
             // FormDataModel
             // 
