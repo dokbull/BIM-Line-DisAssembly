@@ -182,7 +182,7 @@ namespace bim_base
                             return;
 
                         ST_STAGE_3.setType(CSTATION.TYPE.MOLD);
-                        ST_RIGHT_PP.clear();
+                        ST_LEFT_PP.clear();
 
                         m_step = STEP.WAIT_SHUTTLE_LEFT;
                     }
@@ -314,8 +314,7 @@ namespace bim_base
                     {
                         if (MOLD_PP.isRun() == true)
                             return;
-
-                        ST_LEFT_PP.clear();                        
+                     
                         ST_RIGHT_PP.move(ST_OUT_CV);
                         OUT_CV.setLock(false);
 

@@ -63,6 +63,8 @@ public class ModelInfo
         if (m_index >= 90 && name.Contains("TT_") == false)
             name = "TT_" + name;
 
+        m_setting = new CSettings(Common.MODEL_PATH + m_index.ToString());
+
         m_modelName = name;
         init();
     }
