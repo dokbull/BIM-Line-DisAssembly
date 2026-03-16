@@ -233,7 +233,7 @@ namespace bim_base
             //public bool PpidDelete(/*string ppid*/)
             //public bool ParameterChange()
 
-            Automation.Instance.PpidDelete(20);
+            Automation.Instance.PpidCreate(24);
 
         }
     }

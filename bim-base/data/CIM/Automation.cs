@@ -401,19 +401,11 @@ namespace bim_base.data.CIM
             this.ResetSignals();
 
             // 초기 ALIVE 신호 OFF로 Reset
-            if (this.HandShakeSignal(WRITE_B.ALIVEBIT_1, true, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            if (this.HandShakeSignal(WRITE_B.ALIVEBIT_1, true, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
                 return false;
 
             try
             {
-                // Date Time 동기화 요청 신호 대기
-                this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
-
-
-                // Date Time 동기화 처리
-                if (this.SetDateTime() == false) return false;
-
-
                 this.IsInitialized = true;
 
                 return true;
@@ -424,7 +416,30 @@ namespace bim_base.data.CIM
             }
 
         }
-        
+
+
+        private void RequestDateTimeSet()
+        {
+            // Date Time 동기화 요청 신호 대기
+            //if (this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, HANDSHAKE_TIMEOUT_MILLISECONDS))
+            //    return;
+
+            if(m_Reader.readBit(CIMRead.READ_B.DATETIMESET_2) == false)
+                return;
+
+            // Date Time 동기화 처리
+            //if (this.SetDateTime() == false) 
+            this.SetDateTime();
+
+            //m_Writer.setBit(CIMWrite.WRITE_B.DATETIMESET_2, true);
+
+            if (this.HandShakeSignal(WRITE_B.DATETIMESET_2, true, CIMRead.READ_B.DATETIMESET_2, false, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+                return;
+
+            m_Writer.setBit(CIMWrite.WRITE_B.DATETIMESET_2, false);
+            Thread.Sleep(200);
+           
+        }
 
         private void Alive()
         {
@@ -480,6 +495,9 @@ namespace bim_base.data.CIM
             //this.WriteBit(WRITE_B.ALIVEBIT_1, true);
             //Thread.Sleep(200);
 
+            if (this.ReportInitializeCIM() == false)
+                return;
+
 
             startTime = DateTime.Now;
 
@@ -496,7 +514,7 @@ namespace bim_base.data.CIM
                 this.RequestOperatorCall();
                 this.RequestInterlcokState();
                 this.RequestPpidList();
-
+                this.RequestDateTimeSet();
                 this.RequestRecipeDownload();
                 this.RequestParameterQuery();
 
@@ -1533,8 +1551,9 @@ namespace bim_base.data.CIM
             //    return false;
 
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
-
-            ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+            Conf.CURR_MODEL_IDX = index;
+            //ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+            ModelInfo INFO = Common.MODEL_INFO(index);// Common.MODEL[0];
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
             m_Writer.wordData((WRITE_W)WRITE_W.DEC_2_9224_PPIDMode).value = 1;
@@ -1543,7 +1562,8 @@ namespace bim_base.data.CIM
             //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
             //1-90 -> 상위에서 받는거. TT_ X
             //91-99-> 내부에서 만드는거 TT_로 시작
-            string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "O";
+            //string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "O";
+            string sName = (index).ToString() + "O";
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
            
             WriteTeachPos(INFO);
@@ -1553,7 +1573,8 @@ namespace bim_base.data.CIM
             Common.MODEL[81].saveModelName(sName);
             UpdateModelList();
 
-            this.HandShakeSignal(WRITE_B.PARAMETERCHANGE2_23, true, READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            if(this.HandShakeSignal(WRITE_B.PARAMETERCHANGE2_23, true, READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+                return false;
             
 //yjlee.. Original Source >>
             //m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, true);
