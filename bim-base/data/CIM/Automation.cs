@@ -506,6 +506,8 @@ namespace bim_base.data.CIM
 
                 string msgSummery = $"{messageNum} : {msgText}";
 
+                // TODO LHJ : Need manage History
+
                 DarkMessageBox msgbox = DarkMessageBox.CreateMessageBox(
                     "Received Terminal Display", 
                     EnumMessageBoxIcons.Information,
