@@ -295,6 +295,49 @@ namespace bim_base
                 return;
 
             updateGird();
+
+            setColor(leftGripOnButton, INPUT.MOLD_OUT_PP_GRIP_1, OUTPUT.MOLD_OUT_PP_GRIP_1);
+            setColor(leftGripOffButton, INPUT.MOLD_OUT_PP_UNGRIP_1, OUTPUT.MOLD_OUT_PP_UNGRIP_1);
+            setColor(rightGripOnButton, INPUT.MOLD_OUT_PP_GRIP_2, OUTPUT.MOLD_OUT_PP_GRIP_2);
+            setColor(rightGripOffButton, INPUT.MOLD_OUT_PP_UNGRIP_2, OUTPUT.MOLD_OUT_PP_UNGRIP_2);
+            setColor(upButton, INPUT.MOLD_SHUTTLE_SERVO_UP_1, INPUT.MOLD_SHUTTLE_SERVO_UP_2, OUTPUT.SHUTTLE_SERVO_MOLD_UP);
+            setColor(downButton, INPUT.MOLD_SHUTTLE_SERVO_DOWN_1, INPUT.MOLD_SHUTTLE_SERVO_DOWN_2, OUTPUT.SHUTTLE_SERVO_MOLD_DOWN);
+            setColor(holdOnButton, INPUT.MOLD_SHUTTLE_PUSHER_FWD_1, INPUT.MOLD_SHUTTLE_PUSHER_FWD_2, OUTPUT.SHUTTLE_MOLD_PUSHER_FWD);
+            setColor(holdOffButton, INPUT.MOLD_SHUTTLE_PUSHER_BWD_1, INPUT.MOLD_SHUTTLE_PUSHER_BWD_2, OUTPUT.SHUTTLE_MOLD_PUSHER_BWD);
+            setColor(openerFwdButton, INPUT.MOLD_SHUTTLE_UNLOCK_FWD_1, INPUT.MOLD_SHUTTLE_UNLOCK_FWD_2, OUTPUT.SHUTTLE_MOLD_UNLOCK_FWD);
+            setColor(openerBwdButton, INPUT.MOLD_SHUTTLE_UNLOCK_BWD_1, INPUT.MOLD_SHUTTLE_UNLOCK_BWD_2, OUTPUT.SHUTTLE_MOLD_UNLOCK_BWD);
+            // setColor(coverLockButton, INPUT.MOLD_SHUTTLE_UP, OUTPUT.SHUTTLE_MOLD_UP);
+            // setColor(coverUnlockButton, INPUT.MOLD_SHUTTLE_DOWN, OUTPUT.SHUTTLE_MOLD_DOWN);
+        }
+
+        bool input(INPUT input)
+        {
+            return main.input(input);
+        }
+
+        bool output(OUTPUT output)
+        {
+            return main.output(output);
+        }
+
+        void setColor(Button btn, INPUT inputEnum, OUTPUT outputEnum)
+        {
+            if (input(inputEnum) == true)
+                btn.BackColor = Color.SkyBlue;
+            else if (output(outputEnum) == true)
+                btn.BackColor = Color.Yellow;
+            else
+                btn.BackColor = Color.White;
+        }
+
+        void setColor(Button btn, INPUT inputEnum1, INPUT inputEnum2, OUTPUT outputEnum)
+        {
+            if (input(inputEnum1) == true && input(inputEnum2) == true)
+                btn.BackColor = Color.SkyBlue;
+            else if (output(outputEnum) == true)
+                btn.BackColor = Color.Yellow;
+            else
+                btn.BackColor = Color.White;
         }
 
         private void gripOnButton_Click(object sender, EventArgs e)

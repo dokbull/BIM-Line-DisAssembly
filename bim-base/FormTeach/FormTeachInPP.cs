@@ -243,6 +243,39 @@ namespace bim_base
                 return;
 
             updateGird();
+
+            setColor(ppGripOnButton, INPUT.MOLD_IN_PP_GRIP, OUTPUT.MOLD_IN_PP_GRIP);
+            setColor(ppGripOffButton, INPUT.MOLD_IN_PP_UNGRIP, OUTPUT.MOLD_IN_PP_UNGRIP);
+            setColor(fwdButton, INPUT.ALIGN_CV_ALIGN_FWD, OUTPUT.ALIGN_CV_ALIGN_FWD);
+            setColor(bwdButton, INPUT.ALIGN_CV_ALIGN_BWD, OUTPUT.ALIGN_CV_ALIGN_BWD);
+            setColor(upButton, INPUT.ALIGN_CV_MOLD_UP, OUTPUT.ALIGN_CV_MOLD_UP);
+            setColor(downButton, INPUT.ALIGN_CV_MOLD_DOWN, OUTPUT.ALIGN_CV_MOLD_DOWN);
+            setColor(reverseGripOnButton, INPUT.MOLD_IN_REVERSE_GRIP, OUTPUT.MOLD_IN_REVERSE_GRIP);
+            setColor(reverseGripOffButton, INPUT.MOLD_IN_REVERSE_UNGRIP, OUTPUT.MOLD_IN_REVERSE_UNGRIP);
+            setColor(reverseTurnButton, INPUT.MOLD_IN_REVERSE_TURN, OUTPUT.MOLD_IN_REVERSE_TURN);
+            setColor(reverseReturnButton, INPUT.MOLD_IN_REVERSE_RETURN, OUTPUT.MOLD_IN_REVERSE_RETURN);
+            setColor(reverseUpButton, INPUT.MOLD_SHUTTLE_UP, OUTPUT.SHUTTLE_MOLD_UP);
+            setColor(reverseDownButton, INPUT.MOLD_SHUTTLE_DOWN, OUTPUT.SHUTTLE_MOLD_DOWN);
+        }
+
+        bool input(INPUT input)
+        {
+            return main.input(input);
+        }
+
+        bool output(OUTPUT output)
+        {
+            return main.output(output);
+        }
+
+        void setColor(Button btn, INPUT inputEnum, OUTPUT outputEnum)
+        {
+            if (input(inputEnum) == true)
+                btn.BackColor = Color.SkyBlue;
+            else if (output(outputEnum) == true)
+                btn.BackColor = Color.Yellow;
+            else
+                btn.BackColor = Color.White;
         }
 
         private void ppGripOnButton_Click(object sender, EventArgs e)

@@ -247,8 +247,66 @@ namespace bim_base
                 return;
 
             updateGird();
+
+            setColor(ppVacOnButton, INPUT.UB_OUT_PP_VAC, OUTPUT.UB_OUT_PP_VAC);
+            setColor(ppVacOffButton, !input(INPUT.UB_OUT_PP_VAC), !output(OUTPUT.UB_OUT_PP_VAC));
+            setColor(fwdButton, INPUT.UB_OUT_PP_VAC, OUTPUT.UB_OUT_PP_FWD);
+            setColor(bwdButton, INPUT.UB_OUT_PP_BWD, OUTPUT.UB_OUT_PP_BWD);
+
+            setColor(reverseTurnButton1, INPUT.UB_OUT_REVERSE_TURN_1, OUTPUT.UB_OUT_REVERSE_TURN_1);
+            setColor(reverseReturnButton1, INPUT.UB_OUT_REVERSE_RETURN_1, OUTPUT.UB_OUT_REVERSE_RETURN_1);
+            setColor(reverseUpButton1, INPUT.UB_OUT_REVERSE_UP_1, OUTPUT.UB_OUT_REVERSE_UP_1);
+            setColor(reverseDownButton1, INPUT.UB_OUT_REVERSE_DOWN_1, OUTPUT.UB_OUT_REVERSE_DOWN_1);
+            setColor(reverseVacOnButton1, INPUT.UB_OUT_REVERSE_VAC_1, OUTPUT.UB_OUT_REVERSE_VAC_1);
+            setColor(reverseVacOffButton1, !input(INPUT.UB_OUT_REVERSE_VAC_1), !output(OUTPUT.UB_OUT_REVERSE_VAC_1));
+
+            setColor(reverseTurnButton2, INPUT.UB_OUT_REVERSE_TURN_2, OUTPUT.UB_OUT_REVERSE_TURN_2);
+            setColor(reverseReturnButton2, INPUT.UB_OUT_REVERSE_RETURN_2, OUTPUT.UB_OUT_REVERSE_RETURN_2);
+            setColor(reverseUpButton2, INPUT.UB_OUT_REVERSE_UP_2, OUTPUT.UB_OUT_REVERSE_UP_2);
+            setColor(reverseDownButton2, INPUT.UB_OUT_REVERSE_DOWN_2, OUTPUT.UB_OUT_REVERSE_DOWN_2);
+            setColor(reverseVacOnButton2, INPUT.UB_OUT_REVERSE_VAC_2, OUTPUT.UB_OUT_REVERSE_VAC_2);
+            setColor(reverseVacOffButton2, !input(INPUT.UB_OUT_REVERSE_VAC_2), !output(OUTPUT.UB_OUT_REVERSE_VAC_2));
         }
 
+        bool input(INPUT input)
+        {
+            return main.input(input);
+        }
+
+        bool output(OUTPUT output)
+        {
+            return main.output(output);
+        }
+
+        void setColor(Button btn, bool inputValue, bool outputValue)
+        {
+            if (inputValue == true)
+                btn.BackColor = Color.SkyBlue;
+            else if (outputValue == true)
+                btn.BackColor = Color.Yellow;
+            else
+                btn.BackColor = Color.White;
+        }
+
+        void setColor(Button btn, INPUT inputEnum, OUTPUT outputEnum)
+        {
+            if (input(inputEnum) == true)
+                btn.BackColor = Color.SkyBlue;
+            else if (output(outputEnum) == true)
+                btn.BackColor = Color.Yellow;
+            else
+                btn.BackColor = Color.White;
+        }
+
+        void setColor(Button btn, INPUT inputEnum1, INPUT inputEnum2, OUTPUT outputEnum)
+        {
+            if (input(inputEnum1) == true && input(inputEnum2) == true)
+                btn.BackColor = Color.SkyBlue;
+            else if (output(outputEnum) == true)
+                btn.BackColor = Color.Yellow;
+            else
+                btn.BackColor = Color.White;
+        }
         private void ppVacOnButton_Click(object sender, EventArgs e)
         {
             bool ret = CMessageBox.showMessage("Do you want to VAC ON ?");
@@ -421,8 +479,8 @@ namespace bim_base
                 return;
             }
 
-            main.setOutput(OUTPUT.UB_OUT_REVERSE_RETURN_1, true);
-            main.setOutput(OUTPUT.UB_OUT_REVERSE_TURN_1, false);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_RETURN_2, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_TURN_2, false);
         }
 
         private void reverseUpButton2_Click(object sender, EventArgs e)
@@ -443,8 +501,8 @@ namespace bim_base
             if (ret == false)
                 return;
 
-            main.setOutput(OUTPUT.UB_OUT_REVERSE_DOWN_1, true);
-            main.setOutput(OUTPUT.UB_OUT_REVERSE_UP_1, false);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_DOWN_2, true);
+            main.setOutput(OUTPUT.UB_OUT_REVERSE_UP_2, false);
         }
     }
 }
