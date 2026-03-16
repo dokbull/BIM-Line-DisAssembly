@@ -40,18 +40,18 @@
             // MainPanel
             // 
             this.MainPanel.Controls.Add(this.darkTableLayoutPanel1);
-            this.MainPanel.Location = new System.Drawing.Point(10, 81);
-            this.MainPanel.Margin = new System.Windows.Forms.Padding(6);
-            this.MainPanel.Size = new System.Drawing.Size(874, 263);
+            this.MainPanel.Location = new System.Drawing.Point(6, 59);
+            this.MainPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MainPanel.Size = new System.Drawing.Size(524, 189);
             // 
             // darkTableLayoutPanel1
             // 
             this.darkTableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.darkTableLayoutPanel1.ColumnCount = 4;
-            this.darkTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 57F));
-            this.darkTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 71F));
+            this.darkTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.darkTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 43F));
             this.darkTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.darkTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 57F));
+            this.darkTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.darkTableLayoutPanel1.Controls.Add(this.picIcon, 1, 1);
             this.darkTableLayoutPanel1.Controls.Add(this.lblMessage, 2, 1);
             this.darkTableLayoutPanel1.Controls.Add(this.cmbSelect, 2, 0);
@@ -60,14 +60,14 @@
             this.darkTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.darkTableLayoutPanel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.darkTableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.darkTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
+            this.darkTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.darkTableLayoutPanel1.Name = "darkTableLayoutPanel1";
             this.darkTableLayoutPanel1.RowCount = 4;
-            this.darkTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.darkTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 75F));
+            this.darkTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
+            this.darkTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
             this.darkTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.darkTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.darkTableLayoutPanel1.Size = new System.Drawing.Size(874, 263);
+            this.darkTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 43F));
+            this.darkTableLayoutPanel1.Size = new System.Drawing.Size(524, 189);
             this.darkTableLayoutPanel1.TabIndex = 0;
             // 
             // picIcon
@@ -77,10 +77,10 @@
             this.picIcon.DarkLevel = 20;
             this.picIcon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.picIcon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.picIcon.Location = new System.Drawing.Point(61, 64);
-            this.picIcon.Margin = new System.Windows.Forms.Padding(4);
+            this.picIcon.Location = new System.Drawing.Point(36, 46);
+            this.picIcon.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.picIcon.Name = "picIcon";
-            this.picIcon.Size = new System.Drawing.Size(63, 67);
+            this.picIcon.Size = new System.Drawing.Size(39, 48);
             this.picIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picIcon.TabIndex = 0;
             this.picIcon.TabStop = false;
@@ -93,11 +93,11 @@
             this.lblMessage.DarkLevel = 20;
             this.lblMessage.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.lblMessage.Location = new System.Drawing.Point(142, 75);
-            this.lblMessage.Margin = new System.Windows.Forms.Padding(14, 15, 14, 15);
+            this.lblMessage.Location = new System.Drawing.Point(85, 54);
+            this.lblMessage.Margin = new System.Windows.Forms.Padding(8, 11, 8, 11);
             this.lblMessage.Name = "lblMessage";
             this.darkTableLayoutPanel1.SetRowSpan(this.lblMessage, 2);
-            this.lblMessage.Size = new System.Drawing.Size(661, 113);
+            this.lblMessage.Size = new System.Drawing.Size(397, 81);
             this.lblMessage.TabIndex = 1;
             this.lblMessage.Text = "message";
             // 
@@ -108,24 +108,25 @@
             this.cmbSelect.DarkLevel = 30;
             this.cmbSelect.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmbSelect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSelect.Font = new System.Drawing.Font("굴림", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.cmbSelect.Font = new System.Drawing.Font("Gulim", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.cmbSelect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.cmbSelect.FormattingEnabled = true;
-            this.cmbSelect.Location = new System.Drawing.Point(131, 3);
+            this.cmbSelect.Location = new System.Drawing.Point(79, 2);
+            this.cmbSelect.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cmbSelect.Name = "cmbSelect";
-            this.cmbSelect.Size = new System.Drawing.Size(683, 48);
+            this.cmbSelect.Size = new System.Drawing.Size(409, 35);
             this.cmbSelect.TabIndex = 2;
             this.cmbSelect.Visible = false;
             this.cmbSelect.SelectedIndexChanged += new System.EventHandler(this.cmbSelect_SelectedIndexChanged);
             // 
             // DarkMessageBox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
-            this.ClientSize = new System.Drawing.Size(894, 356);
-            this.Margin = new System.Windows.Forms.Padding(6);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.ClientSize = new System.Drawing.Size(536, 257);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "DarkMessageBox";
             this.OptionBoxAlignment = Lib.UI.Generic.DarkMode.Controls.EnumTitleOptionBoxAlignment.Right;
-            this.Padding = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.Padding = new System.Windows.Forms.Padding(6, 9, 6, 9);
             this.Text = "Dark Form";
             this.TitleButtonText1 = "Cancel";
             this.TitleButtonText2 = "OK";
