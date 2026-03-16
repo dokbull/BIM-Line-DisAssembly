@@ -1393,7 +1393,7 @@ public class CIMRead
             if (split[0] == "DEC")
                 type = READ_TYPE.DEC;
 
-            startAddress = Convert.ToInt32(split[1], 16);
+            startAddress = Convert.ToInt32(split[2], 16);
 
             length = Util.toInt32(split[1]);
         }
