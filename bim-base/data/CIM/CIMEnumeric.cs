@@ -8,18 +8,6 @@ namespace bim_base.data.CIM
 {
     internal class CIMEnumeric
     {
-        internal enum EnumRequestProcState
-        {
-            Alive,
-            TerminalDisplay,
-            OperatorCall,
-            RequestInterlcokState,
-            RequestPpidList,
-            RequestRecipeDownload,
-            RequestParameterQuery,
-            FDC,
-            SampleExistStatus,
-        }
 
         public enum EnumAvailabilityState
         {

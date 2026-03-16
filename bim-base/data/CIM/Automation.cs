@@ -60,7 +60,8 @@ namespace bim_base.data.CIM
 
         //private RMS m_RMS = new RMS();
 
-        private object m_RunScanLock = new object();
+        private Thread mTh_IntervalRun = null;
+        private object mLock_IntervalRun = new object();
 
         #endregion
 
@@ -69,8 +70,6 @@ namespace bim_base.data.CIM
         public static Automation Instance = new Automation();
 
         public bool IsInitialized { get; private set; } = false;
-        public bool IsRun { get; private set; } = false;
-
 
         public CIMRead CCIE_Reader
         {
@@ -84,7 +83,6 @@ namespace bim_base.data.CIM
             private set { this.m_Writer = value; }
         }
 
-        public List<EnumRequestProcState> RequestProcStateList { get; private set; } = new List<EnumRequestProcState>();
 
         public EnumAlarmState AlarmState { get; private set; } = EnumAlarmState.None;
 
@@ -155,7 +153,7 @@ namespace bim_base.data.CIM
 
             if (ret)
             {
-                this.InitializeSignals();
+                this.ResetSignals();
             }
             else
             {
@@ -196,6 +194,34 @@ namespace bim_base.data.CIM
 
                 this.SleepWithDoEvent(1);
                 ts = DateTime.Now - startTime;
+            }
+
+        }
+
+        private bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
+        {
+            // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
+            try
+            {
+                this.WriteBit(_addrWrite, _writeValue);
+                this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (_isOnError)
+                {
+                    throw new Exception($"HandShakeSignal Error Occurred");
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            finally
+            {
+                this.WriteBit(_addrWrite, !_writeValue);
             }
 
         }
@@ -284,7 +310,7 @@ namespace bim_base.data.CIM
         }
 
 
-        private void InitializeSignals()
+        private void ResetSignals()
         {
             foreach (string enumName in Enum.GetNames(typeof(CIMWrite.WRITE_B)))
             {
@@ -292,33 +318,6 @@ namespace bim_base.data.CIM
                 this.WriteBit(addrBit, false);
             }
         }
-
-        private bool AddRequestProcState(EnumRequestProcState state)
-        {
-            lock (this.m_RunScanLock)
-            {
-
-                if (this.RequestProcStateList.Contains(state))
-                    return false;
-
-
-                this.RequestProcStateList.Add(state);
-                return true;
-            }
-        }
-
-        private void RemoveRequestProcState(EnumRequestProcState state)
-        {
-            lock (this.m_RunScanLock)
-            {
-                if (this.RequestProcStateList.Contains(state) == false)
-                    return;
-
-
-                this.RequestProcStateList.Remove(state);
-            }
-        }
-
 
         private int BitsToInt(List<bool> _bits, bool _lsbFirst = true)
         {
@@ -343,24 +342,82 @@ namespace bim_base.data.CIM
             return value;
         }
 
-        private async void Alive()
+        #endregion
+
+        #region Private Method : CIM
+
+        private bool ReportInitializeCIM()
+        {
+            if (this.IsInitialized) return false;
+
+            this.ResetSignals();
+
+            // 초기 ALIVE 신호 OFF로 Reset
+            if (this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_SECONDS) == false)
+                return false;
+
+            try
+            {
+                // Date Time 동기화 요청 신호 대기
+                this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, HANDSHAKE_TIMEOUT_SECONDS);
+
+                // Date Time 동기화 처리
+                if (this.SetDateTime() == false) return false;
+
+
+                this.IsInitialized = true;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+        
+
+        private void Alive()
         {
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.Alive) == false)
-                    return;
 
                 bool alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
-                await this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true); ;
+                this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
 
             }
             catch
             {
             }
-            finally
+        }
+
+
+        private void RunScan()
+        {
+            if (this.OpenCCIE() == false)
+                return;
+
+            // TODO CHECK LHJ : 사전 테스트 끝나고 다시 복귀 필요
+            //this.SyncCommCCIE();
+
+            if(this.ReportInitializeCIM() == false)
+                return;
+
+            while (true)
             {
-                this.RemoveRequestProcState(EnumRequestProcState.Alive);
+                this.Alive();
+                this.RequestTerminalDisplay();
+                this.RequestOperatorCall();
+                this.RequestInterlcokState();
+                this.RequestPpidList();
+
+                this.RequestRecipeDownload();
+                this.RequestParameterQuery();
+
+                this.ReportFaultDetectionClassification();
+                this.ReportSampleProcessingState();
+
             }
         }
 
@@ -372,8 +429,6 @@ namespace bim_base.data.CIM
         {
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.TerminalDisplay) == false)
-                    return;
 
                 if (this.ReadBit(CIMRead.READ_B.TERMINALDISPLAY_3) == false)
                     return;
@@ -387,7 +442,7 @@ namespace bim_base.data.CIM
                 ReceivedTerminalDisplayEvent?.Invoke(messageNum, msgText);
 
                 this.WriteBit(WRITE_B.TERMINALDISPLAY_3, true);
-                Task.Run(() => this.SleepWithDoEvent(1)).Wait();
+                this.SleepWithDoEvent(1);
                 this.WriteBit(WRITE_B.TERMINALDISPLAY_3, false);
 
 
@@ -395,19 +450,12 @@ namespace bim_base.data.CIM
             catch
             {
             }
-            finally
-            {
-                this.RemoveRequestProcState(EnumRequestProcState.TerminalDisplay);
-            }
         }
 
         private void RequestOperatorCall()
         {
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.OperatorCall) == false)
-                    return;
-
                 if (this.ReadBit(CIMRead.READ_B.OPERATORCALL_4) == false)
                     return;
 
@@ -427,25 +475,19 @@ namespace bim_base.data.CIM
                 ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
 
                 this.WriteBit(WRITE_B.OPCALLCONFIRM_41, true);
-                Task.Run(() => this.SleepWithDoEvent(1)).Wait();
+                this.SleepWithDoEvent(1);
                 this.WriteBit(WRITE_B.OPCALLCONFIRM_41, false);
 
             }
             catch
             {
             }
-            finally
-            {
-                this.RemoveRequestProcState(EnumRequestProcState.OperatorCall);
-            }
         }
 
-        private async void RequestInterlcokState()
+        private void RequestInterlcokState()
         {
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.RequestInterlcokState) == false)
-                    return;
 
                 if (this.ReadBit(CIMRead.READ_B.INTERLOCK_5) == false)
                     return;
@@ -476,7 +518,7 @@ namespace bim_base.data.CIM
                     throw new Exception("ReceivedInterlockEvent is not set.");
 
                 // Show Popup + Signal Tower ON + Buzzor ON 
-                await Task.Run(() => ReceivedInterlockEvent.Invoke(interlockID, logMessage, rcmd)).ConfigureAwait(true);
+                ReceivedInterlockEvent.Invoke(interlockID, logMessage, rcmd);
 
                 // Interlock Released (=Clear Popup)
                 this.WriteBit(WRITE_B.INTERLOCK_5, false);
@@ -508,10 +550,6 @@ namespace bim_base.data.CIM
             catch
             {
             }
-            finally
-            {
-                this.RemoveRequestProcState(EnumRequestProcState.RequestInterlcokState);
-            }
         }
 
 
@@ -533,8 +571,6 @@ namespace bim_base.data.CIM
         {
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.RequestPpidList) == false)
-                    return;
 
                 //ModelInfo
                 if (m_Reader.readBit(CIMRead.READ_B.CURRENTEQUIPPPIDLISTREQUEST_56) == false)
@@ -557,10 +593,7 @@ namespace bim_base.data.CIM
 
                 m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
 
-                _ = Task.Run(async () =>
-                {
-                    await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true);
-                });
+                this.SleepWithDoEvent(1);
             }
             catch
             {
@@ -569,7 +602,6 @@ namespace bim_base.data.CIM
             finally
             {
                 m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
-                this.RemoveRequestProcState(EnumRequestProcState.RequestPpidList);
             }
         }
 
@@ -580,8 +612,6 @@ namespace bim_base.data.CIM
 
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.RequestRecipeDownload) == false)
-                    return;
 
                 //ModelInfo
                 if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMSEND_54) == true)
@@ -620,17 +650,13 @@ namespace bim_base.data.CIM
 
                     WriteTeachPos(INFO);
 
-                    Task<bool> asyncHS = this.HandShakeSignal(
+                    this.HandShakeSignal(
                         WRITE_B.PPIDCHANGE_21,
                         true,
                         READ_B.PPIDCHANGE_21,
                         true,
                         HANDSHAKE_TIMEOUT_SECONDS);
 
-                    asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-
-                    //if (!asyncHS.Result)
-                    //    return false;
                 }
             }
             catch
@@ -640,7 +666,6 @@ namespace bim_base.data.CIM
             finally
             {
                 m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
-                this.RemoveRequestProcState(EnumRequestProcState.RequestRecipeDownload);
             }
 
         }
@@ -652,8 +677,6 @@ namespace bim_base.data.CIM
 
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.RequestParameterQuery) == false)
-                    return;
 
                 //Request PPID WORD(W4217) 다른 영역인데..
                 if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMREQUEST_55) == true)
@@ -685,10 +708,7 @@ namespace bim_base.data.CIM
 
                     m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, true);
 
-                    _ = Task.Run(async () =>
-                    {
-                        await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS);
-                    });
+                    this.SleepWithDoEvent(1);
                 }
             }
             catch
@@ -698,7 +718,6 @@ namespace bim_base.data.CIM
             finally
             {
                 m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, false);
-                this.RemoveRequestProcState(EnumRequestProcState.RequestParameterQuery);
             }
 
         }
@@ -707,12 +726,10 @@ namespace bim_base.data.CIM
 
         #region Private Method : Status
 
-        private void RedrawFaultDetectionClassification()
+        private void ReportFaultDetectionClassification()
         {
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.FDC) == false)
-                    return;
 
                 if (GetFaultDetectionClassificationEvent == null)
                     return;
@@ -754,19 +771,12 @@ namespace bim_base.data.CIM
             {
 
             }
-            finally
-            {
-                this.RemoveRequestProcState(EnumRequestProcState.FDC);
-
-            }
         }
 
-        private void ScanSampleExist()
+        private void ReportSampleProcessingState()
         {
             try
             {
-                if (this.AddRequestProcState(EnumRequestProcState.SampleExistStatus) == false)
-                    return;
 
                 if (this.GetSampleExistEvent == null)
                     return;
@@ -779,45 +789,7 @@ namespace bim_base.data.CIM
             {
 
             }
-            finally
-            {
-                this.RemoveRequestProcState(EnumRequestProcState.SampleExistStatus);
-
-            }
             
-        }
-
-        #endregion
-
-        #region Public Method
-
-        public async void RunScan()
-        {
-            if (this.IsRun) return;
-
-            this.IsRun = true;
-
-            // TODO CHECK LHJ : 사전 테스트 끝나고 다시 복귀 필요
-            //this.SyncCommCCIE();
-
-            List<Task> tasks = new List<Task>();
-
-            tasks.Add(Task.Run(() => this.Alive()));
-            tasks.Add(Task.Run(() => this.RequestTerminalDisplay()));
-            tasks.Add(Task.Run(() => this.RequestOperatorCall()));
-            tasks.Add(Task.Run(() => this.RequestInterlcokState()));
-            tasks.Add(Task.Run(() => this.RequestPpidList()));
-
-            tasks.Add(Task.Run(() => this.RequestRecipeDownload()));
-            tasks.Add(Task.Run(() => this.RequestParameterQuery()));
-
-            tasks.Add(Task.Run(() => this.RedrawFaultDetectionClassification()));
-            tasks.Add(Task.Run(() => this.ScanSampleExist()));
-            
-
-            //await Task.WhenAll(tasks).ConfigureAwait(true); ;
-
-            this.IsRun = false;
         }
 
         #endregion
@@ -943,83 +915,39 @@ namespace bim_base.data.CIM
             return this.ReadBit(CIMWrite.WRITE_B.TERMINALDISPLAY_3);
         }
 
-        public async Task<bool> HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
-        {
-            bool function()
-            {
-                // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
-                try
-                {
-                    this.WriteBit(_addrWrite, _writeValue);
-                    this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    return false;
-                }
-                finally
-                {
-                    this.WriteBit(_addrWrite, !_writeValue);
-                }
-            }
-            ;
-
-            bool asyncResult = await Task.Run(() => function()).ConfigureAwait(true);
-
-            if (_isOnError && asyncResult == false)
-            {
-                throw new Exception($"HandShakeSignal Error Occurred");
-            }
-
-            return asyncResult;
-        }
-
         #endregion
 
         #region Public Method : CIM Initialize
 
-
-        public bool InitializeCIM()
-        {
-            if (this.IsInitialized) return false;
-
-            this.InitializeSignals();
-
-            // 초기 ALIVE 신호 OFF로 Reset
-            Task<bool> asyncHS = Task.Run(() => this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_SECONDS));
-            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-            if (asyncHS.Result == false) return false;
-
-            // Date Time 동기화 요청 신호 대기
-            asyncHS = Task.Run(() =>
-            {
-                try
-                {
-                    this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, HANDSHAKE_TIMEOUT_SECONDS);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            });
-            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-            if (asyncHS.Result)
-            {
-                // Date Time 동기화 처리
-                if (this.SetDateTime() == false) return false;
-            }
-
-            this.IsInitialized = true;
-
-            return true;
-        }    
         
+        public async void Initialize()
+        {
+            this.mTh_IntervalRun = new Thread(new ThreadStart(this.RunScan));
+            this.mTh_IntervalRun.IsBackground = true;
+            this.mTh_IntervalRun.Start();
+
+            await Task.Run(() =>
+            {
+                DateTime start = DateTime.Now;
+                TimeSpan ts = DateTime.Now - start;
+
+                while (this.IsInitialized == false)
+                {
+                    this.SleepWithDoEvent(1);
+
+                    ts = DateTime.Now - start;
+                    if (ts.TotalSeconds >= HANDSHAKE_TIMEOUT_SECONDS)
+                        break;
+                }
+            }).ConfigureAwait(true);
+
+        }
 
         public bool SetDateTime()
         {
+            if (this.IsInitialized == false)
+                return false;
+
             // TODO CHECK LHJ : PC의 Local 시간에 Date Time이 변경되는지 여부 확인
 
             this.WriteBit(WRITE_B.DATETIMESET_2, false);
@@ -1034,7 +962,7 @@ namespace bim_base.data.CIM
             }
 
             this.WriteBit(WRITE_B.DATETIMESET_2, true);
-            Task.Run(() => this.SleepWithDoEvent(1)).Wait();
+            this.SleepWithDoEvent(1);
             this.WriteBit(WRITE_B.DATETIMESET_2, false);
 
             return true;
@@ -1049,31 +977,46 @@ namespace bim_base.data.CIM
 
         public void SetEqState(CIMEnumeric.EnumAvailabilityState _state)
         {
+            if (this.IsInitialized == false)
+                return;
+
             this.WriteWord(WRITE_W.ASCII_1_002C_EQPAvailability, $"{_state}");
         }
 
         public void SetEqState(CIMEnumeric.EnumInterlockState _state)
         {
+            if (this.IsInitialized == false)
+                return;
+
             this.WriteWord(WRITE_W.ASCII_1_002D_EQPInterlock, $"{_state}");
         }
         public void SetEqState(CIMEnumeric.EnumMoveState _state)
         {
+            if (this.IsInitialized == false)
+                return;
+
             this.WriteWord(WRITE_W.ASCII_1_002E_EQPMove, $"{_state}");
         }
         public void SetEqState(CIMEnumeric.EnumRunState _state)
         {
+            if (this.IsInitialized == false)
+                return;
+
             this.WriteWord(WRITE_W.ASCII_1_002F_EQPRun, $"{_state}");
         }
 
         /// <summary>
         /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
         /// </summary>
-        public async void SendTerminalDisplay(string _message)
+        public void SendTerminalDisplay(string _message)
         {
+            if (this.IsInitialized == false)
+                return;
+
             try
             {
                 this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
-                await this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true); 
+                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_SECONDS); 
 
             }
             catch
@@ -1084,14 +1027,17 @@ namespace bim_base.data.CIM
         /// <summary>
         /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
         /// </summary>
-        public async void SendOperatorCall(string _message)
+        public void SendOperatorCall(string _message)
         {
+            if (this.IsInitialized == false)
+                return;
+
             try
             {
                 // TODO CHECK LHJ : Operator Call은 ID가 존재하는데, ID는 어떻게 관리할지? 일단은 메시지만 전달하는 형태로 구현
 
                 this.WriteWord(WRITE_W.ASCII_60_259C_UnitOPCallConfirmOPCallMessage, _message);
-                await this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_SECONDS).ConfigureAwait(true);
+                this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_SECONDS);
 
             }
             catch
@@ -1104,6 +1050,9 @@ namespace bim_base.data.CIM
         /// </summary>
         public bool ReleaseInterlcokState(string _message)
         {
+            if (this.IsInitialized == false)
+                return false;
+
             try
             {
                 return true;
@@ -1120,6 +1069,8 @@ namespace bim_base.data.CIM
 
         public void AlarmOccured(EnumAlarmLevel _alarmLevel, int _alarmID, string _description)
         {
+            if (this.IsInitialized == false)
+                return;
 
             int wordIDX = _alarmID / BIT_COUNT;
             int bitIDX = _alarmID % BIT_COUNT;
@@ -1154,6 +1105,9 @@ namespace bim_base.data.CIM
 
         public void AlarmReleased(int _alarmID, string _description)
         {
+            if (this.IsInitialized == false)
+                return;
+
             // TODO CHECK LHJ : 주소 확인, 어떤 Data를 작성해야 할지 확인
             this.WriteWord(WRITE_W.BIT_400_CAD4_Alarm, $"{0}");
 
@@ -1165,14 +1119,20 @@ namespace bim_base.data.CIM
 
         public void AlarmListRequest()
         {
+            if (this.IsInitialized == false)
+                return;
+
             // TODO CHECK LHJ : Alarm 조회 기능에 대한 시나리오 구현 필요한지 확인
         }
 
         /// <summary>
-        /// Safety Door Open 등과 같이 설비가 비정상적으로 정지해야 하는 상황에서 터치화면에 팝업 메세지를 띄우고, 설비를 정지시키는 기능
+        /// TPM Loss. Safety Door Open 등과 같이 설비가 비정상적으로 정지해야 하는 상황에서 터치화면에 팝업 메세지를 띄우고, 설비를 정지시키는 기능
         /// </summary>
         public void EqStopByOperator(EnmumEqStopByOperatorType _stopType)
         {
+            if (this.IsInitialized == false)
+                return;
+
             try
             {
                 this.WriteBit(WRITE_B.TPMLOSSREADY_19, true);
@@ -1223,25 +1183,29 @@ namespace bim_base.data.CIM
 
         #region Public Method : CIM Sample Processing 
 
-        public async void LoadingCellTrackIn()
+        public void LoadingCellTrackIn()
         {
+            if (this.IsInitialized == false)
+                return;
+
             // TODO 어떤 Data를 써야 할지 확인
             //this.WriteWord(WRITE_W.trackin)
 
-            Task<bool> tResult = this.HandShakeSignal(WRITE_B.CELLSTARTPORT1_28, true, READ_B.CELLSTARTPORT1_28, true, HANDSHAKE_TIMEOUT_SECONDS);
-            await tResult.ConfigureAwait(true);
+            this.HandShakeSignal(WRITE_B.CELLSTARTPORT1_28, true, READ_B.CELLSTARTPORT1_28, true, HANDSHAKE_TIMEOUT_SECONDS);
 
         }
 
-        public async void UnloadingCellTrackOut()
+        public void UnloadingCellTrackOut()
         {
+            if (this.IsInitialized == false)
+                return;
+
             // TODO 어떤 Data를 써야 할지 확인
             //this.WriteWord(WRITE_W.trackin)
 
             // TODO 어떤 DV Data를 써야 할지 확인
 
-            Task<bool> tResult = this.HandShakeSignal(WRITE_B.CELLCOMPPORT1_34, true, READ_B.CELLCOMPPORT1_34, true, HANDSHAKE_TIMEOUT_SECONDS);
-            await tResult.ConfigureAwait(true);
+            this.HandShakeSignal(WRITE_B.CELLCOMPPORT1_34, true, READ_B.CELLCOMPPORT1_34, true, HANDSHAKE_TIMEOUT_SECONDS);
         }
 
         #endregion
@@ -1252,28 +1216,22 @@ namespace bim_base.data.CIM
         // PPID Change (JOB Change)
         public bool PpidChange()
         {
+            if (this.IsInitialized == false)
+                return false;
+
             ModelInfo info = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
 
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = info.modelName();
 
-            Task<bool> asyncHS = this.HandShakeSignal(
-                WRITE_B.PPIDCHANGE_21,
-                true,
-                READ_B.PPIDCHANGE_21,
-                true,
-                HANDSHAKE_TIMEOUT_SECONDS);
-
-            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-
-            if (!asyncHS.Result)
-                return false;
-
-            return true;
+            return this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS);
         }
 
         // PPID 생성
         public bool PpidCreate(/*string ppid*/)
         {
+            if (this.IsInitialized == false)
+                return false;
+
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
 
             ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
@@ -1284,16 +1242,7 @@ namespace bim_base.data.CIM
 
             WriteTeachPos(INFO);
 
-            Task<bool> asyncHS = this.HandShakeSignal(
-                WRITE_B.PPIDCHANGE_21,
-                true,
-                READ_B.PPIDCHANGE_21,
-                true,
-                HANDSHAKE_TIMEOUT_SECONDS);
-
-            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-
-            if (!asyncHS.Result)
+            if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
                 return false;
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
@@ -1328,6 +1277,9 @@ namespace bim_base.data.CIM
         // PPID 삭제
         public bool PpidDelete(/*string ppid*/)
         {
+            if (this.IsInitialized == false)
+                return false;
+
             ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
@@ -1336,16 +1288,7 @@ namespace bim_base.data.CIM
 
             //WriteTeachPos(INFO);
 
-            Task<bool> asyncHS = this.HandShakeSignal(
-                WRITE_B.PPIDCHANGE_21,
-                true,
-                READ_B.PPIDCHANGE_21,
-                true,
-                HANDSHAKE_TIMEOUT_SECONDS);
-
-            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-
-            if (!asyncHS.Result)
+            if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
                 return false;
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
@@ -1382,6 +1325,9 @@ namespace bim_base.data.CIM
 
         public bool ParameterChange()
         {
+            if (this.IsInitialized == false)
+                return false;
+
             ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
@@ -1390,16 +1336,7 @@ namespace bim_base.data.CIM
 
             WriteTeachPos(INFO);
 
-            Task<bool> asyncHS = this.HandShakeSignal(
-                WRITE_B.PPIDCHANGE_21,
-                true,
-                READ_B.PPIDCHANGE_21,
-                true,
-                HANDSHAKE_TIMEOUT_SECONDS);
-
-            asyncHS.Wait(HANDSHAKE_TIMEOUT_SECONDS);
-
-            if (!asyncHS.Result)
+            if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
                 return false;
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
@@ -1412,6 +1349,9 @@ namespace bim_base.data.CIM
         #region Public Method : CIM ECM
         public void EquipConstantQuery()
         {
+            if (this.IsInitialized == false)
+                return;
+
             //if (m_Reader.readBit(CIMRead.READ_B.EQUIPCONSTANTNAMELIST_53) == true)
             {
                 //double[] vel = new double[(int)AXIS.MAX];
@@ -1438,6 +1378,9 @@ namespace bim_base.data.CIM
 
         public void ConstantnameListQuery()
         {
+            if (this.IsInitialized == false)
+                return;
+
             if (m_Reader.readBit(CIMRead.READ_B.EQUIPCONSTANTNAMELIST_53) == true)
             {
                 ModelInfo Mc = Common.MC;
@@ -1446,11 +1389,9 @@ namespace bim_base.data.CIM
 
                 //m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
 
-                _ = Task.Run(async () =>
-                {
-                    await Task.Delay(HANDSHAKE_TIMEOUT_SECONDS);
-                    m_Writer.setBit(WRITE_B.EQUIPCONSTANTNAMELIST_53, true);    //시퀀스 다이어 그램 화살표 이상.
-                });
+                this.SleepWithDoEvent(1);
+
+                m_Writer.setBit(WRITE_B.EQUIPCONSTANTNAMELIST_53, true);    //시퀀스 다이어 그램 화살표 이상.
             }
         }
         #endregion

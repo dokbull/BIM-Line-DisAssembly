@@ -20,7 +20,6 @@ namespace bim_base
 
         private async void btnHandShake_Click(object sender, EventArgs e)
         {
-            await Automation.Instance.HandShakeSignal(CIMWrite.WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, 5);
         }
 
         private void tmrRedraw_Tick(object sender, EventArgs e)
@@ -30,17 +29,17 @@ namespace bim_base
             lblInitialized.BackColor = Color.LightGreen;
 
             // CIM 요청 중 병목현상이 생기는지 여부 확인용도
-            this.lblRunScan.BackColor = (Automation.Instance.IsRun ? Color.LightGreen : SystemColors.Control);
+            //this.lblRunScan.BackColor = (Automation.Instance.IsRun ? Color.LightGreen : SystemColors.Control);
 
             try
             {
                 // 스냅샷을 만들어서 안전하게 열거
-                var snapshot = Automation.Instance.RequestProcStateList.ToList();
-                this.lblRunProcessing.BackColor = (snapshot.Count > 0 ? Color.LightGreen : SystemColors.Control);
-                if (snapshot.Count > 0)
-                {
-                    this.lblRunProcessingList.Text = string.Join(Environment.NewLine, snapshot.Select(x => $"{x.ToString()}\r\n"));
-                }
+                //var snapshot = Automation.Instance.RequestProcStateList.ToList();
+                //this.lblRunProcessing.BackColor = (snapshot.Count > 0 ? Color.LightGreen : SystemColors.Control);
+                //if (snapshot.Count > 0)
+                //{
+                //    this.lblRunProcessingList.Text = string.Join(Environment.NewLine, snapshot.Select(x => $"{x.ToString()}\r\n"));
+                //}
             }
             catch (InvalidOperationException)
             {

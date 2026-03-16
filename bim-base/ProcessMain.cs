@@ -128,8 +128,6 @@ namespace bim_base
             m_mesLogMgr = new CLogManager("mes", Common.LOG_PATH);
             m_mcStatusLog = new CLogManager("Error Stop Time", "C:\\FA\\", "", "Error Stop Time");
 
-            Automation.Instance.OpenCCIE();
-
             IN_PP_Y = new ExtAxis(this, (int)AXIS.IN_PP_Y, "IN PP Y");
             IN_PP_Z = new ExtAxis(this, (int)AXIS.IN_PP_Z, "IN PP Z");
 
@@ -220,7 +218,7 @@ namespace bim_base
                 m_station[i] = new CSTATION(st);
             }
 
-            //Automation automation = new Automation();
+            Automation.Instance.Initialize();
             Automation.Instance.GetFaultDetectionClassificationEvent += GetFDCData;
 
             m_thread = new Thread(run);
@@ -476,12 +474,13 @@ namespace bim_base
             setBuzzerOff();
             setOutput(OUTPUT.OP_PANEL_RESET_SW, false);
 
+            Automation.Instance.AlarmReleased(this.m_lastAlarm.code, this.m_lastAlarm.desc);
+
             m_isAlarm = false;
             m_lastAlarm = null;
 
             FormMain.inst().clearAlarm();
 
-            Automation.Instance.AlarmReleased(this.m_lastAlarm.code, this.m_lastAlarm.desc);
         }
 
         public int lastAlarmCode()
@@ -526,8 +525,6 @@ namespace bim_base
             m_once = true;
 
             m_frenic = new CSerialFRENIC(FormMain.inst().serialFRENIC, 11);
-
-            Automation.Instance.InitializeCIM();
 
             while (true)
             {
@@ -576,9 +573,6 @@ namespace bim_base
                     }
                     m_once = false;
                 }
-
-                // TODO CHECK LHJ : 사전 테스트 끝나고 삭제 필요
-                Automation.Instance.RunScan();
 
                 //Automation.Instance.PpidListRequest();
                 //Automation.Instance.PpidChange();
