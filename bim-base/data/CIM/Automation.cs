@@ -1,5 +1,7 @@
 ﻿using lib.plc;
+using Lib.UI.Generic.DarkMode;
 using Lib.UI.Generic.DarkMode.Forms;
+using Lib.UI.Generic.Icons;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +11,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
@@ -33,7 +36,6 @@ namespace bim_base.data.CIM
 
         #region Delegate
 
-        public delegate void OnReceivedTerminalDisplayEventHandler(int _MessageNum, string _MessageText);
         public delegate void OnReceivedOperatorCallEventHandler(int _OpCallNum, string _OpCallText);
         public delegate void OnReceivedInterlockEventHandler(int _ID, string _Message, EnumInterlockRCMD _RCMD);
         public delegate void OnReleaseInterlockEventHandler(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage);
@@ -105,7 +107,6 @@ namespace bim_base.data.CIM
 
         #region Event
 
-        public event OnReceivedTerminalDisplayEventHandler ReceivedTerminalDisplayEvent;
         public event OnReceivedOperatorCallEventHandler ReceivedOperatorCallEvent;
         /// <summary>
         /// 설비 가동 정지, 인터락 메세지 팝업
@@ -503,7 +504,18 @@ namespace bim_base.data.CIM
                 if (int.TryParse(msgNum, out int messageNum) == false)
                     return;
 
-                ReceivedTerminalDisplayEvent?.Invoke(messageNum, msgText);
+                string msgSummery = $"{messageNum} : {msgText}";
+
+                DarkMessageBox msgbox = DarkMessageBox.CreateMessageBox(
+                    "Received Terminal Display", 
+                    EnumMessageBoxIcons.Information,
+                    msgSummery,
+                    EnumMessageBoxButtons.OK);
+
+                msgbox.TopMost = true;
+                msgbox.MaximumSize = new System.Drawing.Size(1024, 768);
+                msgbox.WindowState = FormWindowState.Maximized;
+                msgbox.ShowDialog();
 
                 this.WriteBit(WRITE_B.TERMINALDISPLAY_3, true);
                 this.SleepWithDoEvent(1);
@@ -869,7 +881,8 @@ namespace bim_base.data.CIM
 
                 bool isExist= this.GetSampleExistEvent.Invoke();
 
-                this.SetEqState(isExist ? EnumRunState.Run : EnumRunState.Idle);
+                // TODO CHECK LHJ -> HJP : Need Recovery after CIM Qual 
+                //this.SetEqState(isExist ? EnumRunState.Run : EnumRunState.Idle);
             }
             catch
             {
@@ -989,18 +1002,6 @@ namespace bim_base.data.CIM
             }
         }
 
-        // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
-        public void Test_RequestTerminalDisplay()
-        {
-            this.RequestTerminalDisplay();
-        }
-
-        // TODO KGW : 입력에 대한 테스트로 추가, 테스트후 삭제
-        public bool Test_ReadTerminalDisplayReplyBit()
-        {
-            return this.ReadBit(CIMWrite.WRITE_B.TERMINALDISPLAY_3);
-        }
-
         #endregion
 
         #region Public Method : CIM Initialize
@@ -1067,35 +1068,37 @@ namespace bim_base.data.CIM
             if (this.IsInitialized == false)
                 return;
 
-            this.WriteWord(WRITE_W.ASCII_1_002C_EQPAvailability, $"{_state}");
+            this.WriteWord(WRITE_W.ASCII_1_002C_EQPAvailability, $"{(int)_state}");
         }
 
+
+        // TODO LHJ -> HJP : Not release at AlarmClear. Must AlarmReleased at Auto Start state
         public void SetEqState(CIMEnumeric.EnumInterlockState _state)
         {
             if (this.IsInitialized == false)
                 return;
 
-            this.WriteWord(WRITE_W.ASCII_1_002D_EQPInterlock, $"{_state}");
+            this.WriteWord(WRITE_W.ASCII_1_002D_EQPInterlock, $"{(int)_state}");
         }
         public void SetEqState(CIMEnumeric.EnumMoveState _state)
         {
             if (this.IsInitialized == false)
                 return;
 
-            this.WriteWord(WRITE_W.ASCII_1_002E_EQPMove, $"{_state}");
+            this.WriteWord(WRITE_W.ASCII_1_002E_EQPMove, $"{(int)_state}");
         }
         public void SetEqState(CIMEnumeric.EnumRunState _state)
         {
             if (this.IsInitialized == false)
                 return;
 
-            this.WriteWord(WRITE_W.ASCII_1_002F_EQPRun, $"{_state}");
+            this.WriteWord(WRITE_W.ASCII_1_002F_EQPRun, $"{(int)_state}");
         }
 
         /// <summary>
         /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
         /// </summary>
-        public void SendTerminalDisplay(string _message)
+        public void SendTerminalDisplayReply(string _message)
         {
             if (this.IsInitialized == false)
                 return;
@@ -1189,6 +1192,7 @@ namespace bim_base.data.CIM
 
         }
 
+        // TODO LHJ -> HJP : Not release at AlarmClear. Must AlarmReleased at Auto Start state
         public void AlarmReleased(int _alarmID, string _description)
         {
             if (this.IsInitialized == false)
@@ -1272,11 +1276,11 @@ namespace bim_base.data.CIM
         // TODO CHECK LHJ -> HJP : CELL 및 지그 투입 전 시점에 본 함수 호출
         public EnumJobProcessType TrackInLoadingCell(string _jigBarcode)
         {
-            if (this.IsInitialized == false)
-                return EnumJobProcessType.Fail;
-
             try
             {
+                if (this.IsInitialized == false)
+                    throw new Exception("Error TrackInLoadingCell. Not Initialized");
+
                 // TODO 사용되는 WORD DATA는 변경될 수 있음
 
                 #region S6F203 Specipic Valid Request
@@ -1299,7 +1303,7 @@ namespace bim_base.data.CIM
                 #region S3F103 Specific Valid Data
 
                 if (this.WaitBitSignal(READ_B.SPECIFICVALIDATIONDATASEND1_223, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
-                    return EnumJobProcessType.Fail;
+                    throw new Exception("Error TrackInLoadingCell. Not Received S3F103");
 
                 string specDataJigID =  this.ReadWord(READ_W.ASCII_20_1256_SpecificValidationCarrierID1);
                 string specDataCellID = this.ReadWord(READ_W.ASCII_40_126A_SpecificValidationCellID1);
@@ -1311,7 +1315,7 @@ namespace bim_base.data.CIM
 
                 // Pass or Fail
                 if(specDataReplyStatus.ToUpper() != EnumJobProcessType.Pass.ToString().ToUpper())
-                    return EnumJobProcessType.Fail;
+                    throw new Exception("Error TrackInLoadingCell. Specification Reply Status is fail");
 
                 #endregion
 
@@ -1334,7 +1338,7 @@ namespace bim_base.data.CIM
 
 
                 if (this.WaitBitSignal(READ_B.CELLJOBPROCESS1_74, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
-                    return EnumJobProcessType.Fail;
+                    throw new Exception("Error TrackInLoadingCell. Not Received S2F43(RCMD=21)");
 
                 this.WriteBit(WRITE_B.CELLSTARTPORT1_28, false);
                 string jobPorcRCMD = this.ReadWord(READ_W.ASCII_2_D339_CellJobProcessRCMD1);
@@ -1346,7 +1350,7 @@ namespace bim_base.data.CIM
 
 
                 if (int.TryParse(jobPorcRCMD, out int jobProcRCMDValue) == false)
-                    return EnumJobProcessType.Fail;
+                    throw new Exception($"Error TrackInLoadingCell. S2F43 RCMD is not integer");
 
                 //S2F43 RCMD 21~24
                 //  21 : Cell Job Process Start (Pass)
@@ -1359,12 +1363,12 @@ namespace bim_base.data.CIM
                         this.HandShakeSignal(WRITE_B.CELLSTARTPORT1_28, true, READ_B.CELLSTARTPORT1_28, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
                         return EnumJobProcessType.Pass;
                     default:
-                        return EnumJobProcessType.Fail;
+                        throw new Exception($"Error TrackInLoadingCell. S2F43 RCMD={jobProcRCMDValue}");
                 }
                 #endregion
 
             }
-            catch
+            catch (Exception ex)
             {
                 return EnumJobProcessType.Fail;
             }

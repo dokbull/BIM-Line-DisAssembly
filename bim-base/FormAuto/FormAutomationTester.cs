@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -73,8 +74,6 @@ namespace bim_base
             lblTerminalRecvMonitor.Text = "수신 대기";
             lblTerminalSendMonitor.Text = "송신 대기";
 
-            Automation.Instance.ReceivedTerminalDisplayEvent -= ReceiveTerminalDisplayEvent;
-            Automation.Instance.ReceivedTerminalDisplayEvent += ReceiveTerminalDisplayEvent;
 
             DateTimeTextBox.Text = DateTime.Now.ToString("yyyyMMddHHmmss");
             this.tmrRedraw.Start();
@@ -154,7 +153,6 @@ namespace bim_base
 
                 await Task.Delay(100);
 
-                Automation.Instance.Test_RequestTerminalDisplay();
 
                 await Task.Delay(500);
             }
@@ -191,7 +189,7 @@ namespace bim_base
                 lblTerminalSendMonitor.Text = $"송신 시작 Text = {sendText}";
 
                 // 송신 작업을 제대로 await
-                await Task.Run(() => Automation.Instance.SendTerminalDisplay(sendText));
+                await Task.Run(() => Automation.Instance.SendTerminalDisplayReply(sendText));
 
                 await Task.Delay(200);
 
@@ -239,7 +237,7 @@ namespace bim_base
 
         private void btnSendTerminalDisplay_Click(object sender, EventArgs e)
         {
-            Automation.Instance.SendTerminalDisplay("Disassembly Terminal Message");
+            Automation.Instance.SendTerminalDisplayReply("Disassembly Terminal Message");
         }
 
         private void btnAlarmOccured_Click(object sender, EventArgs e)
@@ -252,23 +250,39 @@ namespace bim_base
             Automation.Instance.AlarmReleased(1, "Test");
         }
 
-        private void rdobtnAvailiability_CheckedChanged(object sender, EventArgs e)
+        private bool stateAvailiability = false;
+        private void rdobtnAvailiability_Click(object sender, EventArgs e)
         {
+            stateAvailiability = !stateAvailiability;
+                this.rdobtnAvailiability.Checked = stateAvailiability;
+
             Automation.Instance.SetEqState(this.rdobtnAvailiability.Checked ? CIMEnumeric.EnumAvailabilityState.Down : CIMEnumeric.EnumAvailabilityState.Up);
         }
 
-        private void rdobtnInterlock_CheckedChanged(object sender, EventArgs e)
+        private bool stateinterlock = false;
+        private void rdobtnInterlock_Click(object sender, EventArgs e)
         {
+            this.stateinterlock = !stateinterlock;
+            this.rdobtnInterlock.Checked = this.stateinterlock;
+
             Automation.Instance.SetEqState(this.rdobtnInterlock.Checked ? CIMEnumeric.EnumInterlockState.On : CIMEnumeric.EnumInterlockState.Off);
         }
 
-        private void rdobtnMove_CheckedChanged(object sender, EventArgs e)
+        private bool stateMove = false;
+        private void rdobtnMove_Click(object sender, EventArgs e)
         {
+            this.stateMove = !stateMove;
+                this.rdobtnMove.Checked = stateMove;
+
             Automation.Instance.SetEqState(this.rdobtnMove.Checked ? CIMEnumeric.EnumMoveState.Pause: CIMEnumeric.EnumMoveState.Runnning);
         }
 
-        private void rdobtnRun_CheckedChanged(object sender, EventArgs e)
+        private bool stateRun = false;
+        private void rdobtnRun_Click(object sender, EventArgs e)
         {
+            stateRun = !stateRun;
+                this.rdobtnRun.Checked = stateRun;
+
             Automation.Instance.SetEqState(this.rdobtnRun.Checked ? CIMEnumeric.EnumRunState.Idle: CIMEnumeric.EnumRunState.Run);
         }
 
