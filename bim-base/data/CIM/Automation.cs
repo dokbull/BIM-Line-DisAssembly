@@ -192,43 +192,34 @@ namespace bim_base.data.CIM
 
             if (val == _waitValue) return true;
 
-            DateTime startTime = DateTime.Now;
-            TimeSpan ts = DateTime.Now - startTime;
+            CElaspedTimer m_timeout = new CElaspedTimer(_timeoutMilliseconds);
+            m_timeout.start();
 
-            while (val == _waitValue)
+            while (true)
             {
-                if (_timeoutMilliseconds > 0 && ts.TotalMilliseconds >= _timeoutMilliseconds)
-                {
-                    //throw new Exception("WaitBitSignal Timeout Occurred. Addr: " + _addr.ToString() + ", WaitValue: " + _waitValue.ToString());
+                if (m_Reader.readBit(_addr) == _waitValue)
+                    return true;
+
+                if (m_timeout.isElasped() == true)
                     return false;
-                }
 
-                val = this.ReadBit(_addr);
-
-                if (val == _waitValue) { return true; }
-
-                this.SleepWithDoEvent(1);
-                ts = DateTime.Now - startTime;
+                Util.waitTick(100);
             }
-
-            return false;
         }
 
-        private bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
+        private bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutMilliseconds = 0, bool _isOnError = false)
         {
-            // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
-
             m_Writer.setBit(_addrWrite, _writeValue);
             //m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
 
-            CElaspedTimer m_timeout = new CElaspedTimer(_timeoutSeconds * 1000);
+            CElaspedTimer m_timeout = new CElaspedTimer(_timeoutMilliseconds);
 
             bool ret = false;
             m_timeout.start();
 
             while (true)
             {
-                if (m_Reader.readBit(_addrRead) == true)
+                if (m_Reader.readBit(_addrRead) == _readValue)
                 {
                     m_Writer.setBit(_addrWrite, !_writeValue);
                     ret = true;
@@ -242,36 +233,7 @@ namespace bim_base.data.CIM
             }
 
 
-            //try
-            //{
-            //    this.WriteBit(_addrWrite, _writeValue);
-
-            //    //this.SleepWithDoEvent(100);
-
-            //    this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
-
-
-            //    this.SleepWithDoEvent(100);
-
-            //    return true;
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (_isOnError)
-            //    {
-            //        throw new Exception($"HandShakeSignal Error Occurred");
-            //    }
-            //    else
-            //    {
-            //        return false;
-            //    }
-            //}
-            //finally
-            //{
-            //    //this.WriteBit(_addrWrite, !_writeValue);
-            //}
-
-            return true;
+            return ret;
         }
 
         private bool TryParseDateTime(string input, out int year, out int month, out int day, out int hour, out int minute, out int second)
