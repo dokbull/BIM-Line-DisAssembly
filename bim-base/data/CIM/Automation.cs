@@ -471,11 +471,19 @@ namespace bim_base.data.CIM
                     this.OperatorCallHistory.RemoveAt(0);
                 }
 
-                // TODO CHECK LHJ : OP CALL 시그널타워 Yellow Blink, Buzzor 발생 필요. 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
+                this.WriteBit(WRITE_B.OPERATORCALL_4, true);
+
+                // TODO CHECK LHJ to HJP : 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
                 ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
+
+                // TODO CHECK LHJ : 여러개가 중복되어 수신될 경우, UI Popup에는 제일 마지막에 수신된 메세지, Confirm 보고는 제일 처음에 수신된 메세지
+
+                this.WriteWord(WRITE_W.ASCII_10_0F80_OPCallIDComfirm, strOpCallNum);
+                this.WriteWord(WRITE_W.ASCII_60_259C_UnitOPCallConfirmOPCallMessage, strOpCallText);
 
                 this.WriteBit(WRITE_B.OPCALLCONFIRM_41, true);
                 this.SleepWithDoEvent(1);
+                this.WriteBit(WRITE_B.OPERATORCALL_4, false);
                 this.WriteBit(WRITE_B.OPCALLCONFIRM_41, false);
 
             }
@@ -523,7 +531,9 @@ namespace bim_base.data.CIM
                 // Interlock Released (=Clear Popup)
                 this.WriteBit(WRITE_B.INTERLOCK_5, false);
 
-                // TODO CHECK LHJ : 인터락 해제 시 사용할 Word 영역 및 Data 확인 및 수정 필요
+                // TODO CHECK LHJ to HJP : 알람이 발생하더라도 인터락 요청 상태이면 정상가동 불가
+                // TODO CHECK LHJ : 여러개가 중복되어 수신될 경우, UI Popup에는 제일 마지막에 수신된 메세지, Confirm 보고는 제일 처음에 수신된 메세지
+                this.WriteWord(WRITE_W.ASCII_10_1040_InterlockIDComfirm, strID);
                 this.WriteWord(WRITE_W.ASCII_60_104A_InterlockMessageConfirm, strMessage);
                 this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
 
@@ -556,6 +566,7 @@ namespace bim_base.data.CIM
         #endregion
 
         #region Private Method : CIM Request - RMS
+
         ///////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////
         //PPID RULE
@@ -1086,7 +1097,6 @@ namespace bim_base.data.CIM
             int writeValue = this.BitsToInt(wordToBits);
 
             this.WriteWord(WRITE_W.BIT_400_CAD4_Alarm, $"{writeValue}");
-            //this.WriteWord(WRITE_W., $"{_description}");
 
             switch (_alarmLevel)
             {
@@ -1108,7 +1118,7 @@ namespace bim_base.data.CIM
             if (this.IsInitialized == false)
                 return;
 
-            // TODO CHECK LHJ : 주소 확인, 어떤 Data를 작성해야 할지 확인
+            // word 상의 모든 bit를 0으로 reset
             this.WriteWord(WRITE_W.BIT_400_CAD4_Alarm, $"{0}");
 
             this.AlarmState = EnumAlarmState.None;
