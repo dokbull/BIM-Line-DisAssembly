@@ -631,7 +631,7 @@ namespace bim_base
                     if (m_axis[i].name().Contains("Z"))
                     {
                         //m_axis[i].setAbsSpeed(Conf.vel((AXIS)i), Conf.acc((AXIS)i), Conf.dec((AXIS)i));
-                        m_axis[i].setAbsSpeed(1000.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
+                        m_axis[i].setAbsSpeed(500.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
                     }
                     else
                     {
@@ -639,8 +639,6 @@ namespace bim_base
                         m_axis[i].setAbsSpeed(1000.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
                     }
                 }
-
-                m_axis[(int)AXIS.MOLD_PP_X].setAbsSpeed(1250.0d, Conf.acc(AXIS.MOLD_PP_X), Conf.dec(AXIS.MOLD_PP_X));
             }
 
             // READY PROCESS
