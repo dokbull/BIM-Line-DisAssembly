@@ -93,7 +93,6 @@ namespace bim_base.data.CIM
         /// <summary>
         /// TODO CHECK LHJ -> HJP : Recipe 또는 모드 변경에서 연동 필요
         /// </summary>
-        public bool UseTrackInValidationCheckMode { get; set; } = false;
 
         public EnumAlarmState AlarmState { get; private set; } = EnumAlarmState.None;
 

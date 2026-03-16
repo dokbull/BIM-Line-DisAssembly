@@ -236,5 +236,50 @@ namespace bim_base
             Automation.Instance.PpidCreate(24);
 
         }
+
+        private void btnSendTerminalDisplay_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.SendTerminalDisplay("Disassembly Terminal Message");
+        }
+
+        private void btnAlarmOccured_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.HeavyAlarm, 1, "Test");
+        }
+
+        private void btnAlarmReleased_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.AlarmReleased(1, "Test");
+        }
+
+        private void rdobtnAvailiability_CheckedChanged(object sender, EventArgs e)
+        {
+            Automation.Instance.SetEqState(this.rdobtnAvailiability.Checked ? CIMEnumeric.EnumAvailabilityState.Down : CIMEnumeric.EnumAvailabilityState.Up);
+        }
+
+        private void rdobtnInterlock_CheckedChanged(object sender, EventArgs e)
+        {
+            Automation.Instance.SetEqState(this.rdobtnInterlock.Checked ? CIMEnumeric.EnumInterlockState.On : CIMEnumeric.EnumInterlockState.Off);
+        }
+
+        private void rdobtnMove_CheckedChanged(object sender, EventArgs e)
+        {
+            Automation.Instance.SetEqState(this.rdobtnMove.Checked ? CIMEnumeric.EnumMoveState.Pause: CIMEnumeric.EnumMoveState.Runnning);
+        }
+
+        private void rdobtnRun_CheckedChanged(object sender, EventArgs e)
+        {
+            Automation.Instance.SetEqState(this.rdobtnRun.Checked ? CIMEnumeric.EnumRunState.Idle: CIMEnumeric.EnumRunState.Run);
+        }
+
+        private void btnTrackInLoading_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.TrackInLoadingCell("barcode");
+        }
+
+        private void btnTrackOutUnloading_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.TrackOutUnloadingCell("barcode");
+        }
     }
 }
