@@ -1472,7 +1472,7 @@ public class CIMRead
             int length = data.length;
             int[] value = new int[length];
 
-            int readAddress = data.startAddress;
+            int readAddress = data.startAddress - 0xD000;
 
             for (int j = 0; j < length; j++)
             {

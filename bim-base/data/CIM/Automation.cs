@@ -133,8 +133,8 @@ namespace bim_base.data.CIM
             bool ret = true;
 
             int[] readDataB = new int[512 / 32];
-            int[] readDataW = new int[0x12FFF];
-            int[] readDataW32 = new int[0x12FFF / 2];
+            int[] readDataW = new int[0x5FFF];
+            int[] readDataW32 = new int[0x5FFF / 2];
 
             ret = m_ccLink.read(Addr.B, 0x1000, readDataB.Length, ref readDataB);
             ret &= m_ccLink.read(Addr.W, 0xD000, readDataW32.Length, ref readDataW32);
@@ -149,7 +149,7 @@ namespace bim_base.data.CIM
                 readDataW[i * 2] = readDataW32[i] & 0xFFFF;
                 readDataW[i * 2 + 1] = readDataW32[i] >> 16;
             }
-
+            
             m_Reader.toBitArray(readDataB);
             m_Reader.toWordArray(readDataW);
 
