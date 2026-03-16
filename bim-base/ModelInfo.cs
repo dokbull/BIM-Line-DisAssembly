@@ -45,6 +45,17 @@ public class POS
     public double xB = 0;
 
     public double vel = 0.0d;
+
+    public void resetPos()
+    {
+        x = 0;
+        y = 0;
+        z = 0;
+        zL = 0;
+        zR = 0;
+        xB = 0;
+        vel = 0;
+    }
 }
 
 public class ModelInfo
@@ -264,13 +275,15 @@ public class ModelInfo
     public void saveTeachPos(POS pos)
     {
         makeBackup();
-        m_setting.setValue("POSITION", pos.name + "_X", pos.x);
-        m_setting.setValue("POSITION", pos.name + "_Y", pos.y);
-        m_setting.setValue("POSITION", pos.name + "_Z", pos.z);
-        m_setting.setValue("POSITION", pos.name + "_ZL", pos.zL);
-        m_setting.setValue("POSITION", pos.name + "_ZR", pos.zR);
-        m_setting.setValue("POSITION", pos.name + "_XB", pos.xB);
-        m_setting.setValue("POSITION", pos.name + "_VEL", pos.vel);
+        string name = pos.name;
+
+        m_setting.setValue("POSITION", name + "_X", pos.x);
+        m_setting.setValue("POSITION", name + "_Y", pos.y);
+        m_setting.setValue("POSITION", name + "_Z", pos.z);
+        m_setting.setValue("POSITION", name + "_ZL", pos.zL);
+        m_setting.setValue("POSITION", name + "_ZR", pos.zR);
+        m_setting.setValue("POSITION", name + "_XB", pos.xB);
+        m_setting.setValue("POSITION", name + "_VEL", pos.vel);
     }
 
     public bool createModel(string modelName, bool resetValue)
@@ -305,8 +318,7 @@ public class ModelInfo
     {
         for (int i = 0; i < (int)TEACH_POS.MAX; i++)
         {
-            m_teachPos[i] = new POS();
-            m_teachPos[i].name = ((TEACH_POS)i).ToString();
+            m_teachPos[i].resetPos();
             saveTeachPos(m_teachPos[i]);
         }
     }
