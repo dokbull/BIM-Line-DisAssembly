@@ -39,11 +39,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.currentModelLabel = new System.Windows.Forms.Label();
             this.newModelName = new System.Windows.Forms.Label();
-            this.createButton = new System.Windows.Forms.Button();
-            this.deleteButton = new System.Windows.Forms.Button();
             this.changeButton = new System.Windows.Forms.Button();
             this.exitButton = new System.Windows.Forms.Button();
             this.uiTimer = new System.Windows.Forms.Timer(this.components);
+            this.modelNameChange = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -127,12 +126,11 @@
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel4.Controls.Add(this.modelNameChange, 0, 2);
             this.tableLayoutPanel4.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.label3, 0, 1);
             this.tableLayoutPanel4.Controls.Add(this.currentModelLabel, 1, 0);
             this.tableLayoutPanel4.Controls.Add(this.newModelName, 1, 1);
-            this.tableLayoutPanel4.Controls.Add(this.createButton, 0, 2);
-            this.tableLayoutPanel4.Controls.Add(this.deleteButton, 1, 2);
             this.tableLayoutPanel4.Controls.Add(this.changeButton, 2, 2);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 3);
@@ -168,7 +166,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(146, 59);
             this.label3.TabIndex = 1;
-            this.label3.Text = "New Model";
+            this.label3.Text = "New Name";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // currentModelLabel
@@ -198,30 +196,6 @@
             this.newModelName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.newModelName.Click += new System.EventHandler(this.newModelName_Click);
             // 
-            // createButton
-            // 
-            this.createButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.createButton.Location = new System.Drawing.Point(3, 133);
-            this.createButton.Name = "createButton";
-            this.createButton.Size = new System.Drawing.Size(146, 61);
-            this.createButton.TabIndex = 3;
-            this.createButton.Text = "Create";
-            this.createButton.UseVisualStyleBackColor = true;
-            this.createButton.Visible = false;
-            this.createButton.Click += new System.EventHandler(this.createButton_Click);
-            // 
-            // deleteButton
-            // 
-            this.deleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.deleteButton.Location = new System.Drawing.Point(155, 133);
-            this.deleteButton.Name = "deleteButton";
-            this.deleteButton.Size = new System.Drawing.Size(146, 61);
-            this.deleteButton.TabIndex = 4;
-            this.deleteButton.Text = "Delete";
-            this.deleteButton.UseVisualStyleBackColor = true;
-            this.deleteButton.Visible = false;
-            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
-            // 
             // changeButton
             // 
             this.changeButton.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -229,7 +203,7 @@
             this.changeButton.Name = "changeButton";
             this.changeButton.Size = new System.Drawing.Size(146, 61);
             this.changeButton.TabIndex = 5;
-            this.changeButton.Text = "Change";
+            this.changeButton.Text = "Model Change";
             this.changeButton.UseVisualStyleBackColor = true;
             this.changeButton.Click += new System.EventHandler(this.changeButton_Click);
             // 
@@ -248,6 +222,17 @@
             // uiTimer
             // 
             this.uiTimer.Tick += new System.EventHandler(this.uiTimer_Tick);
+            // 
+            // modelNameChange
+            // 
+            this.modelNameChange.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.modelNameChange.Location = new System.Drawing.Point(3, 133);
+            this.modelNameChange.Name = "modelNameChange";
+            this.modelNameChange.Size = new System.Drawing.Size(146, 61);
+            this.modelNameChange.TabIndex = 8;
+            this.modelNameChange.Text = "Name Change";
+            this.modelNameChange.UseVisualStyleBackColor = true;
+            this.modelNameChange.Click += new System.EventHandler(this.modelNameChange_Click);
             // 
             // FormDataModel
             // 
@@ -283,13 +268,12 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button createButton;
-        private System.Windows.Forms.Button deleteButton;
         private System.Windows.Forms.Button changeButton;
         private System.Windows.Forms.Button exitButton;
         private System.Windows.Forms.ListBox modelList;
         private System.Windows.Forms.Label currentModelLabel;
         private System.Windows.Forms.Label newModelName;
         private System.Windows.Forms.Timer uiTimer;
+        private System.Windows.Forms.Button modelNameChange;
     }
 }

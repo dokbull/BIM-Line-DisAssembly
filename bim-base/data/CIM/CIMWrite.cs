@@ -2039,7 +2039,7 @@ public class CIMWrite
         ASCII_20_9210_PPID_100,
 
         //NONE_4000_9224_RMSPARAMETER,
-        ASCII_2_9224_PPIDMode,
+        DEC_2_9224_PPIDMode,
         ASCII_20_9226_PPID,
 
         ASCII_20_923A_PickPPWaitName,
@@ -2409,7 +2409,7 @@ public class CIMWrite
 
     //bool[] m_bit = new bool[32 * 16];
     bool[] m_bit = new bool[32 * 16 * 2];
-    bool[] m_agoBit = new bool[32 * 16];
+    bool[] m_agoBit = new bool[32 * 16 * 2];
 
     WORD_DATA[] m_wordData = new WORD_DATA[(int)WRITE_W.MAX];
 
@@ -2442,6 +2442,11 @@ public class CIMWrite
 
     public void setBit(WRITE_B addr, bool value)
     {
+        if (addr == WRITE_B.PPIDCHANGE_21)
+        {
+            int aa = 900;
+        }
+
         setBit((int)addr, value);
     }
 

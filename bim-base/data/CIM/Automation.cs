@@ -4,19 +4,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Linq;
 using static bim_base.CSTATION;
 using static bim_base.data.CIM.CIMEnumeric;
 using static CIMRead;
 using static CIMWrite;
+using static System.Windows.Forms.AxHost;
 
 namespace bim_base.data.CIM
 {
@@ -24,6 +28,8 @@ namespace bim_base.data.CIM
 
     internal class Automation
     {
+        DateTime startTime;
+
         #region Delegate
 
         public delegate void OnReceivedTerminalDisplayEventHandler(int _MessageNum, string _MessageText);
@@ -116,7 +122,8 @@ namespace bim_base.data.CIM
 
         #region Private Method
 
-        private void SyncCommCCIE()
+        //private void SyncCommCCIE()
+        public void SyncCommCCIE()
         {
             bool ret = true;
 
@@ -153,7 +160,7 @@ namespace bim_base.data.CIM
 
             if (ret)
             {
-                this.ResetSignals();
+                // this.ResetSignals();
             }
             else
             {
@@ -181,7 +188,7 @@ namespace bim_base.data.CIM
             DateTime startTime = DateTime.Now;
             TimeSpan ts = DateTime.Now - startTime;
 
-            while (val != _waitValue)
+            while (val == _waitValue)
             {
                 if(_timeoutSeconds > 0 && ts.TotalSeconds >= _timeoutSeconds)
                 {
@@ -201,29 +208,61 @@ namespace bim_base.data.CIM
         private bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
         {
             // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
-            try
-            {
-                this.WriteBit(_addrWrite, _writeValue);
-                this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
 
-                return true;
-            }
-            catch (Exception ex)
+            m_Writer.setBit(_addrWrite, _writeValue);
+            //m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+
+            CElaspedTimer m_timeout = new CElaspedTimer(_timeoutSeconds * 1000);
+
+            bool ret = false;
+            m_timeout.start();
+
+            while (true)
             {
-                if (_isOnError)
+                if (m_Reader.readBit(_addrRead) == true)
                 {
-                    throw new Exception($"HandShakeSignal Error Occurred");
+                    m_Writer.setBit(_addrWrite, !_writeValue);
+                    ret = true;
+                    break;
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            finally
-            {
-                this.WriteBit(_addrWrite, !_writeValue);
+
+                if (m_timeout.isElasped() == true)
+                    break;
+
+                Util.waitTick(100);
             }
 
+
+            //try
+            //{
+            //    this.WriteBit(_addrWrite, _writeValue);
+
+            //    //this.SleepWithDoEvent(100);
+
+            //    this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
+
+
+            //    this.SleepWithDoEvent(100);
+
+            //    return true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    if (_isOnError)
+            //    {
+            //        throw new Exception($"HandShakeSignal Error Occurred");
+            //    }
+            //    else
+            //    {
+            //        return false;
+            //    }
+            //}
+            //finally
+            //{
+            //    //this.WriteBit(_addrWrite, !_writeValue);
+            //}
+
+            return true;
         }
 
         private bool TryParseDateTime(string input, out int year, out int month, out int day, out int hour, out int minute, out int second)
@@ -353,13 +392,14 @@ namespace bim_base.data.CIM
             this.ResetSignals();
 
             // 초기 ALIVE 신호 OFF로 Reset
-            if (this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            if (this.HandShakeSignal(WRITE_B.ALIVEBIT_1, true, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_SECONDS) == false)
                 return false;
 
             try
             {
                 // Date Time 동기화 요청 신호 대기
                 this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, HANDSHAKE_TIMEOUT_SECONDS);
+
 
                 // Date Time 동기화 처리
                 if (this.SetDateTime() == false) return false;
@@ -381,10 +421,35 @@ namespace bim_base.data.CIM
         {
             try
             {
-
                 bool alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
-                this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
+                TimeSpan ts = DateTime.Now - startTime;
+
+                if (ts.TotalSeconds > 5)
+                {
+                    this.WriteBit(WRITE_B.ALIVEBIT_1, !alive);
+                    DateTime startTime = DateTime.Now;
+                }
+                //DateTime startTime = DateTime.Now;
+                
+
+                //while (val != _waitValue)
+                //{
+                //    if (_timeoutSeconds > 0 && ts.TotalSeconds >= _timeoutSeconds)
+                //    {
+                //        throw new Exception("WaitBitSignal Timeout Occurred. Addr: " + _addr.ToString() + ", WaitValue: " + _waitValue.ToString());
+                //    }
+
+                //    val = this.ReadBit(_addr);
+
+                //    if (val == _waitValue) { return; }
+
+                //    this.SleepWithDoEvent(1);
+                //    ts = DateTime.Now - startTime;
+                //}
+
+
+                //this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
 
             }
             catch
@@ -399,13 +464,24 @@ namespace bim_base.data.CIM
                 return;
 
             // TODO CHECK LHJ : 사전 테스트 끝나고 다시 복귀 필요
-            //this.SyncCommCCIE();
+            //this.SyncCommCCIE(); 
 
-            if(this.ReportInitializeCIM() == false)
-                return;
+            //return;
+
+            //this.WriteBit(WRITE_B.ALIVEBIT_1, true);
+            //Thread.Sleep(200);
+
+
+            startTime = DateTime.Now;
 
             while (true)
             {
+                //this.SyncCommCCIE();        //yj.lee
+
+                //if (this.ReportInitializeCIM() == false)
+                //    return;
+
+                //TestAlive();
                 this.Alive();
                 this.RequestTerminalDisplay();
                 this.RequestOperatorCall();
@@ -417,7 +493,7 @@ namespace bim_base.data.CIM
 
                 this.ReportFaultDetectionClassification();
                 this.ReportSampleProcessingState();
-
+                Thread.Sleep(100);
             }
         }
 
@@ -586,20 +662,7 @@ namespace bim_base.data.CIM
                 if (m_Reader.readBit(CIMRead.READ_B.CURRENTEQUIPPPIDLISTREQUEST_56) == false)
                     return;
 
-                List<string> items = new List<string>();
-
-                for (int i = 0; i < Common.MODEL.Count; i++)
-                {
-                    ModelInfo INFO = Common.MODEL[i];
-
-                    items.Add(INFO.modelName());
-                }
-
-                for (int i = 0; i < items.Count; i++)
-                {
-                    var addr = (WRITE_W)((int)WRITE_W.ASCII_20_8A54_PPID_1 + i);
-                    m_Writer.wordData(addr).text = items[i];
-                }
+                UpdateModelList();
 
                 m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
 
@@ -614,6 +677,24 @@ namespace bim_base.data.CIM
                 m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
             }
         }
+        
+        private void UpdateModelList()
+        {
+            List<string> items = new List<string>();
+
+            for (int i = 0; i < Common.MODEL.Count; i++)
+            {
+                ModelInfo INFO = Common.MODEL[i];
+
+                items.Add(INFO.modelName());
+            }
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                var addr = (WRITE_W)((int)WRITE_W.ASCII_20_8A54_PPID_1 + i);
+                m_Writer.wordData(addr).text = items[i];
+            }
+        }
 
         private void RequestRecipeDownload()
         {
@@ -623,48 +704,54 @@ namespace bim_base.data.CIM
             try
             {
                 //ModelInfo
-                if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMSEND_54) == true)
+                if (m_Reader.readBit(CIMRead.READ_B.FORMATTEDPROCESSPROGRAMSEND2_52) == true)
                 {
-                    sRecipeName = m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text?.Trim() ?? "";
+                    string text = m_Reader.wordData(READ_W.ASCII_3_EF20_FormattedProcessProgramSendRecipeNumber).text;
 
-                    for (int i = 0; i < Common.MODEL.Count(); i++)
+                    nSelectedIdx = Util.toInt32(text.PadLeft(2));
+                    string cmd = text.PadRight(1);
+
+                    if (cmd == "N" || cmd == "O" || cmd == "D" || cmd == "G" || cmd == "C")
                     {
-                        ModelInfo info = Common.MODEL_INFO(i);
-
-                        if (info.modelName().Trim() == sRecipeName)
-                        {
-                            nSelectedIdx = i;
-                            break;
-                        }
+                        // N make new teach
+                        // O make without teach
+                        // D delete all teach
+                        // G delete without teach
+                        // C fix
                     }
 
-                    //알람 발생
-                    if (nSelectedIdx == -1)
-                        return;
+                    //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
 
-                    POS[] pos = ReadTeachPos();
+                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_1_125D_FormattedProcessProgramAck).text = "0";
 
-                    for (int i = 0; i < (int)TEACH_POS.MAX; i++)
-                    {
-                        Common.MODEL[nSelectedIdx].setTeachPos(i, pos[i]);
-                    }
+                    m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, true);
 
-                    m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND_54, true);
 
-                    ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
-                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
+                    //sRecipeName = m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text?.Trim() ?? "";
 
-                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 1;
-                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
+                    //POS[] pos = ReadTeachPos();
 
-                    WriteTeachPos(INFO);
+                    //for (int i = 0; i < (int)TEACH_POS.MAX; i++)
+                    //{
+                    //    Common.MODEL[nSelectedIdx].setTeachPos(i, pos[i]);
+                    //}
 
-                    this.HandShakeSignal(
-                        WRITE_B.PPIDCHANGE_21,
-                        true,
-                        READ_B.PPIDCHANGE_21,
-                        true,
-                        HANDSHAKE_TIMEOUT_SECONDS);
+                    //m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, true);
+
+                    //ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+                    //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
+
+                    //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 1;
+                    //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
+
+                    //WriteTeachPos(INFO);
+
+                    //this.HandShakeSignal(
+                    //    WRITE_B.PPIDCHANGE_21,
+                    //    true,
+                    //    READ_B.PPIDCHANGE_21,
+                    //    true,
+                    //    HANDSHAKE_TIMEOUT_SECONDS);
 
                 }
             }
@@ -674,7 +761,7 @@ namespace bim_base.data.CIM
             }
             finally
             {
-                m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+                //m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
             }
 
         }
@@ -709,10 +796,10 @@ namespace bim_base.data.CIM
                     if (nSelectedIdx < 0 && nSelectedIdx > 99)
                         return;
 
-                    ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
+                    ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx-1);// Common.MODEL[0];
                     m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
-                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 0;
+                    m_Writer.wordData((WRITE_W)WRITE_W.DEC_2_9224_PPIDMode).value = 0;
                     m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
 
                     WriteTeachPos(INFO);
@@ -935,6 +1022,7 @@ namespace bim_base.data.CIM
         {
             this.mTh_IntervalRun = new Thread(new ThreadStart(this.RunScan));
             this.mTh_IntervalRun.IsBackground = true;
+            this.mTh_IntervalRun.ApartmentState = ApartmentState.STA;
             this.mTh_IntervalRun.Start();
 
             await Task.Run(() =>
@@ -1226,43 +1314,93 @@ namespace bim_base.data.CIM
         // PPID Change (JOB Change)
         public bool PpidChange()
         {
-            if (this.IsInitialized == false)
-                return false;
+            //if (this.IsInitialized == false)
+            //    return false;
 
             ModelInfo info = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
 
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = info.modelName();
 
-            return this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS);
+            m_Writer.setBit(WRITE_B.PPIDCHANGE_21, true);
+
+            CElaspedTimer m_timeout = new CElaspedTimer(1000);
+
+            bool ret = false;
+            m_timeout.start();
+
+            while (true)
+            {
+                if (m_Reader.readBit(READ_B.PPIDCHANGE_21) == true)
+                {
+                    m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+                    ret = true;
+                    break;
+                }
+
+                if (m_timeout.isElasped() == true)
+                    break;
+
+                Util.waitTick(100);
+            }
+
+            return ret;
+
+
+            //return this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS);
         }
 
         // PPID 생성
-        public bool PpidCreate(/*string ppid*/)
+        public bool PpidCreate(int index = 0)
         {
-            if (this.IsInitialized == false)
-                return false;
+            //if (this.IsInitialized == false)
+            //    return false;
 
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
 
             ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
-            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 1;
+            m_Writer.wordData((WRITE_W)WRITE_W.DEC_2_9224_PPIDMode).value = 1;
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
 
             //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
             //1-90 -> 상위에서 받는거. TT_ X
             //91-99-> 내부에서 만드는거 TT_로 시작
-            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = "91O"; //추후 문서 보고 수정 필요.
+            string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "O";
+            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
            
-
             WriteTeachPos(INFO);
 
-            if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
-                return false;
+            //if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            //    return false;
+            Common.MODEL[81].saveModelName(sName);
+            UpdateModelList();
 
-            m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+            this.HandShakeSignal(WRITE_B.PARAMETERCHANGE2_23, true, READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            
+//yjlee.. Original Source >>
+            //m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, true);
 
+            //CElaspedTimer m_timeout = new CElaspedTimer(1000);
+
+            //bool ret = false;
+            //m_timeout.start();
+
+            //while (true)
+            //{
+            //    if (m_Reader.readBit(READ_B.PARAMETERCHANGE2_23) == true)
+            //    {
+            //        m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, false);
+            //        ret = true;
+            //        break;
+            //    }
+
+            //    if (m_timeout.isElasped() == true)
+            //        break;
+
+            //    Util.waitTick(100);
+            //}
+            //yjlee.. Original Source <<
             return true;
         }
 
@@ -1315,26 +1453,52 @@ namespace bim_base.data.CIM
         }
 
         // PPID 삭제
-        public bool PpidDelete(/*string ppid*/)
+        public bool PpidDelete(int Index = 0)
         {
-            if (this.IsInitialized == false)
-                return false;
+            //if (this.IsInitialized == false)
+            //    return false;
 
-            ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+            //ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+            ModelInfo INFO = Common.MODEL_INFO(Index);// Common.MODEL[0];
             //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
-            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 2;
+            m_Writer.wordData((WRITE_W)WRITE_W.DEC_2_9224_PPIDMode).value = 2;
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
 
             //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
-            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = "91G"; //추후 문서 보고 수정 필요.
-            
+            //string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "D";
+            string sName = (Index).ToString() + "D";
+            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
+
+            Common.MODEL[Index].saveModelName("");
+            UpdateModelList();
+
             //WriteTeachPos(INFO);
 
-            if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
-                return false;
+            //if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            //    return false;
+            m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, true);
+            //m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
 
-            m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+            CElaspedTimer m_timeout = new CElaspedTimer(10000);
+
+            bool ret = false;
+            m_timeout.start();
+
+            while (true)
+            {
+                if (m_Reader.readBit(READ_B.PARAMETERCHANGE2_23) == true)
+                {
+                    m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, false);
+                    ret = true;
+                    break;
+                }
+
+                if (m_timeout.isElasped() == true)
+                    break;
+
+                Util.waitTick(100);
+            }
 
             return true;
         }
@@ -1366,26 +1530,56 @@ namespace bim_base.data.CIM
             return p;
         }
 
-        public bool ParameterChange()
+        public bool ParameterChange(int index = 0)
         {
-            if (this.IsInitialized == false)
-                return false;
+            //if (this.IsInitialized == false)
+            //    return false;
 
-            ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+            //ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+            ModelInfo INFO = Common.MODEL_INFO(index);// Common.MODEL[0];
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
-            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
+            m_Writer.wordData((WRITE_W)WRITE_W.DEC_2_9224_PPIDMode).value = 3;
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
 
             WriteTeachPos(INFO);
 
-            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = "91C"; //추후 문서 보고 수정 필요.
+
+            //s
+            //string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "O";
+            string sName = (index+1).ToString() + "C";
+
+            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
             //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
 
-            if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
-                return false;
+            //if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            //    return false;
 
-            m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+            //m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+
+            m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, true);
+
+            //Common.MODEL[index].saveModelName(INFO.modelName());
+
+            CElaspedTimer m_timeout = new CElaspedTimer(1000);
+
+            bool ret = false;
+            m_timeout.start();
+
+            while (true)
+            {
+                if (m_Reader.readBit(READ_B.PARAMETERCHANGE2_23) == true)
+                {
+                    m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, false);
+                    ret = true;
+                    break;
+                }
+
+                if (m_timeout.isElasped() == true)
+                    break;
+
+                Util.waitTick(100);
+            }
 
             return true;
         }
@@ -1458,7 +1652,16 @@ namespace bim_base.data.CIM
 
                 m_Writer.setBit(WRITE_B.EQUIPCONSTANTNAMELIST_53, true);    //시퀀스 다이어 그램 화살표 이상.
             }
+
+            
+            
+
         }
         #endregion
+
+        public void TestAlive()
+        {
+            WriteBit(WRITE_B.ALIVEBIT_1, true);
+        }
     }
 }

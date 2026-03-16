@@ -43,7 +43,7 @@ public class Common
         Conf.load();
         Alarm.load();
 
-        MC = new ModelInfo(1000, "MACHINE");
+        MC = new ModelInfo(1000);
         MC.load();
 
         for (int i = 0; i < 100; i++)
