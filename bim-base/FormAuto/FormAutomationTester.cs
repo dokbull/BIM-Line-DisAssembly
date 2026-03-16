@@ -1,4 +1,5 @@
-﻿using System;
+﻿using bim_base.data.CIM;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using bim_base.data.CIM;
+using static bim_base.data.CIM.CIMEnumeric;
 
 namespace bim_base
 {
@@ -286,14 +287,34 @@ namespace bim_base
             Automation.Instance.SetEqState(this.rdobtnRun.Checked ? CIMEnumeric.EnumRunState.Idle: CIMEnumeric.EnumRunState.Run);
         }
 
+        private EnumJobProcessType resultTrackIn = EnumJobProcessType.Fail;
+        private CellDataInfo trackInCellData = new CellDataInfo();
+
         private void btnTrackInLoading_Click(object sender, EventArgs e)
         {
-            Automation.Instance.TrackInLoadingCell("barcode");
+            (EnumJobProcessType PassType, CellDataInfo CellData) result = Automation.Instance.TrackInLoadingCell("barcode");
+
+            this.resultTrackIn = result.PassType;
+            this.trackInCellData = result.CellData;
         }
 
         private void btnTrackOutUnloading_Click(object sender, EventArgs e)
         {
-            Automation.Instance.TrackOutUnloadingCell("barcode");
+            Automation.Instance.TrackOutUnloadingCell("barcode", resultTrackIn, this.trackInCellData);
+        }
+
+        private void btnEqStateDefault_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.SetEqState(EnumAvailabilityState.Up);
+            Automation.Instance.SetEqState(EnumMoveState.Runnning);
+            Automation.Instance.SetEqState(EnumRunState.Run);
+            Automation.Instance.SetEqState(EnumInterlockState.Off);
+        }
+
+        private void btnAlarmOccured_Light_Click(object sender, EventArgs e)
+        {
+
+            Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.LightAlarm, 2, "Test");
         }
     }
 }

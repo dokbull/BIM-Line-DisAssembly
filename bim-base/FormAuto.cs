@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static bim_base.data.CIM.CIMEnumeric;
+using static LSFenet.FNET;
 using static LSFenet_MOBIS.FNET;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -62,17 +63,17 @@ namespace bim_base
             main.setOutput(OUTPUT.BUZZER_1, true);
 
             bool isSignalTowerBlink = true;
-            await Task.Run(async () =>
+            Task tBlink = Task.Run(async () =>
             {
                 while(isSignalTowerBlink)
                 {
                     main.setOutput(OUTPUT.TOWER_Y, true);
-                    await Task.Delay(500);
+                    await Task.Delay(1000);
                     main.setOutput(OUTPUT.TOWER_Y, false);
-                    await Task.Delay(500);
+                    await Task.Delay(1000);
                 }
 
-            }).ConfigureAwait(true);
+            });
 
             DarkMessageBox popup = DarkMessageBox.CreateMessageBox(
                "Operator Call",
@@ -84,15 +85,19 @@ namespace bim_base
             popup.ShowDialog();
 
             isSignalTowerBlink = false;
+            tBlink.Wait();
+
             main.setOutput(OUTPUT.BUZZER_1, false);
             main.setOutput(OUTPUT.TOWER_Y, false);
         }
 
-        private async void Automation_ReceivedInterlockEvent(int _ID, string _Message, EnumInterlockRCMD _RCMD)
+        private async void Automation_ReceivedInterlockEvent(string _ID, string _Message, EnumInterlockRCMD _RCMD)
         {
             // TODO CHECK LHJ to HJP : RCMD별로 메인 SW에서 인터락 처리 필요
             switch (_RCMD)
             {
+                case EnumInterlockRCMD.CycleStop:
+                    break;
                 case EnumInterlockRCMD.TransferStop:
                     break;
                 case EnumInterlockRCMD.LoadingStop:
@@ -108,30 +113,32 @@ namespace bim_base
             main.setOutput(OUTPUT.BUZZER_1, true);
 
             bool isSignalTowerBlink = true;
-            await Task.Run(async () =>
+            Task tBlink = Task.Run(async () =>
             {
                 while (isSignalTowerBlink)
                 {
                     main.setOutput(OUTPUT.TOWER_R, true);
                     main.setOutput(OUTPUT.TOWER_Y, true);
-                    await Task.Delay(500);
+                    await Task.Delay(1500);
                     main.setOutput(OUTPUT.TOWER_R, false);
                     main.setOutput(OUTPUT.TOWER_Y, false);
-                    await Task.Delay(500);
+                    await Task.Delay(1500);
                 }
 
-            }).ConfigureAwait(true);
+            });
 
             DarkMessageBox popup = DarkMessageBox.CreateMessageBox(
                "Interlock",
                EnumMessageBoxIcons.Warning,
-               _Message,
+               $"{_ID} : {_Message}",
                EnumMessageBoxButtons.OK);
             popup.MaximumSize = new Size(1024, 768);
             popup.WindowState = FormWindowState.Maximized;
             popup.ShowDialog();
 
             isSignalTowerBlink = false;
+            tBlink.Wait();
+
             main.setOutput(OUTPUT.BUZZER_1, false);
             main.setOutput(OUTPUT.TOWER_R, false);
             main.setOutput(OUTPUT.TOWER_Y, false);

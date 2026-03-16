@@ -59,6 +59,7 @@ namespace bim_base.data.CIM
 
         public enum EnumInterlockRCMD
         {
+            CycleStop = 2,
             TransferStop = 11,
             LoadingStop = 12,
             StepStop = 13,
@@ -121,6 +122,7 @@ namespace bim_base.data.CIM
         {
             Pass,
             Fail,
+            Timeout,
         }
     }
 }

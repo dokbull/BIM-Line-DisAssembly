@@ -2286,7 +2286,8 @@ public class CIMWrite
 
         NONE_2000_C294_DVPARAMETER,
         NONE_112_CA64_APCPARAMETER,
-        BIT_400_CAD4_Alarm,
+        BIT_200_C55C_HeavyAlarm,
+        BIT_200_C624_LightAlarm,
         NONE_100_CC64_Reserve,
         DEC_1_CCC8_Loader_CarrierProcessChangeCEID1_CEID262,
         ASCII_20_CCC9_Loader_CarrierProcessChangeCarrierID1_CEID262,
@@ -2377,6 +2378,7 @@ public class CIMWrite
     {
         ASCII,
         DEC,
+        BIT,
         NONE,
     }
 
@@ -2402,6 +2404,8 @@ public class CIMWrite
                 type = WRITE_TYPE.ASCII;
             if (split[0] == "DEC")
                 type = WRITE_TYPE.DEC;
+            if (split[0] == "BIT")
+                type = WRITE_TYPE.BIT;
 
             startAddress = Convert.ToInt32(split[2], 16);
             length = Util.toInt32(split[1]);
@@ -2503,6 +2507,11 @@ public class CIMWrite
                 {
                     value[0] = data.value & 0xFFFF;
                 }
+            }
+
+            if (data.type == WRITE_TYPE.BIT)
+            {
+                value[0] = data.value & 0xFFFF;
             }
 
             if (data.type == WRITE_TYPE.ASCII || data.type == WRITE_TYPE.NONE)

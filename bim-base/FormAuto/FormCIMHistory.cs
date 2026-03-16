@@ -87,7 +87,7 @@ namespace bim_base
 
         
 
-        private void Automation_ReceivedInterlockEvent(int _ID, string _Message, EnumInterlockRCMD _RCMD)
+        private void Automation_ReceivedInterlockEvent(string _ID, string _Message, EnumInterlockRCMD _RCMD)
         {
             List<string> rowDate = new List<string>();
 

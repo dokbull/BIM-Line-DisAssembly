@@ -47,7 +47,7 @@
             this.lblTerminalSendMonitor = new System.Windows.Forms.Label();
             this.btnTerminalSend = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.btnAlarmOccured = new System.Windows.Forms.Button();
+            this.btnAlarmOccured_Heavy = new System.Windows.Forms.Button();
             this.btnAlarmReleased = new System.Windows.Forms.Button();
             this.rdobtnAvailiability = new System.Windows.Forms.RadioButton();
             this.rdobtnInterlock = new System.Windows.Forms.RadioButton();
@@ -55,6 +55,8 @@
             this.rdobtnRun = new System.Windows.Forms.RadioButton();
             this.btnTrackOutUnloading = new System.Windows.Forms.Button();
             this.btnTrackInLoading = new System.Windows.Forms.Button();
+            this.btnEqStateDefault = new System.Windows.Forms.Button();
+            this.btnAlarmOccured_Light = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -238,20 +240,20 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // btnAlarmOccured
+            // btnAlarmOccured_Heavy
             // 
-            this.btnAlarmOccured.Location = new System.Drawing.Point(10, 338);
-            this.btnAlarmOccured.Margin = new System.Windows.Forms.Padding(2);
-            this.btnAlarmOccured.Name = "btnAlarmOccured";
-            this.btnAlarmOccured.Size = new System.Drawing.Size(141, 33);
-            this.btnAlarmOccured.TabIndex = 20;
-            this.btnAlarmOccured.Text = "Alarm Occured";
-            this.btnAlarmOccured.UseVisualStyleBackColor = true;
-            this.btnAlarmOccured.Click += new System.EventHandler(this.btnAlarmOccured_Click);
+            this.btnAlarmOccured_Heavy.Location = new System.Drawing.Point(10, 338);
+            this.btnAlarmOccured_Heavy.Margin = new System.Windows.Forms.Padding(2);
+            this.btnAlarmOccured_Heavy.Name = "btnAlarmOccured_Heavy";
+            this.btnAlarmOccured_Heavy.Size = new System.Drawing.Size(141, 33);
+            this.btnAlarmOccured_Heavy.TabIndex = 20;
+            this.btnAlarmOccured_Heavy.Text = "Alarm Occured(Heavy)";
+            this.btnAlarmOccured_Heavy.UseVisualStyleBackColor = true;
+            this.btnAlarmOccured_Heavy.Click += new System.EventHandler(this.btnAlarmOccured_Click);
             // 
             // btnAlarmReleased
             // 
-            this.btnAlarmReleased.Location = new System.Drawing.Point(159, 338);
+            this.btnAlarmReleased.Location = new System.Drawing.Point(306, 338);
             this.btnAlarmReleased.Margin = new System.Windows.Forms.Padding(2);
             this.btnAlarmReleased.Name = "btnAlarmReleased";
             this.btnAlarmReleased.Size = new System.Drawing.Size(141, 33);
@@ -338,11 +340,35 @@
             this.btnTrackInLoading.UseVisualStyleBackColor = true;
             this.btnTrackInLoading.Click += new System.EventHandler(this.btnTrackInLoading_Click);
             // 
+            // btnEqStateDefault
+            // 
+            this.btnEqStateDefault.Location = new System.Drawing.Point(11, 263);
+            this.btnEqStateDefault.Margin = new System.Windows.Forms.Padding(2);
+            this.btnEqStateDefault.Name = "btnEqStateDefault";
+            this.btnEqStateDefault.Size = new System.Drawing.Size(581, 33);
+            this.btnEqStateDefault.TabIndex = 29;
+            this.btnEqStateDefault.Text = "EqState : All = 2";
+            this.btnEqStateDefault.UseVisualStyleBackColor = true;
+            this.btnEqStateDefault.Click += new System.EventHandler(this.btnEqStateDefault_Click);
+            // 
+            // btnAlarmOccured_Light
+            // 
+            this.btnAlarmOccured_Light.Location = new System.Drawing.Point(159, 337);
+            this.btnAlarmOccured_Light.Margin = new System.Windows.Forms.Padding(2);
+            this.btnAlarmOccured_Light.Name = "btnAlarmOccured_Light";
+            this.btnAlarmOccured_Light.Size = new System.Drawing.Size(141, 33);
+            this.btnAlarmOccured_Light.TabIndex = 30;
+            this.btnAlarmOccured_Light.Text = "Alarm Occured(Light)";
+            this.btnAlarmOccured_Light.UseVisualStyleBackColor = true;
+            this.btnAlarmOccured_Light.Click += new System.EventHandler(this.btnAlarmOccured_Light_Click);
+            // 
             // FormAutomationTester
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(662, 603);
+            this.Controls.Add(this.btnAlarmOccured_Light);
+            this.Controls.Add(this.btnEqStateDefault);
             this.Controls.Add(this.btnTrackOutUnloading);
             this.Controls.Add(this.btnTrackInLoading);
             this.Controls.Add(this.rdobtnRun);
@@ -350,7 +376,7 @@
             this.Controls.Add(this.rdobtnInterlock);
             this.Controls.Add(this.rdobtnAvailiability);
             this.Controls.Add(this.btnAlarmReleased);
-            this.Controls.Add(this.btnAlarmOccured);
+            this.Controls.Add(this.btnAlarmOccured_Heavy);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnTerminalSend);
             this.Controls.Add(this.lblTerminalSendMonitor);
@@ -396,7 +422,7 @@
         private System.Windows.Forms.Label lblTerminalSendMonitor;
         private System.Windows.Forms.Button btnTerminalSend;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button btnAlarmOccured;
+        private System.Windows.Forms.Button btnAlarmOccured_Heavy;
         private System.Windows.Forms.Button btnAlarmReleased;
         private System.Windows.Forms.RadioButton rdobtnAvailiability;
         private System.Windows.Forms.RadioButton rdobtnInterlock;
@@ -404,5 +430,7 @@
         private System.Windows.Forms.RadioButton rdobtnRun;
         private System.Windows.Forms.Button btnTrackOutUnloading;
         private System.Windows.Forms.Button btnTrackInLoading;
+        private System.Windows.Forms.Button btnEqStateDefault;
+        private System.Windows.Forms.Button btnAlarmOccured_Light;
     }
 }

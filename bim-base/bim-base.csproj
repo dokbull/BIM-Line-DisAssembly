@@ -212,6 +212,7 @@
     <Compile Include="data\CIM\Automation.cs" />
     <Compile Include="data\CIM\CIMEnumeric.cs" />
     <Compile Include="data\CIM\CIMRead.cs" />
+    <Compile Include="data\CIM\CIMStructor.cs" />
     <Compile Include="data\CIM\CIMWrite.cs" />
     <Compile Include="data\CIM\HistoryItem.cs" />
     <Compile Include="data\CIM\RMS.cs" />
@@ -1355,6 +1356,8 @@
     <Content Include="Resource\NV_TT_Paddingless.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="FormLog\" />
+    <Folder Include="FormSystem\" />
     <Folder Include="lib\motion\3rdparty\" />
   </ItemGroup>
   <ItemGroup>
