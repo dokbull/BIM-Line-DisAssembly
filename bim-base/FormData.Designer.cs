@@ -34,10 +34,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.colorButton1 = new SUserControls.ColorButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tapIO = new SUserControls.ColorButton();
-            this.colorButton2 = new SUserControls.ColorButton();
-            this.colorButton3 = new SUserControls.ColorButton();
             this.colorButton4 = new SUserControls.ColorButton();
+            this.colorButton3 = new SUserControls.ColorButton();
+            this.colorButton2 = new SUserControls.ColorButton();
+            this.tapIO = new SUserControls.ColorButton();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -81,6 +81,7 @@
             // 
             this.colorButton1.BackColor = System.Drawing.Color.Transparent;
             this.colorButton1.BorderLineColor = System.Drawing.Color.Black;
+            this.colorButton1.BorderThickness = 0F;
             this.colorButton1.Checked = true;
             this.colorButton1.CheckedButtonColor = System.Drawing.Color.Black;
             this.colorButton1.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -114,70 +115,11 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1024, 47);
             this.tableLayoutPanel1.TabIndex = 1150;
             // 
-            // tapIO
-            // 
-            this.tapIO.BackColor = System.Drawing.Color.Transparent;
-            this.tapIO.BorderLineColor = System.Drawing.Color.Black;
-            this.tapIO.Checked = false;
-            this.tapIO.CheckedButtonColor = System.Drawing.Color.Black;
-            this.tapIO.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.tapIO.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.tapIO.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tapIO.ForeColor = System.Drawing.Color.Black;
-            this.tapIO.GradientBottom = System.Drawing.Color.Silver;
-            this.tapIO.GradientTop = System.Drawing.Color.Silver;
-            this.tapIO.Location = new System.Drawing.Point(3, 3);
-            this.tapIO.Name = "tapIO";
-            this.tapIO.RectCornerRadius = 2;
-            this.tapIO.Size = new System.Drawing.Size(250, 39);
-            this.tapIO.TabIndex = 1148;
-            this.tapIO.Text = "Recipe Setting";
-            this.tapIO.UseVisualStyleBackColor = false;
-            // 
-            // colorButton2
-            // 
-            this.colorButton2.BackColor = System.Drawing.Color.Transparent;
-            this.colorButton2.BorderLineColor = System.Drawing.Color.Black;
-            this.colorButton2.Checked = false;
-            this.colorButton2.CheckedButtonColor = System.Drawing.Color.Black;
-            this.colorButton2.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.colorButton2.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.colorButton2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.colorButton2.ForeColor = System.Drawing.Color.Black;
-            this.colorButton2.GradientBottom = System.Drawing.Color.Silver;
-            this.colorButton2.GradientTop = System.Drawing.Color.Silver;
-            this.colorButton2.Location = new System.Drawing.Point(259, 3);
-            this.colorButton2.Name = "colorButton2";
-            this.colorButton2.RectCornerRadius = 2;
-            this.colorButton2.Size = new System.Drawing.Size(250, 39);
-            this.colorButton2.TabIndex = 1149;
-            this.colorButton2.Text = "Additional Settings";
-            this.colorButton2.UseVisualStyleBackColor = false;
-            // 
-            // colorButton3
-            // 
-            this.colorButton3.BackColor = System.Drawing.Color.Transparent;
-            this.colorButton3.BorderLineColor = System.Drawing.Color.Black;
-            this.colorButton3.Checked = false;
-            this.colorButton3.CheckedButtonColor = System.Drawing.Color.Black;
-            this.colorButton3.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.colorButton3.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.colorButton3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.colorButton3.ForeColor = System.Drawing.Color.Black;
-            this.colorButton3.GradientBottom = System.Drawing.Color.Silver;
-            this.colorButton3.GradientTop = System.Drawing.Color.Silver;
-            this.colorButton3.Location = new System.Drawing.Point(515, 3);
-            this.colorButton3.Name = "colorButton3";
-            this.colorButton3.RectCornerRadius = 2;
-            this.colorButton3.Size = new System.Drawing.Size(250, 39);
-            this.colorButton3.TabIndex = 1150;
-            this.colorButton3.Text = "Delay";
-            this.colorButton3.UseVisualStyleBackColor = false;
-            // 
             // colorButton4
             // 
             this.colorButton4.BackColor = System.Drawing.Color.Transparent;
             this.colorButton4.BorderLineColor = System.Drawing.Color.Black;
+            this.colorButton4.BorderThickness = 0F;
             this.colorButton4.Checked = false;
             this.colorButton4.CheckedButtonColor = System.Drawing.Color.Black;
             this.colorButton4.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -194,6 +136,69 @@
             this.colorButton4.Text = "Servo Setting";
             this.colorButton4.UseVisualStyleBackColor = false;
             // 
+            // colorButton3
+            // 
+            this.colorButton3.BackColor = System.Drawing.Color.Transparent;
+            this.colorButton3.BorderLineColor = System.Drawing.Color.Black;
+            this.colorButton3.BorderThickness = 0F;
+            this.colorButton3.Checked = false;
+            this.colorButton3.CheckedButtonColor = System.Drawing.Color.Black;
+            this.colorButton3.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.colorButton3.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.colorButton3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.colorButton3.ForeColor = System.Drawing.Color.Black;
+            this.colorButton3.GradientBottom = System.Drawing.Color.Silver;
+            this.colorButton3.GradientTop = System.Drawing.Color.Silver;
+            this.colorButton3.Location = new System.Drawing.Point(515, 3);
+            this.colorButton3.Name = "colorButton3";
+            this.colorButton3.RectCornerRadius = 2;
+            this.colorButton3.Size = new System.Drawing.Size(250, 39);
+            this.colorButton3.TabIndex = 1150;
+            this.colorButton3.Text = "Delay";
+            this.colorButton3.UseVisualStyleBackColor = false;
+            // 
+            // colorButton2
+            // 
+            this.colorButton2.BackColor = System.Drawing.Color.Transparent;
+            this.colorButton2.BorderLineColor = System.Drawing.Color.Black;
+            this.colorButton2.BorderThickness = 0F;
+            this.colorButton2.Checked = false;
+            this.colorButton2.CheckedButtonColor = System.Drawing.Color.Black;
+            this.colorButton2.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.colorButton2.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.colorButton2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.colorButton2.ForeColor = System.Drawing.Color.Black;
+            this.colorButton2.GradientBottom = System.Drawing.Color.Silver;
+            this.colorButton2.GradientTop = System.Drawing.Color.Silver;
+            this.colorButton2.Location = new System.Drawing.Point(259, 3);
+            this.colorButton2.Name = "colorButton2";
+            this.colorButton2.RectCornerRadius = 2;
+            this.colorButton2.Size = new System.Drawing.Size(250, 39);
+            this.colorButton2.TabIndex = 1149;
+            this.colorButton2.Text = "Additional Settings";
+            this.colorButton2.UseVisualStyleBackColor = false;
+            // 
+            // tapIO
+            // 
+            this.tapIO.BackColor = System.Drawing.Color.Transparent;
+            this.tapIO.BorderLineColor = System.Drawing.Color.Black;
+            this.tapIO.BorderThickness = 0F;
+            this.tapIO.Checked = false;
+            this.tapIO.CheckedButtonColor = System.Drawing.Color.Black;
+            this.tapIO.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.tapIO.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.tapIO.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tapIO.ForeColor = System.Drawing.Color.Black;
+            this.tapIO.GradientBottom = System.Drawing.Color.Silver;
+            this.tapIO.GradientTop = System.Drawing.Color.Silver;
+            this.tapIO.Location = new System.Drawing.Point(3, 3);
+            this.tapIO.Name = "tapIO";
+            this.tapIO.RectCornerRadius = 2;
+            this.tapIO.Size = new System.Drawing.Size(250, 39);
+            this.tapIO.TabIndex = 1148;
+            this.tapIO.Text = "Recipe Setting";
+            this.tapIO.UseVisualStyleBackColor = false;
+            // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.White;
@@ -207,6 +212,7 @@
             this.button1.TabIndex = 1151;
             this.button1.Text = "Recipe Data";
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -221,6 +227,7 @@
             this.button2.TabIndex = 1152;
             this.button2.Text = "Recipe List";
             this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button3
             // 
@@ -254,6 +261,7 @@
             // 
             this.colorButton5.BackColor = System.Drawing.Color.Transparent;
             this.colorButton5.BorderLineColor = System.Drawing.Color.Black;
+            this.colorButton5.BorderThickness = 0F;
             this.colorButton5.Checked = true;
             this.colorButton5.CheckedButtonColor = System.Drawing.Color.Black;
             this.colorButton5.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -302,6 +310,7 @@
             // 
             this.colorButton6.BackColor = System.Drawing.Color.Transparent;
             this.colorButton6.BorderLineColor = System.Drawing.Color.Black;
+            this.colorButton6.BorderThickness = 0F;
             this.colorButton6.Checked = true;
             this.colorButton6.CheckedButtonColor = System.Drawing.Color.Black;
             this.colorButton6.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -365,6 +374,7 @@
             // 
             this.colorButton7.BackColor = System.Drawing.Color.Transparent;
             this.colorButton7.BorderLineColor = System.Drawing.Color.Black;
+            this.colorButton7.BorderThickness = 0F;
             this.colorButton7.Checked = true;
             this.colorButton7.CheckedButtonColor = System.Drawing.Color.Black;
             this.colorButton7.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ActiveCaption;

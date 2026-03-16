@@ -225,5 +225,16 @@ namespace bim_base
                 btnTerminalSend.Enabled = true;
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //            public bool PpidChange()
+            //public bool PpidCreate(/*string ppid*/)
+            //public bool PpidDelete(/*string ppid*/)
+            //public bool ParameterChange()
+
+            Automation.Instance.PpidDelete(20);
+
+        }
     }
 }

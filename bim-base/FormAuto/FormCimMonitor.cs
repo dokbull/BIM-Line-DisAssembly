@@ -26,7 +26,7 @@ namespace bim_base
 
         private void init()
         {
-            for (int i = 0; i < (int)CIMRead.READ_B.MAX; i++)
+            for (int i = 0; i < (int)CIMWrite.WRITE_B.MAX; i++)
             {
                 string[] text = new string[4];
 

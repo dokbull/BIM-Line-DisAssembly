@@ -1,4 +1,5 @@
 ﻿using bim_base.data.CIM;
+using DevAge.Windows.Forms;
 using lib.plc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using static bim_base.data.CIM.CIMEnumeric;
+using static CIMWrite;
 
 namespace bim_base
 {
@@ -533,6 +535,8 @@ namespace bim_base
 
             m_frenic = new CSerialFRENIC(FormMain.inst().serialFRENIC, 11);
 
+            //Automation.Instance.WriteBit(WRITE_B.ALIVEBIT_1, true);
+
             while (true)
             {
                 if (m_stop)
@@ -572,8 +576,8 @@ namespace bim_base
                     commDIO();
                     commAIO();
                     // TODO CHECK LHJ : 사전 테스트 끝나고 복구 필요
-                    //Automation.Instance.RunScan();
-
+                    Automation.Instance.SyncCommCCIE();
+                    //this.SyncCommCCIE
                     foreach (ExtAxis axis in m_axis)
                     {
                         axis.run();

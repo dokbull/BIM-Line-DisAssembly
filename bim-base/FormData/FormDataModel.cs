@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using static SourceGrid.Cells.Models.ModelContainer;
 
 namespace bim_base
 {
@@ -19,6 +20,15 @@ namespace bim_base
 
         private void FormSubDataModel_Load(object sender, EventArgs e)
         {
+            refreshModelName();
+
+            uiTimer.Enabled = true;
+        }
+
+        void refreshModelName()
+        {
+            modelList.Items.Clear();
+
             List<string> items = new List<string>();
 
             for (int i = 0; i < Common.MODEL.Count; i++)
@@ -33,7 +43,7 @@ namespace bim_base
 
             int count = modelList.Items.Count;
 
-            if (count > 0) 
+            if (count > 0)
             {
                 int index = 0;
 
@@ -53,14 +63,6 @@ namespace bim_base
 
                 uiTimer.Enabled = true;
             }
-        }
-
-        private void createButton_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void deleteButton_Click(object sender, EventArgs e)
-        {
         }
 
         private void changeButton_Click(object sender, EventArgs e)
@@ -86,7 +88,8 @@ namespace bim_base
             resMsg.ShowDialog();
 
             main.writeSetupLog("FormSubDataModel::changeButton_Click name:" + idx + " bfModel:" + modelIdx);
-            
+
+            refreshModelName();
         }
 
         private void newModelName_Click(object sender, EventArgs e)
@@ -125,6 +128,24 @@ namespace bim_base
         private void btTrayParameter_Click(object sender, EventArgs e)
         {
             
+        }
+
+        private void modelNameChange_Click(object sender, EventArgs e)
+        {
+            int idx = modelList.SelectedIndex;
+
+            CMessageBox msgBox = new CMessageBox(Common.TITLE, "NAME CHANGE?", MessageBoxButtons.OKCancel, ContentAlignment.MiddleCenter);
+            
+            if (msgBox.ShowDialog() != DialogResult.OK)
+                return;
+
+            ModelInfo model = Common.MODEL_INFO(idx);
+
+            model.saveModelName(newModelName.Text);
+            currentModelLabel.Text = Common.MODEL_INFO(idx).modelName();
+
+            CMessageBox resMsg = new CMessageBox(Common.TITLE, "SUCCESS " + idx, MessageBoxButtons.OK, ContentAlignment.MiddleCenter);
+            resMsg.ShowDialog();
         }
     }
 }

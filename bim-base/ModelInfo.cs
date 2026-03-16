@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 public enum TEACH_POS
 {
@@ -49,7 +50,7 @@ public class POS
 public class ModelInfo
 {
     int m_index = 0;
-    string m_modelName = "DEFAULT_MODEL";
+    string m_modelName = "EMPTY";
 
     CSettings m_setting = null;
 
@@ -57,16 +58,13 @@ public class ModelInfo
 
     public event EventHandler changedModel;
 
-    public ModelInfo(int index, string name = "NONE")
+    public ModelInfo(int index)
     {
         m_index = index;
 
-        if (m_index >= 90 && name.Contains("TT_") == false)
-            name = "TT_" + name;
-
         m_setting = new CSettings(Common.MODEL_PATH + m_index.ToString());
+        m_modelName = loadModelName();
 
-        m_modelName = name;
         init();
     }
 
@@ -210,6 +208,30 @@ public class ModelInfo
             DateTime now = DateTime.Now;
             File.Copy(path, backupPath + m_modelName + "_" + now.ToString("yyMMdd_HHmmss_fff"));
         }
+    }
+
+    public void saveModelName(string name)
+    {
+        m_modelName = name;
+
+        m_setting.setValue("MODEL", "NAME", name);
+    }
+
+    public string loadModelName()
+    {
+        m_modelName = m_setting.getValue("MODEL", "NAME", "EMPTY");
+
+        if (m_modelName == "EMPTY")
+        {
+            m_modelName = "MODEL_" + m_index.ToString();
+
+            if (m_index >= 90 && m_modelName.PadLeft(3) != "TT_")
+                m_modelName = "TT_" + m_modelName;
+
+            saveModelName(m_modelName);
+        }
+
+        return m_modelName;
     }
 
     public void saveTeachPos(POS pos)
