@@ -2,6 +2,7 @@
 using Lib.UI.Generic.DarkMode.Forms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
@@ -32,7 +33,7 @@ namespace bim_base.data.CIM
         public delegate void OnReleaseInterlockEventHandler(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage);
         public delegate void OnAutomationAlarmEventHandler();
         public delegate bool OnGetSampleExistEventHandler();
-        public delegate (Dictionary<INPUT, bool> Inputs, Dictionary<OUTPUT, bool> Outputs, List<long> TackTime) OnGetFaultDetectionClassificationEventHandler();
+        public delegate (Dictionary<INPUT, bool> Inputs, Dictionary<OUTPUT, bool> Outputs, List<long> TackTime) OnGetMonitoringDataEventHandler();
 
         #endregion
 
@@ -46,7 +47,7 @@ namespace bim_base.data.CIM
 
         #region Constants
 
-        private const int HANDSHAKE_TIMEOUT_SECONDS = 5;
+        private const int HANDSHAKE_TIMEOUT_MILLISECONDS = 5000;
         private const int BIT_COUNT = 16;
         private const int HISTORY_MAX_COUNT = 100;
 
@@ -83,6 +84,10 @@ namespace bim_base.data.CIM
             private set { this.m_Writer = value; }
         }
 
+        /// <summary>
+        /// TODO CHECK LHJ -> HJP : Recipe 또는 모드 변경에서 연동 필요
+        /// </summary>
+        public bool UseTrackInValidationCheckMode { get; set; } = false;
 
         public EnumAlarmState AlarmState { get; private set; } = EnumAlarmState.None;
 
@@ -110,7 +115,7 @@ namespace bim_base.data.CIM
 
         public event OnGetSampleExistEventHandler GetSampleExistEvent;
 
-        public event OnGetFaultDetectionClassificationEventHandler GetFaultDetectionClassificationEvent;
+        public event OnGetMonitoringDataEventHandler GetMonitoringDataEvent;
 
         #endregion
 
@@ -161,12 +166,12 @@ namespace bim_base.data.CIM
             }
         }
 
-        private void SleepWithDoEvent(int _seconds)
+        private void SleepWithDoEvent(int _milliseconds)
         {
             DateTime startTime = DateTime.Now;
             TimeSpan ts = DateTime.Now  - startTime;
 
-            while (ts.TotalSeconds < _seconds)
+            while (ts.TotalMilliseconds < _milliseconds)
             {
                 Thread.Sleep(10);
                 System.Windows.Forms.Application.DoEvents();
@@ -174,37 +179,41 @@ namespace bim_base.data.CIM
             }
         }
 
-        private void WaitBitSignal(CIMRead.READ_B _addr, bool _waitValue, int _timeoutSeconds = 0)
+        private bool WaitBitSignal(CIMRead.READ_B _addr, bool _waitValue, int _timeoutMilliseconds = 0)
         {
             bool val = this.ReadBit(_addr);
+
+            if (val == _waitValue) return true;
 
             DateTime startTime = DateTime.Now;
             TimeSpan ts = DateTime.Now - startTime;
 
             while (val != _waitValue)
             {
-                if(_timeoutSeconds > 0 && ts.TotalSeconds >= _timeoutSeconds)
+                if (_timeoutMilliseconds > 0 && ts.TotalMilliseconds >= _timeoutMilliseconds)
                 {
-                    throw new Exception("WaitBitSignal Timeout Occurred. Addr: " + _addr.ToString() + ", WaitValue: " + _waitValue.ToString());
+                    //throw new Exception("WaitBitSignal Timeout Occurred. Addr: " + _addr.ToString() + ", WaitValue: " + _waitValue.ToString());
+                    return false;
                 }
 
                 val = this.ReadBit(_addr);
 
-                if (val == _waitValue) { return; }
+                if (val == _waitValue) { return true; }
 
                 this.SleepWithDoEvent(1);
                 ts = DateTime.Now - startTime;
             }
 
+            return false;
         }
 
-        private bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutSeconds = 0, bool _isOnError = false)
+        private bool HandShakeSignal(CIMWrite.WRITE_B _addrWrite, bool _writeValue, CIMRead.READ_B _addrRead, bool _readValue, int _timeoutMilliseconds = 0, bool _isOnError = false)
         {
             // TODO CHECK LHJ : H/S 진입시 중복 실행되지 않는지 확인 필요
             try
             {
                 this.WriteBit(_addrWrite, _writeValue);
-                this.WaitBitSignal(_addrRead, _readValue, _timeoutSeconds);
+                this.WaitBitSignal(_addrRead, _readValue, _timeoutMilliseconds);
 
                 return true;
             }
@@ -353,13 +362,13 @@ namespace bim_base.data.CIM
             this.ResetSignals();
 
             // 초기 ALIVE 신호 OFF로 Reset
-            if (this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            if (this.HandShakeSignal(WRITE_B.ALIVEBIT_1, false, CIMRead.READ_B.ALIVEBIT_1, false, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
                 return false;
 
             try
             {
                 // Date Time 동기화 요청 신호 대기
-                this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, HANDSHAKE_TIMEOUT_SECONDS);
+                this.WaitBitSignal(CIMRead.READ_B.DATETIMESET_2, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
 
                 // Date Time 동기화 처리
                 if (this.SetDateTime() == false) return false;
@@ -384,7 +393,7 @@ namespace bim_base.data.CIM
 
                 bool alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
-                this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
+                this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_MILLISECONDS);
 
             }
             catch
@@ -415,7 +424,7 @@ namespace bim_base.data.CIM
                 this.RequestRecipeDownload();
                 this.RequestParameterQuery();
 
-                this.ReportFaultDetectionClassification();
+                this.ReportMonitoringData();
                 this.ReportSampleProcessingState();
 
             }
@@ -537,7 +546,7 @@ namespace bim_base.data.CIM
                 this.WriteWord(WRITE_W.ASCII_60_104A_InterlockMessageConfirm, strMessage);
                 this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
 
-                this.WaitBitSignal(READ_B.INTERLOCKCONFIRM_42, true, HANDSHAKE_TIMEOUT_SECONDS);
+                this.WaitBitSignal(READ_B.INTERLOCKCONFIRM_42, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
                 this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
 
                 logMessage = $"{rcmd} Release Interlock (RCMD={(int)rcmd}) : {strMessage}";
@@ -664,7 +673,7 @@ namespace bim_base.data.CIM
                         true,
                         READ_B.PPIDCHANGE_21,
                         true,
-                        HANDSHAKE_TIMEOUT_SECONDS);
+                        HANDSHAKE_TIMEOUT_MILLISECONDS);
 
                 }
             }
@@ -737,15 +746,15 @@ namespace bim_base.data.CIM
 
         #region Private Method : Status
 
-        private void ReportFaultDetectionClassification()
+        private void ReportMonitoringData()
         {
             try
             {
 
-                if (GetFaultDetectionClassificationEvent == null)
+                if (GetMonitoringDataEvent == null)
                     return;
 
-                var fdc = GetFaultDetectionClassificationEvent.Invoke();
+                var fdc = GetMonitoringDataEvent.Invoke();
 
                 int Index = (int)WRITE_B.PlugRemove_CV_In_Sensor;
 
@@ -947,7 +956,7 @@ namespace bim_base.data.CIM
                     this.SleepWithDoEvent(1);
 
                     ts = DateTime.Now - start;
-                    if (ts.TotalSeconds >= HANDSHAKE_TIMEOUT_SECONDS)
+                    if (ts.TotalMilliseconds >= HANDSHAKE_TIMEOUT_MILLISECONDS)
                         break;
                 }
             }).ConfigureAwait(true);
@@ -1027,7 +1036,7 @@ namespace bim_base.data.CIM
             try
             {
                 this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
-                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_SECONDS); 
+                this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_MILLISECONDS); 
 
             }
             catch
@@ -1048,7 +1057,7 @@ namespace bim_base.data.CIM
                 // TODO CHECK LHJ : Operator Call은 ID가 존재하는데, ID는 어떻게 관리할지? 일단은 메시지만 전달하는 형태로 구현
 
                 this.WriteWord(WRITE_W.ASCII_60_259C_UnitOPCallConfirmOPCallMessage, _message);
-                this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_SECONDS);
+                this.HandShakeSignal(WRITE_B.EQUIPUNITOPCALLSEND_247, true, CIMRead.READ_B.OPCALLCONFIRM_41, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
 
             }
             catch
@@ -1174,7 +1183,7 @@ namespace bim_base.data.CIM
 
                 msgPopup.Close();
 
-                this.WaitBitSignal(READ_B.TPMLOSSREADY_19, true, HANDSHAKE_TIMEOUT_SECONDS);
+                this.WaitBitSignal(READ_B.TPMLOSSREADY_19, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
 
                 this.WriteBit(WRITE_B.TPMLOSSREADY_19, false);
             }
@@ -1191,32 +1200,200 @@ namespace bim_base.data.CIM
 
         #endregion
 
-        #region Public Method : CIM Sample Processing 
+        #region Public Method : CIM Sample Track In/Out Processing 
 
-        public void LoadingCellTrackIn()
+        // TODO CHECK LHJ -> HJP : CELL 및 지그 투입 전 시점에 본 함수 호출
+        public EnumJobProcessType TrackInLoadingCell(string _jigBarcode)
         {
             if (this.IsInitialized == false)
-                return;
+                return EnumJobProcessType.Fail;
 
-            // TODO 어떤 Data를 써야 할지 확인
-            //this.WriteWord(WRITE_W.trackin)
+            try
+            {
+                // TODO 사용되는 WORD DATA는 변경될 수 있음
 
-            this.HandShakeSignal(WRITE_B.CELLSTARTPORT1_28, true, READ_B.CELLSTARTPORT1_28, true, HANDSHAKE_TIMEOUT_SECONDS);
+                #region S6F203 Specipic Valid Request
+
+                // Fix
+                this.WriteWord(WRITE_W.ASCII_5_2980_SpecificValidationRequest_OptionCode1, "DASSBIMJIG");
+
+                // TODO CHECK LHJ -> HJP: 임시로 _jigBarcode값을 할당. 바코드 리더 연동 시 삭제 필요
+                _jigBarcode = "31A-005217-BME-PA-DTHB-UPPP101";
+                //Cell ID는 Reading 하지 않으나, Reading 한 지그 바코드 값으로 대체하고 보고 
+                this.WriteWord(WRITE_W.ASCII_20_2985_SpecificValidationRequest_CellID1, _jigBarcode);
+                
+                // OptionInfo는 Cell ID로 보고. 설비에서는 Cell ID를 Reading하지 않으므로 공백으로 보고
+                this.WriteWord(WRITE_W.ASCII_20_2999_SpecificValidationRequest_OptionInfo1, "");
+
+                this.WriteBit(WRITE_B.SPECIFICVALIDATIONREQUEST1_218, true);
+
+                #endregion
+
+                #region S3F103 Specific Valid Data
+
+                if (this.WaitBitSignal(READ_B.SPECIFICVALIDATIONDATASEND1_223, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+                    return EnumJobProcessType.Fail;
+
+                string specDataJigID =  this.ReadWord(READ_W.ASCII_20_1256_SpecificValidationCarrierID1);
+                string specDataCellID = this.ReadWord(READ_W.ASCII_40_126A_SpecificValidationCellID1);
+                string specDataUiqueType = this.ReadWord(READ_W.ASCII_10_1292_SpecificValidationUniqueType1);
+                string specDataProductID = this.ReadWord(READ_W.ASCII_20_129C_SpecificValidationProductID1);
+                string specDataStepID = this.ReadWord(READ_W.ASCII_20_12B0_SpecificValidationStepID1);
+                string specDataReplyStatus = this.ReadWord(READ_W.ASCII_2_12C4_SpecificValidationReplyStatus1);
+                string specDataReplyText = this.ReadWord(READ_W.ASCII_60_12C6_SpecificValidationReplyText1);
+
+                // Pass or Fail
+                if(specDataReplyStatus.ToUpper() != EnumJobProcessType.Pass.ToString().ToUpper())
+                    return EnumJobProcessType.Fail;
+
+                #endregion
+
+                #region S6F11 CEID=401 Process Start
+
+                this.WriteWord(WRITE_W.ASCII_40_04A0_TrackInCellID1, specDataCellID);
+                this.WriteWord(WRITE_W.ASCII_20_04C8_TrackInProductID1, specDataProductID);
+                this.WriteWord(WRITE_W.ASCII_20_04DC_TrackInStepID1, specDataStepID);
+                this.WriteWord(WRITE_W.ASCII_20_04F0_TrackInProcessJobID1, "");
+                this.WriteWord(WRITE_W.DEC_2_0504_TrackInPlanQuantity1, "0");
+                this.WriteWord(WRITE_W.DEC_2_0506_TrackInProcessQuantity1, "0");
+                this.WriteWord(WRITE_W.ASCII_1_0508_TrackInReaderID1, "");// Cell ID를 Reading하지 않으므로 공백으로 Fix
+                this.WriteWord(WRITE_W.ASCII_1_0509_TrackInRRC1, "0"); // 0 = OK, Cell ID를 Reading하지 않으므로 "0""으로 Fix
+                this.WriteWord(WRITE_W.ASCII_1_050A_TrackInReasonCode1, "");
+                this.WriteBit(WRITE_B.CELLSTARTPORT1_28, true);
+
+                #endregion
+
+                #region S2F43 RCMD=21 Job Process Start
+
+
+                if (this.WaitBitSignal(READ_B.CELLJOBPROCESS1_74, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+                    return EnumJobProcessType.Fail;
+
+                this.WriteBit(WRITE_B.CELLSTARTPORT1_28, false);
+                string jobPorcRCMD = this.ReadWord(READ_W.ASCII_2_D339_CellJobProcessRCMD1);
+                string jobPorcJobID =  this.ReadWord(READ_W.ASCII_20_D33B_CellJobProcessJobID1);
+                string jobPorcCellID =  this.ReadWord(READ_W.ASCII_40_D34F_CellJobProcessCellID1);
+                string jobPorcProductID =  this.ReadWord(READ_W.ASCII_20_D377_CellJobProcessProductID1);
+                string jobPorcStepID =  this.ReadWord(READ_W.ASCII_20_D38B_CellJobProcessStepID1);
+                string jobPorcActionType =  this.ReadWord(READ_W.ASCII_10_D39F_CellJobProcessActionType1);
+
+
+                if (int.TryParse(jobPorcRCMD, out int jobProcRCMDValue) == false)
+                    return EnumJobProcessType.Fail;
+
+                //S2F43 RCMD 21~24
+                //  21 : Cell Job Process Start (Pass)
+                //  22 : Cell Job Process Cancel(Fail)
+                //  23 : Cell Job Process Pause (미사용)
+                //  24 : Cell Job Process Resume (미사용)
+                switch (jobProcRCMDValue)
+                {
+                    case 21:
+                        this.HandShakeSignal(WRITE_B.CELLSTARTPORT1_28, true, READ_B.CELLSTARTPORT1_28, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
+                        return EnumJobProcessType.Pass;
+                    default:
+                        return EnumJobProcessType.Fail;
+                }
+                #endregion
+
+            }
+            catch
+            {
+                return EnumJobProcessType.Fail;
+            }
+            finally
+            {
+                this.WriteBit(WRITE_B.SPECIFICVALIDATIONREQUEST1_218, false);
+                this.WriteBit(WRITE_B.CELLSTARTPORT1_28, false);
+
+            }
 
         }
 
-        public void UnloadingCellTrackOut()
+
+        // TODO CHECK LHJ -> HJP : CELL 및 지그 배출 전 시점에 본 함수 호출
+        public EnumJobProcessType TrackOutUnloadingCell(string _jigBarcode)
         {
             if (this.IsInitialized == false)
-                return;
+                return EnumJobProcessType.Fail;
 
-            // TODO 어떤 Data를 써야 할지 확인
-            //this.WriteWord(WRITE_W.trackin)
+            try
+            {
+                // TODO 사용되는 WORD DATA는 변경될 수 있음
 
-            // TODO 어떤 DV Data를 써야 할지 확인
+                #region s6f203 Specipic Valid Request
 
-            this.HandShakeSignal(WRITE_B.CELLCOMPPORT1_34, true, READ_B.CELLCOMPPORT1_34, true, HANDSHAKE_TIMEOUT_SECONDS);
+                // Fix
+                this.WriteWord(WRITE_W.ASCII_5_2980_SpecificValidationRequest_OptionCode1, "DASSBIMJIG");
+
+                // TODO CHECK LHJ -> HJP: 임시로 _jigBarcode값을 할당. 바코드 리더 연동 시 삭제 필요
+                _jigBarcode = "31A-005217-BME-PA-DTHB-UPPP101";
+                //Cell ID는 Reading 하지 않으나, Reading 한 지그 바코드 값으로 대체하고 보고 
+                this.WriteWord(WRITE_W.ASCII_20_2985_SpecificValidationRequest_CellID1, _jigBarcode);
+
+                // OptionInfo는 Cell ID로 보고. 설비에서는 Cell ID를 Reading하지 않으므로 공백으로 보고
+                this.WriteWord(WRITE_W.ASCII_20_2999_SpecificValidationRequest_OptionInfo1, "");
+
+                this.WriteBit(WRITE_B.SPECIFICVALIDATIONREQUEST1_218, true);
+
+                #endregion
+
+                #region S3F103 Specific Valid Data
+
+                if (this.WaitBitSignal(READ_B.SPECIFICVALIDATIONDATASEND1_223, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+                    return EnumJobProcessType.Fail;
+
+                string specDataJigID = this.ReadWord(READ_W.ASCII_20_1256_SpecificValidationCarrierID1);
+                string specDataCellID = this.ReadWord(READ_W.ASCII_40_126A_SpecificValidationCellID1);
+                string specDataUiqueType = this.ReadWord(READ_W.ASCII_10_1292_SpecificValidationUniqueType1);
+                string specDataProductID = this.ReadWord(READ_W.ASCII_20_129C_SpecificValidationProductID1);
+                string specDataStepID = this.ReadWord(READ_W.ASCII_20_12B0_SpecificValidationStepID1);
+                string specDataReplyStatus = this.ReadWord(READ_W.ASCII_2_12C4_SpecificValidationReplyStatus1);
+                string specDataReplyText = this.ReadWord(READ_W.ASCII_60_12C6_SpecificValidationReplyText1);
+
+                // Pass or Fail
+                if (specDataReplyStatus.ToUpper() != EnumJobProcessType.Pass.ToString().ToUpper())
+                    return EnumJobProcessType.Fail;
+
+                #endregion
+
+
+                #region S6F11 CEID=406 Process Complete
+
+
+                this.WriteWord(WRITE_W.ASCII_40_0760_TrackOutCellID1, specDataCellID);
+                this.WriteWord(WRITE_W.ASCII_20_0788_TrackOutProductID1, specDataProductID);
+                this.WriteWord(WRITE_W.ASCII_20_079C_TrackOutStepID1, specDataStepID);
+                this.WriteWord(WRITE_W.ASCII_20_07B0_TrackOutProcessJobID1, "");
+                this.WriteWord(WRITE_W.DEC_2_07C4_TrackOutPlanQuantity1, "");
+                this.WriteWord(WRITE_W.DEC_2_07C6_TrackOutProcessQuantity1, "");
+                this.WriteWord(WRITE_W.ASCII_1_07C8_TrackOutReaderID1, "");//OUT MCR 없으면 / MCR 미사용 : Null처리
+                this.WriteWord(WRITE_W.ASCII_1_07C9_TrackOutRRC1, "2");//0 : OK , 1 : Error, 2 : Reader 기능 미사용
+                this.WriteWord(WRITE_W.ASCII_10_07CA_TrackOutOperatorID1_1, "");
+                this.WriteWord(WRITE_W.ASCII_10_07D4_TrackOutOperatorID1_2, "");
+                this.WriteWord(WRITE_W.ASCII_10_07DE_TrackOutOperatorID1_3, "");
+                this.WriteWord(WRITE_W.ASCII_1_07E8_TrackOutJudge1, "");
+                this.WriteWord(WRITE_W.ASCII_10_07F3_TrackOutReasonCode1, "");
+                this.WriteWord(WRITE_W.ASCII_20_07FD_TrackOutDescription1, "");
+                this.WriteBit(WRITE_B.CELLCOMPPORT1_34, true);
+
+                #endregion
+
+                return EnumJobProcessType.Pass;
+            }
+            catch
+            {
+                return EnumJobProcessType.Fail;
+            }
+            finally
+            {
+                this.WriteBit(WRITE_B.SPECIFICVALIDATIONREQUEST1_218, false);
+                this.WriteBit(WRITE_B.CELLCOMPPORT1_34, false);
+
+
+            }
         }
+
 
         #endregion
 
@@ -1233,7 +1410,7 @@ namespace bim_base.data.CIM
 
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = info.modelName();
 
-            return this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS);
+            return this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
         }
 
         // PPID 생성
@@ -1258,7 +1435,7 @@ namespace bim_base.data.CIM
 
             WriteTeachPos(INFO);
 
-            if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
                 return false;
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
@@ -1331,7 +1508,7 @@ namespace bim_base.data.CIM
             
             //WriteTeachPos(INFO);
 
-            if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
                 return false;
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
@@ -1382,7 +1559,7 @@ namespace bim_base.data.CIM
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = "91C"; //추후 문서 보고 수정 필요.
             //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
 
-            if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
+            if (this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
                 return false;
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);

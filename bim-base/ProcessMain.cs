@@ -219,7 +219,7 @@ namespace bim_base
             }
 
             Automation.Instance.Initialize();
-            Automation.Instance.GetFaultDetectionClassificationEvent += GetFDCData;
+            Automation.Instance.GetMonitoringDataEvent += GetFDCData;
 
             m_thread = new Thread(run);
         }

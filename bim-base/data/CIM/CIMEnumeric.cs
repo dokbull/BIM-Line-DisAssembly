@@ -116,5 +116,11 @@ namespace bim_base.data.CIM
             InterlockOccured,
             InterlockReleased,
         }
+
+        public enum EnumJobProcessType
+        {
+            Pass,
+            Fail,
+        }
     }
 }
