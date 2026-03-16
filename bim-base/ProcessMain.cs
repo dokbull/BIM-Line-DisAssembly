@@ -163,19 +163,19 @@ namespace bim_base
                     if (m_axis[i].name().Contains("Z"))
                     {
                         //m_axis[i].setAbsSpeed(Conf.vel((AXIS)i), Conf.acc((AXIS)i), Conf.dec((AXIS)i));
-                        m_axis[i].setAbsSpeed(750.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
+                        m_axis[i].setAbsSpeed(100.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
                         m_axis[i].setHomeDir(AXT_MOTION_MOVE_DIR.DIR_CW);
                         m_axis[i].homeSetVel(30, 5, 1, 1, 0.25, 0.25);
                     }
                     else
                     {
                         //m_axis[i].setAbsSpeed(Conf.vel((AXIS)i), Conf.acc((AXIS)i), Conf.dec((AXIS)i));
-                        m_axis[i].setAbsSpeed(1000.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
+                        m_axis[i].setAbsSpeed(100.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
                         m_axis[i].homeSetVel(50, 15, 1, 1, 0.25, 0.25);
                     }
                 }
 
-                m_axis[(int)AXIS.MOLD_PP_X].setAbsSpeed(1200.0d, Conf.acc(AXIS.MOLD_PP_X), Conf.dec(AXIS.MOLD_PP_X));
+                m_axis[(int)AXIS.MOLD_PP_X].setAbsSpeed(100.0d, Conf.acc(AXIS.MOLD_PP_X), Conf.dec(AXIS.MOLD_PP_X));
 
                 int[] inputIds = new int[] { 22, 23, 24, 18, 19, 0, 1, 2, 3, 4, 5, 6, 7, 8 };
                 int[] outputIds = new int[] { 25, 26, 20, 21, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
@@ -474,7 +474,7 @@ namespace bim_base
             setBuzzerOff();
             setOutput(OUTPUT.OP_PANEL_RESET_SW, false);
 
-            Automation.Instance.AlarmReleased(this.m_lastAlarm.code, this.m_lastAlarm.desc);
+            // Automation.Instance.AlarmReleased(this.m_lastAlarm.code, this.m_lastAlarm.desc);
 
             m_isAlarm = false;
 
@@ -576,7 +576,7 @@ namespace bim_base
                 //Automation.Instance.PpidListRequest();
                 //Automation.Instance.PpidChange();
 
-                watchFrenic();
+                // watchFrenic();
                 watchEmergency();
                 watchServo();
                 watchSwitch();
@@ -631,16 +631,16 @@ namespace bim_base
                     if (m_axis[i].name().Contains("Z"))
                     {
                         //m_axis[i].setAbsSpeed(Conf.vel((AXIS)i), Conf.acc((AXIS)i), Conf.dec((AXIS)i));
-                        m_axis[i].setAbsSpeed(500.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
+                        m_axis[i].setAbsSpeed(1000.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
                     }
                     else
                     {
                         //m_axis[i].setAbsSpeed(Conf.vel((AXIS)i), Conf.acc((AXIS)i), Conf.dec((AXIS)i));
-                        m_axis[i].setAbsSpeed(500.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
+                        m_axis[i].setAbsSpeed(1000.0d, Conf.acc((AXIS)i), Conf.dec((AXIS)i));
                     }
                 }
 
-                m_axis[(int)AXIS.MOLD_PP_X].setAbsSpeed(1000.0d, Conf.acc(AXIS.MOLD_PP_X), Conf.dec(AXIS.MOLD_PP_X));
+                m_axis[(int)AXIS.MOLD_PP_X].setAbsSpeed(1250.0d, Conf.acc(AXIS.MOLD_PP_X), Conf.dec(AXIS.MOLD_PP_X));
             }
 
             // READY PROCESS

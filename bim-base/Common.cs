@@ -44,6 +44,7 @@ public class Common
         Alarm.load();
 
         MC = new ModelInfo(1000, "MACHINE");
+        MC.load();
 
         for (int i = 0; i < 100; i++)
         {

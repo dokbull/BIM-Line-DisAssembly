@@ -36,6 +36,7 @@
 
         bool checkInterlock()
         {
+            ModelInfo mc = Common.MC;
             ModelInfo model = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
 
             if (m_axisEnum == AXIS.MOLD_PP_X)
@@ -44,10 +45,10 @@
                 ExtAxis ZL = main.axis(AXIS.MOLD_PP_ZL);
                 ExtAxis CHECK_Y = main.axis(AXIS.UB_PP_Y);
 
-                double readyPosL = model.teachData(TEACH_POS.MOLD_PP_WAIT).zL - 1.0d;
-                double readyPosR = model.teachData(TEACH_POS.MOLD_PP_WAIT).zR - 1.0d;
+                double readyPosL = mc.teachData(TEACH_POS.MOLD_PP_WAIT).zL + model.teachData(TEACH_POS.MOLD_PP_WAIT).zL - 1.0d;
+                double readyPosR = mc.teachData(TEACH_POS.MOLD_PP_WAIT).zR + model.teachData(TEACH_POS.MOLD_PP_WAIT).zR - 1.0d;
 
-                double crashArea = model.teachData(TEACH_POS.UB_PP_WAIT).y + 10.0d;
+                double crashArea = mc.teachData(TEACH_POS.UB_PP_WAIT).y + model.teachData(TEACH_POS.UB_PP_WAIT).y + 10.0d;
 
                 if (ZL.pos() < readyPosL)
                     return false;
@@ -67,8 +68,8 @@
                 ExtAxis Z = main.axis(AXIS.UB_PP_Z);
                 ExtAxis CHECK_X = main.axis(AXIS.MOLD_PP_X);
 
-                double readyPos = model.teachData(TEACH_POS.UB_PP_WAIT).z - 1.0d;
-                double crashArea = model.teachData(TEACH_POS.MOLD_PP_RIGHT).x - 10.0d;
+                double readyPos = mc.teachData(TEACH_POS.UB_PP_WAIT).z + model.teachData(TEACH_POS.UB_PP_WAIT).z - 1.0d;
+                double crashArea = mc.teachData(TEACH_POS.MOLD_PP_RIGHT).x + model.teachData(TEACH_POS.MOLD_PP_RIGHT).x - 10.0d;
 
                 if (Z.pos() < readyPos)
                     return false;
@@ -81,7 +82,7 @@
             {
                 ExtAxis Z = main.axis(AXIS.IN_PP_Z);
 
-                double readyPos = model.teachData(TEACH_POS.PICK_PP_WAIT).z - 1.0d;
+                double readyPos = mc.teachData(TEACH_POS.PICK_PP_WAIT).z + model.teachData(TEACH_POS.PICK_PP_WAIT).z - 1.0d;
 
                 if (Z.pos() < readyPos)
                     return false;
