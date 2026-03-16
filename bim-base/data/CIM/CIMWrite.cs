@@ -2132,6 +2132,8 @@ public class CIMWrite
         DEC_2_938A_UbPPPlaceFrontXB,
         DEC_2_938C_UbPPPlaceFrontVel,
 
+        NONE_3638_938E_RMSRESERVED,
+
         #region "ECM Param >>"
         //NONE_3600_A1C4_ECMPARAMETER,
         ASCII_20_A1C4_PickPpWaitName,
@@ -2241,6 +2243,8 @@ public class CIMWrite
         DEC_2_A332_BaseXAcc,
         DEC_2_A334_InPpZAcc,
         DEC_2_A336_InPpYAcc,
+
+        NONE_4552_A338_ECMRESERVED,
         #endregion "ECM Param <<"
 
         #region "FDC Param >>"
@@ -2274,13 +2278,12 @@ public class CIMWrite
         DEC_2_B536_Tack28,
         DEC_2_B538_Tack29,
         DEC_2_B53A_Tack30,
-        DEC_2_B53E_TackRealTime,
+        NONE_2_B53C_RESERVED,
+        DEC_2_B53E_TackRealTime, // B53E B53F
         
+        NONE_3412_B540_FDCRESERVED,
         #endregion "FDC Param <<"
 
-        NONE_1324_AFD4_SVIDPARAMETER,
-        DEC_60_B500_TACTTIME,
-        NONE_3416_B53C_SVIDPARAMETER,
         NONE_2000_C294_DVPARAMETER,
         NONE_112_CA64_APCPARAMETER,
         BIT_400_CAD4_Alarm,
