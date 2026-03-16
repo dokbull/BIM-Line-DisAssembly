@@ -90,49 +90,6 @@ public class ModelInfo
         }
     }
 
-    public void setTeachPos(int index, POS pos)
-    {
-        m_teachPos[index] = pos;
-    }
-
-    public void setTeachPos(POS[] pos)
-    {
-        m_teachPos = pos;
-    }
-
-    public string teachPosString(int teachPos)
-    {
-        return teachPosString((TEACH_POS)teachPos);
-    }
-
-    public string teachPosString(TEACH_POS teachPos)
-    {
-        string retn = "";
-        Type enumType = typeof(TEACH_POS);
-        MemberInfo[] memberInfos = enumType.GetMember(teachPos.ToString());
-        if (memberInfos.Length > 0)
-            retn = teachPos.ToString();
-
-        return retn;
-    }
-
-    public bool existModelCheck(string name)
-    {
-        bool ret = false;
-        DirectoryInfo dirInfo = new DirectoryInfo(Common.MODEL_PATH);
-        FileInfo[] fileInfo = dirInfo.GetFiles();
-        for (int i = 0; i < fileInfo.Length; i++)
-        {
-            if (fileInfo[i].Name.ToUpper() == name.ToUpper())
-            {
-                ret = true;
-                break;
-            }
-        }
-
-        return ret;
-    }
-
     public void load()
     {
         loadModelName(); 
@@ -166,37 +123,6 @@ public class ModelInfo
             fileInfo.Create();
         }
 
-        return true;
-    }
-
-    public bool copy(string src, string dest)
-    {
-        if (src == "" || dest == "")
-            return false;
-
-        if (File.Exists(dest) == false)
-            return false;
-
-        //if (File.Exists(src))
-        File.Copy(src, dest, true);
-
-        return true;
-    }
-
-    public bool save(string name)
-    {
-        return true;
-    }
-
-    public bool delete(string name)
-    {
-        if (name == "")
-            return false;
-
-        if (!File.Exists(name))
-            return false;
-
-        File.Delete(name);
         return true;
     }
 
@@ -277,13 +203,13 @@ public class ModelInfo
         makeBackup();
         string name = pos.name;
 
-        m_setting.setValue("POSITION", name + "_X", pos.x);
-        m_setting.setValue("POSITION", name + "_Y", pos.y);
-        m_setting.setValue("POSITION", name + "_Z", pos.z);
-        m_setting.setValue("POSITION", name + "_ZL", pos.zL);
-        m_setting.setValue("POSITION", name + "_ZR", pos.zR);
-        m_setting.setValue("POSITION", name + "_XB", pos.xB);
-        m_setting.setValue("POSITION", name + "_VEL", pos.vel);
+        m_setting.setValue("POSITION", pos.name + "_X", pos.x);
+        m_setting.setValue("POSITION", pos.name + "_Y", pos.y);
+        m_setting.setValue("POSITION", pos.name + "_Z", pos.z);
+        m_setting.setValue("POSITION", pos.name + "_ZL", pos.zL);
+        m_setting.setValue("POSITION", pos.name + "_ZR", pos.zR);
+        m_setting.setValue("POSITION", pos.name + "_XB", pos.xB);
+        m_setting.setValue("POSITION", pos.name + "_VEL", pos.vel);
     }
 
     public bool createModel(string modelName, bool resetValue)
