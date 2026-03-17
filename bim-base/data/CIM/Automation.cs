@@ -36,6 +36,7 @@ namespace bim_base.data.CIM
 
         #region Delegate
 
+        public delegate void OnResetSignalTowerBuzzorEventHandler();
         public delegate void OnReceivedOperatorCallEventHandler(int _OpCallNum, string _OpCallText);
         public delegate void OnReceivedInterlockEventHandler(string _ID, string _Message, EnumInterlockRCMD _RCMD);
         public delegate void OnReleaseInterlockEventHandler(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage);
@@ -121,6 +122,7 @@ namespace bim_base.data.CIM
 
         #region Event
 
+        public event OnResetSignalTowerBuzzorEventHandler OnResetSignalTowerBuzzorEvent; 
         public event OnReceivedOperatorCallEventHandler ReceivedOperatorCallEvent;
         /// <summary>
         /// 설비 가동 정지, 인터락 메세지 팝업
@@ -549,30 +551,23 @@ namespace bim_base.data.CIM
                 }
 
 
-                //if (this.m_MessageBoxOpcall.Visible == false)
-                //{
-                //    // 맨 처음에 받은 하나만 보존
-                //    this.m_MessageBoxOpcall. = $"{opCallNum}";
-                //    this.m_MessageBoxOpcall.Message = strOpCallText;
-                //}
+                if (this.m_MessageBoxOpcall.Visible == false)
+                {
+                    // 맨 처음에 받은 하나만 보존
+                    this.m_ReceivedOpcallDaeta.ID = $"{opCallNum}";
+                    this.m_ReceivedOpcallDaeta.Message = strOpCallText;
+                }
 
                 this.WriteBit(WRITE_B.OPERATORCALL_4, true);
 
+                this.m_MessageBoxTerminalDisplay.Message = this.m_ReceivedOpcallDaeta.ToString();
+                this.m_MessageBoxTerminalDisplay.TopMost = true;
+                this.m_MessageBoxTerminalDisplay.MaximumSize = new System.Drawing.Size(1024, 768);
+                this.m_MessageBoxTerminalDisplay.WindowState = FormWindowState.Maximized;
+                this.m_MessageBoxTerminalDisplay.Show();
+
                 // TODO CHECK LHJ to HJP : 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
                 ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
-
-                // TODO CHECK LHJ : 여러개가 중복되어 수신될 경우, UI Popup에는 제일 마지막에 수신된 메세지, Confirm 보고는 제일 처음에 수신된 메세지
-
-                this.WriteWord(WRITE_W.ASCII_10_0F80_OPCallIDComfirm, $"{opCallNum}");
-                this.WriteWord(WRITE_W.ASCII_60_0F8A_OPCallMessageConfirm, strOpCallText);
-
-                this.SleepWithDoEvent(500);
-
-                this.WriteBit(WRITE_B.OPCALLCONFIRM_41, true);
-                this.SleepWithDoEvent(1000);
-                this.WriteBit(WRITE_B.OPERATORCALL_4, false);
-                this.WriteBit(WRITE_B.OPCALLCONFIRM_41, false);
-
             }
             catch
             {
@@ -1119,6 +1114,35 @@ namespace bim_base.data.CIM
 
 
             this.m_MessageBoxTerminalDisplay.TitleButtonClickEvent += MessageBoxTerminalDisplay_TitleButtonClickEvent;
+            this.m_MessageBoxOpcall.TitleButtonClickEvent += MessageBoxOpcall_TitleButtonClickEvent;
+        }
+
+        private void MessageBoxOpcall_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
+        {
+            switch (button)
+            {
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
+
+                    this.OnResetSignalTowerBuzzorEvent?.Invoke();
+                    this.m_MessageBoxOpcall.Hide();
+
+                    // Confirm 보고는 제일 처음에 수신된 메세지로 보고
+
+                    this.WriteWord(WRITE_W.ASCII_10_0F80_OPCallIDComfirm, $"{this.m_ReceivedOpcallDaeta.ID}");
+                    this.WriteWord(WRITE_W.ASCII_60_0F8A_OPCallMessageConfirm, this.m_ReceivedOpcallDaeta.Message);
+
+                    this.SleepWithDoEvent(500);
+
+                    this.WriteBit(WRITE_B.OPCALLCONFIRM_41, true);
+                    this.SleepWithDoEvent(1000);
+                    this.WriteBit(WRITE_B.OPERATORCALL_4, false);
+                    this.WriteBit(WRITE_B.OPCALLCONFIRM_41, false);
+
+                    break;
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
+                default:
+                    break;
+            }
         }
 
         private void MessageBoxTerminalDisplay_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
@@ -1128,6 +1152,8 @@ namespace bim_base.data.CIM
                 case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
 
                     this.m_MessageBoxTerminalDisplay.Hide();
+
+                    // Confirm 보고는 제일 처음에 수신된 메세지로 보고
 
                     this.WriteBit(WRITE_B.TERMINALDISPLAY_3, true);
                     this.SleepWithDoEvent(1000);

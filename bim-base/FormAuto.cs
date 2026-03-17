@@ -39,10 +39,20 @@ namespace bim_base
         {
             uiTimer.Enabled = true;
 
+            Automation.Instance.OnResetSignalTowerBuzzorEvent += Automation_OnResetSignalTowerBuzzorEvent; ;
             Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;
             Automation.Instance.ReceivedInterlockEvent += Automation_ReceivedInterlockEvent;
             Automation.Instance.ReleaseInterlockEvent += Automation_ReleaseInterlockEvent;
             Automation.Instance.GetSampleExistEvent += Automation_GetSampleExistEvent;
+        }
+
+        private void Automation_OnResetSignalTowerBuzzorEvent()
+        {
+            this.m_IsSignalTowerBlink = false;
+            this.tBlink.Wait();
+
+            main.setOutput(OUTPUT.BUZZER_1, false);
+            main.setOutput(OUTPUT.TOWER_Y, false);
         }
 
         private bool Automation_GetSampleExistEvent()
@@ -58,14 +68,17 @@ namespace bim_base
             return isExist;
         }
 
+
+        Task tBlink = null;
+        bool m_IsSignalTowerBlink = true;
+
         private async void Automation_ReceivedOperatorCallEvent(int _OpCallNum, string _OpCallText)
         {
             main.setOutput(OUTPUT.BUZZER_1, true);
 
-            bool isSignalTowerBlink = true;
-            Task tBlink = Task.Run(async () =>
+            tBlink = Task.Run(async () =>
             {
-                while(isSignalTowerBlink)
+                while(m_IsSignalTowerBlink)
                 {
                     main.setOutput(OUTPUT.TOWER_Y, true);
                     await Task.Delay(1000);
@@ -75,20 +88,6 @@ namespace bim_base
 
             });
 
-            DarkMessageBox popup = DarkMessageBox.CreateMessageBox(
-               "Operator Call",
-               EnumMessageBoxIcons.Warning,
-               $"{_OpCallNum} : {_OpCallText}",
-               EnumMessageBoxButtons.OK);
-            popup.MaximumSize = new Size(1024, 768);
-            popup.WindowState = FormWindowState.Maximized;
-            popup.ShowDialog();
-
-            isSignalTowerBlink = false;
-            tBlink.Wait();
-
-            main.setOutput(OUTPUT.BUZZER_1, false);
-            main.setOutput(OUTPUT.TOWER_Y, false);
         }
 
         private async void Automation_ReceivedInterlockEvent(string _ID, string _Message, EnumInterlockRCMD _RCMD)
