@@ -119,6 +119,7 @@ namespace Lib.UI.Generic.DarkMode.Forms
             {
                 case EnumMessageBoxButtons.OK:
                     this.DialogResult = DialogResult.OK;
+                    //this.Hide();
                     break;
 
                 case EnumMessageBoxButtons.OKCancel:

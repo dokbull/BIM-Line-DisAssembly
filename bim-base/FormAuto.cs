@@ -39,7 +39,7 @@ namespace bim_base
         {
             uiTimer.Enabled = true;
 
-            Automation.Instance.OnResetSignalTowerBuzzorEvent += Automation_OnResetSignalTowerBuzzorEvent; ;
+            Automation.Instance.OnResetSignalTowerBuzzorEvent += Automation_OnResetSignalTowerBuzzorEvent;
             Automation.Instance.ReceivedOperatorCallEvent += Automation_ReceivedOperatorCallEvent;
             Automation.Instance.ReceivedInterlockEvent += Automation_ReceivedInterlockEvent;
             Automation.Instance.ReleaseInterlockEvent += Automation_ReleaseInterlockEvent;
@@ -49,7 +49,7 @@ namespace bim_base
         private void Automation_OnResetSignalTowerBuzzorEvent()
         {
             this.m_IsSignalTowerBlink = false;
-            this.tBlink.Wait();
+            //this.tBlink.Wait();
 
             main.setOutput(OUTPUT.BUZZER_1, false);
             main.setOutput(OUTPUT.TOWER_R, false);
@@ -79,14 +79,23 @@ namespace bim_base
         {
             main.setOutput(OUTPUT.BUZZER_1, true);
 
+            Automation.Instance.MessageBoxOpcall.Message = $"{_OpCallNum} : {_OpCallText}";
+            Automation.Instance.MessageBoxOpcall.TopMost = true;
+            Automation.Instance.MessageBoxOpcall.MaximumSize = new System.Drawing.Size(1024, 768);
+            Automation.Instance.MessageBoxOpcall.WindowState = FormWindowState.Maximized;
+            Automation.Instance.MessageBoxOpcall.Refresh();
+
             tBlink = Task.Run(async () =>
             {
-                while(m_IsSignalTowerBlink)
+
+                Automation.Instance.MessageBoxOpcall.ShowDialog();
+
+                while (m_IsSignalTowerBlink)
                 {
                     main.setOutput(OUTPUT.TOWER_Y, true);
-                    await Task.Delay(1000);
+                    Automation.Instance.SleepWithDoEvent(1000);
                     main.setOutput(OUTPUT.TOWER_Y, false);
-                    await Task.Delay(1000);
+                    Automation.Instance.SleepWithDoEvent(1000);
                 }
 
             });
@@ -112,19 +121,29 @@ namespace bim_base
                     return;
             }
 
+            string logMessage = $"{_ID} : {_Message}";
+
+            Automation.Instance.MessageBoxInterlock.Message = logMessage;
+            Automation.Instance.MessageBoxInterlock.TopMost = true;
+            Automation.Instance.MessageBoxInterlock.MaximumSize = new System.Drawing.Size(1024, 768);
+            Automation.Instance.MessageBoxInterlock.WindowState = FormWindowState.Maximized;
+            Automation.Instance.MessageBoxInterlock.Refresh();
+
             main.setOutput(OUTPUT.BUZZER_1, true);
 
             this.m_IsSignalTowerBlink = true;
             tBlink = Task.Run(async () =>
             {
+                Automation.Instance.MessageBoxInterlock.ShowDialog();
+
                 while (m_IsSignalTowerBlink)
                 {
                     main.setOutput(OUTPUT.TOWER_R, true);
                     main.setOutput(OUTPUT.TOWER_Y, true);
-                    await Task.Delay(1500);
+                    Automation.Instance.SleepWithDoEvent(1000);
                     main.setOutput(OUTPUT.TOWER_R, false);
                     main.setOutput(OUTPUT.TOWER_Y, false);
-                    await Task.Delay(1500);
+                    Automation.Instance.SleepWithDoEvent(1000);
                 }
 
             });

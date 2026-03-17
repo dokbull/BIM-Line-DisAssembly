@@ -79,21 +79,21 @@ namespace bim_base.data.CIM
         private object mLock_IntervalRun = new object();
 
         private MessageData m_ReceivedTerminalDisplayData = new MessageData();
-        private DarkMessageBox m_MessageBoxTerminalDisplay = DarkMessageBox.CreateMessageBox(
+        public DarkMessageBox MessageBoxTerminalDisplay = DarkMessageBox.CreateMessageBox(
             "Terminal Dispaly",
             EnumMessageBoxIcons.Information,
             string.Empty,
             EnumMessageBoxButtons.OK);
 
         private MessageData m_ReceivedOpcallData = new MessageData();
-        private DarkMessageBox m_MessageBoxOpcall = DarkMessageBox.CreateMessageBox(
+        public DarkMessageBox MessageBoxOpcall = DarkMessageBox.CreateMessageBox(
             "Operator Call",
             EnumMessageBoxIcons.Warning,
             string.Empty,
             EnumMessageBoxButtons.OK);
 
         private MessageData m_ReceivedInterlockData = new MessageData();
-        private DarkMessageBox m_MessageBoxInterlock = DarkMessageBox.CreateMessageBox(
+        public DarkMessageBox MessageBoxInterlock = DarkMessageBox.CreateMessageBox(
             "Interlock",
             EnumMessageBoxIcons.Error,
             string.Empty,
@@ -201,7 +201,7 @@ namespace bim_base.data.CIM
             }
         }
 
-        private void SleepWithDoEvent(int _milliseconds)
+        public void SleepWithDoEvent(int _milliseconds)
         {
             DateTime startTime = DateTime.Now;
             TimeSpan ts = DateTime.Now  - startTime;
@@ -529,19 +529,21 @@ namespace bim_base.data.CIM
 
                 // TODO LHJ : Need manage History
 
-                if(this.m_MessageBoxTerminalDisplay.Visible == false)
+                if(this.MessageBoxTerminalDisplay.Visible == false)
                 {
                     // 맨 처음에 받은 하나만 보존
                     this.m_ReceivedTerminalDisplayData.ID = $"{messageNum}";
                     this.m_ReceivedTerminalDisplayData.Message = msgText;
                 }
 
-                this.m_MessageBoxTerminalDisplay.Message = msgSummery;
-                this.m_MessageBoxTerminalDisplay.TopMost = true;
-                this.m_MessageBoxTerminalDisplay.MaximumSize = new System.Drawing.Size(1024, 768);
-                this.m_MessageBoxTerminalDisplay.WindowState = FormWindowState.Maximized;
-                this.m_MessageBoxTerminalDisplay.Show();
 
+                Automation.Instance.MessageBoxTerminalDisplay.Message = msgSummery;
+                Automation.Instance.MessageBoxTerminalDisplay.TopMost = true;
+                Automation.Instance.MessageBoxTerminalDisplay.MaximumSize = new System.Drawing.Size(1024, 768);
+                Automation.Instance.MessageBoxTerminalDisplay.WindowState = FormWindowState.Maximized;
+                Automation.Instance.MessageBoxTerminalDisplay.Refresh();
+
+                Task.Run(async () => Automation.Instance.MessageBoxTerminalDisplay.ShowDialog());
 
             }
             catch
@@ -551,46 +553,42 @@ namespace bim_base.data.CIM
 
         private void RequestOperatorCall()
         {
-            try
-            {
-                if (this.ReadBit(CIMRead.READ_B.OPERATORCALL_4) == false)
-                    return;
-
-                string strOpCallNum = this.ReadWord(CIMRead.READ_W.ASCII_10_D058_OperatorCallID);
-                string strOpCallText = this.ReadWord(CIMRead.READ_W.ASCII_60_D062_OperatorCallText);
-
-                if (int.TryParse(strOpCallNum, out int opCallNum) == false)
-                    return;
-
-                this.OperatorCallHistory.Add(new HistoryItem(DateTime.Now, $"{opCallNum}", strOpCallText));
-
-                if(this.OperatorCallHistory.Count > HISTORY_MAX_COUNT)
+                try
                 {
-                    this.OperatorCallHistory.RemoveAt(0);
+                    if (this.ReadBit(CIMRead.READ_B.OPERATORCALL_4) == false)
+                        return;
+
+                    string strOpCallNum = this.ReadWord(CIMRead.READ_W.ASCII_10_D058_OperatorCallID);
+                    string strOpCallText = this.ReadWord(CIMRead.READ_W.ASCII_60_D062_OperatorCallText);
+
+                    if (int.TryParse(strOpCallNum, out int opCallNum) == false)
+                        return;
+
+                    this.OperatorCallHistory.Add(new HistoryItem(DateTime.Now, $"{opCallNum}", strOpCallText));
+
+                    if (this.OperatorCallHistory.Count > HISTORY_MAX_COUNT)
+                    {
+                        this.OperatorCallHistory.RemoveAt(0);
+                    }
+
+
+                    if (this.MessageBoxOpcall.Visible == false)
+                    {
+                        // 맨 처음에 받은 하나만 보존
+                        this.m_ReceivedOpcallData.ID = $"{opCallNum}";
+                        this.m_ReceivedOpcallData.Message = strOpCallText;
+                    }
+
+                    this.WriteBit(WRITE_B.OPERATORCALL_4, true);
+
+
+                    // TODO CHECK LHJ to HJP : 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
+                    ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
+
                 }
-
-
-                if (this.m_MessageBoxOpcall.Visible == false)
+                catch
                 {
-                    // 맨 처음에 받은 하나만 보존
-                    this.m_ReceivedOpcallData.ID = $"{opCallNum}";
-                    this.m_ReceivedOpcallData.Message = strOpCallText;
                 }
-
-                this.WriteBit(WRITE_B.OPERATORCALL_4, true);
-
-                this.m_MessageBoxTerminalDisplay.Message = $"{opCallNum} : strOpCallText";
-                this.m_MessageBoxTerminalDisplay.TopMost = true;
-                this.m_MessageBoxTerminalDisplay.MaximumSize = new System.Drawing.Size(1024, 768);
-                this.m_MessageBoxTerminalDisplay.WindowState = FormWindowState.Maximized;
-                this.m_MessageBoxTerminalDisplay.Show();
-
-                // TODO CHECK LHJ to HJP : 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
-                ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
-            }
-            catch
-            {
-            }
         }
 
         private void RequestInterlcokState()
@@ -611,7 +609,7 @@ namespace bim_base.data.CIM
                 if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
                     return;
 
-                if (this.m_MessageBoxInterlock.Visible == false)
+                if (this.MessageBoxInterlock.Visible == false)
                 {
                     // 맨 처음에 받은 하나만 보존
                     this.m_ReceivedInterlockData.ID = $"{interlockID}";
@@ -636,13 +634,6 @@ namespace bim_base.data.CIM
 
                 this.SleepWithDoEvent(500);
 
-                string logMessage = $"{interlockID} : {strMessage}";
-
-                this.m_MessageBoxInterlock.Message = logMessage;
-                this.m_MessageBoxInterlock.TopMost = true;
-                this.m_MessageBoxInterlock.MaximumSize = new System.Drawing.Size(1024, 768);
-                this.m_MessageBoxInterlock.WindowState = FormWindowState.Maximized;
-                this.m_MessageBoxInterlock.Show();
 
                 if (this.ReceivedInterlockEvent == null)
                     throw new Exception("ReceivedInterlockEvent is not set.");
@@ -783,7 +774,7 @@ namespace bim_base.data.CIM
                             ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
 
                             //if (nSelectedIdx <= 90)
-                            if(true)
+                            if(nSelectedIdx <= 90 && !sRecipeName.StartsWith("TT_"))
                             {
                                 if (INFO.modelName() == "") //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
                                 {
@@ -1182,21 +1173,21 @@ namespace bim_base.data.CIM
             }).ConfigureAwait(true);
 
 
-            this.m_MessageBoxTerminalDisplay.TitleButtonClickEvent += MessageBoxTerminalDisplay_TitleButtonClickEvent;
-            this.m_MessageBoxOpcall.TitleButtonClickEvent += MessageBoxOpcall_TitleButtonClickEvent;
-            this.m_MessageBoxInterlock.TitleButtonClickEvent += MessageBoxInterlock_TitleButtonClickEvent;
+            this.MessageBoxTerminalDisplay.TitleButtonClickEvent += MessageBoxTerminalDisplay_TitleButtonClickEvent;
+            this.MessageBoxOpcall.TitleButtonClickEvent += MessageBoxOpcall_TitleButtonClickEvent;
+            this.MessageBoxInterlock.TitleButtonClickEvent += MessageBoxInterlock_TitleButtonClickEvent;
         }
 
         private void MessageBoxInterlock_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
         {
             switch (button)
             {
-                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
 
                     // Interlock Released (=Clear Popup)
 
                     this.OnResetSignalTowerBuzzorEvent?.Invoke();
-                    this.m_MessageBoxInterlock.Hide();
+                    this.MessageBoxInterlock.Hide();
 
                     // Confirm 보고는 제일 처음에 수신된 메세지로 보고
                     this.WriteBit(WRITE_B.INTERLOCK_5, false);
@@ -1225,7 +1216,7 @@ namespace bim_base.data.CIM
                     //this.SetEqState(EnumMoveState.Runnning);
 
                     break;
-                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
                 default:
                     break;
             }
@@ -1236,9 +1227,12 @@ namespace bim_base.data.CIM
             switch (button)
             {
                 case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
+                default:
+                    break;
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
 
                     this.OnResetSignalTowerBuzzorEvent?.Invoke();
-                    this.m_MessageBoxOpcall.Hide();
+                    this.MessageBoxOpcall.Hide();
 
                     // Confirm 보고는 제일 처음에 수신된 메세지로 보고
 
@@ -1253,9 +1247,6 @@ namespace bim_base.data.CIM
                     this.WriteBit(WRITE_B.OPCALLCONFIRM_41, false);
 
                     break;
-                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
-                default:
-                    break;
             }
         }
 
@@ -1263,9 +1254,9 @@ namespace bim_base.data.CIM
         {
             switch (button)
             {
-                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
 
-                    this.m_MessageBoxTerminalDisplay.Hide();
+                    this.MessageBoxTerminalDisplay.Hide();
 
                     // Confirm 보고는 제일 처음에 수신된 메세지로 보고
 
@@ -1274,7 +1265,7 @@ namespace bim_base.data.CIM
                     this.WriteBit(WRITE_B.TERMINALDISPLAY_3, false);
 
                     break;
-                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
                 default:
                     break;
             }

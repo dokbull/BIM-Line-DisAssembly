@@ -110,7 +110,7 @@
             this.pnlTable.Controls.Add(this.label2, 1, 0);
             this.pnlTable.Controls.Add(this.label1, 0, 0);
             this.pnlTable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlTable.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.pnlTable.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.pnlTable.Location = new System.Drawing.Point(0, 0);
             this.pnlTable.Margin = new System.Windows.Forms.Padding(0);
             this.pnlTable.Name = "pnlTable";
@@ -133,10 +133,11 @@
             // lblMaterials_Down_Code
             // 
             this.lblMaterials_Down_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblMaterials_Down_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblMaterials_Down_Code.Location = new System.Drawing.Point(871, 694);
+            this.lblMaterials_Down_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblMaterials_Down_Code.Location = new System.Drawing.Point(870, 694);
+            this.lblMaterials_Down_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMaterials_Down_Code.Name = "lblMaterials_Down_Code";
-            this.lblMaterials_Down_Code.Size = new System.Drawing.Size(149, 73);
+            this.lblMaterials_Down_Code.Size = new System.Drawing.Size(151, 73);
             this.lblMaterials_Down_Code.TabIndex = 32;
             this.lblMaterials_Down_Code.Tag = "0";
             this.lblMaterials_Down_Code.Text = "51000";
@@ -149,10 +150,11 @@
             // 
             this.pnlTable.SetColumnSpan(this.lblMaterials_Down, 2);
             this.lblMaterials_Down.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblMaterials_Down.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblMaterials_Down.Location = new System.Drawing.Point(361, 694);
+            this.lblMaterials_Down.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblMaterials_Down.Location = new System.Drawing.Point(360, 694);
+            this.lblMaterials_Down.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMaterials_Down.Name = "lblMaterials_Down";
-            this.lblMaterials_Down.Size = new System.Drawing.Size(503, 73);
+            this.lblMaterials_Down.Size = new System.Drawing.Size(505, 73);
             this.lblMaterials_Down.TabIndex = 31;
             this.lblMaterials_Down.Tag = "0";
             this.lblMaterials_Down.Text = "DOWN_MATERIAL";
@@ -164,10 +166,11 @@
             // lblMaterials_Change_Code
             // 
             this.lblMaterials_Change_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblMaterials_Change_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblMaterials_Change_Code.Location = new System.Drawing.Point(871, 631);
+            this.lblMaterials_Change_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblMaterials_Change_Code.Location = new System.Drawing.Point(870, 631);
+            this.lblMaterials_Change_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMaterials_Change_Code.Name = "lblMaterials_Change_Code";
-            this.lblMaterials_Change_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblMaterials_Change_Code.Size = new System.Drawing.Size(151, 62);
             this.lblMaterials_Change_Code.TabIndex = 30;
             this.lblMaterials_Change_Code.Tag = "0";
             this.lblMaterials_Change_Code.Text = "35000";
@@ -180,10 +183,11 @@
             // 
             this.pnlTable.SetColumnSpan(this.lblMaterials_Change, 2);
             this.lblMaterials_Change.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblMaterials_Change.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblMaterials_Change.Location = new System.Drawing.Point(361, 631);
+            this.lblMaterials_Change.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblMaterials_Change.Location = new System.Drawing.Point(360, 631);
+            this.lblMaterials_Change.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMaterials_Change.Name = "lblMaterials_Change";
-            this.lblMaterials_Change.Size = new System.Drawing.Size(503, 62);
+            this.lblMaterials_Change.Size = new System.Drawing.Size(505, 62);
             this.lblMaterials_Change.TabIndex = 29;
             this.lblMaterials_Change.Tag = "0";
             this.lblMaterials_Change.Text = "CHANGE_MATERIAL";
@@ -195,11 +199,12 @@
             // lblMaterials
             // 
             this.lblMaterials.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblMaterials.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblMaterials.Location = new System.Drawing.Point(157, 631);
+            this.lblMaterials.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblMaterials.Location = new System.Drawing.Point(156, 631);
+            this.lblMaterials.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMaterials.Name = "lblMaterials";
             this.pnlTable.SetRowSpan(this.lblMaterials, 2);
-            this.lblMaterials.Size = new System.Drawing.Size(197, 136);
+            this.lblMaterials.Size = new System.Drawing.Size(199, 136);
             this.lblMaterials.TabIndex = 28;
             this.lblMaterials.Tag = "0";
             this.lblMaterials.Text = "MATERIAL";
@@ -210,10 +215,11 @@
             // lblModelChange_Diff_Code
             // 
             this.lblModelChange_Diff_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblModelChange_Diff_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblModelChange_Diff_Code.Location = new System.Drawing.Point(871, 568);
+            this.lblModelChange_Diff_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblModelChange_Diff_Code.Location = new System.Drawing.Point(870, 568);
+            this.lblModelChange_Diff_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblModelChange_Diff_Code.Name = "lblModelChange_Diff_Code";
-            this.lblModelChange_Diff_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblModelChange_Diff_Code.Size = new System.Drawing.Size(151, 62);
             this.lblModelChange_Diff_Code.TabIndex = 27;
             this.lblModelChange_Diff_Code.Tag = "0";
             this.lblModelChange_Diff_Code.Text = "41200";
@@ -226,10 +232,11 @@
             // 
             this.pnlTable.SetColumnSpan(this.lblModelChange_Diff, 2);
             this.lblModelChange_Diff.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblModelChange_Diff.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblModelChange_Diff.Location = new System.Drawing.Point(361, 568);
+            this.lblModelChange_Diff.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblModelChange_Diff.Location = new System.Drawing.Point(360, 568);
+            this.lblModelChange_Diff.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblModelChange_Diff.Name = "lblModelChange_Diff";
-            this.lblModelChange_Diff.Size = new System.Drawing.Size(503, 62);
+            this.lblModelChange_Diff.Size = new System.Drawing.Size(505, 62);
             this.lblModelChange_Diff.TabIndex = 26;
             this.lblModelChange_Diff.Tag = "0";
             this.lblModelChange_Diff.Text = "CHANGE_DIFFERENT_MODEL";
@@ -241,10 +248,11 @@
             // lblModelChange_Same_Code
             // 
             this.lblModelChange_Same_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblModelChange_Same_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblModelChange_Same_Code.Location = new System.Drawing.Point(871, 505);
+            this.lblModelChange_Same_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblModelChange_Same_Code.Location = new System.Drawing.Point(870, 505);
+            this.lblModelChange_Same_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblModelChange_Same_Code.Name = "lblModelChange_Same_Code";
-            this.lblModelChange_Same_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblModelChange_Same_Code.Size = new System.Drawing.Size(151, 62);
             this.lblModelChange_Same_Code.TabIndex = 25;
             this.lblModelChange_Same_Code.Tag = "0";
             this.lblModelChange_Same_Code.Text = "41100";
@@ -257,10 +265,11 @@
             // 
             this.pnlTable.SetColumnSpan(this.lblModelChange_Same, 2);
             this.lblModelChange_Same.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblModelChange_Same.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblModelChange_Same.Location = new System.Drawing.Point(361, 505);
+            this.lblModelChange_Same.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblModelChange_Same.Location = new System.Drawing.Point(360, 505);
+            this.lblModelChange_Same.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblModelChange_Same.Name = "lblModelChange_Same";
-            this.lblModelChange_Same.Size = new System.Drawing.Size(503, 62);
+            this.lblModelChange_Same.Size = new System.Drawing.Size(505, 62);
             this.lblModelChange_Same.TabIndex = 24;
             this.lblModelChange_Same.Tag = "0";
             this.lblModelChange_Same.Text = "CHANGE_SAME_MODEL";
@@ -272,11 +281,12 @@
             // lblModelChange
             // 
             this.lblModelChange.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblModelChange.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblModelChange.Location = new System.Drawing.Point(157, 505);
+            this.lblModelChange.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblModelChange.Location = new System.Drawing.Point(156, 505);
+            this.lblModelChange.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblModelChange.Name = "lblModelChange";
             this.pnlTable.SetRowSpan(this.lblModelChange, 2);
-            this.lblModelChange.Size = new System.Drawing.Size(197, 125);
+            this.lblModelChange.Size = new System.Drawing.Size(199, 125);
             this.lblModelChange.TabIndex = 23;
             this.lblModelChange.Tag = "0";
             this.lblModelChange.Text = "CHANGE_MODEL";
@@ -287,10 +297,11 @@
             // lblCM_Setup_Code
             // 
             this.lblCM_Setup_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCM_Setup_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblCM_Setup_Code.Location = new System.Drawing.Point(871, 442);
+            this.lblCM_Setup_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblCM_Setup_Code.Location = new System.Drawing.Point(870, 442);
+            this.lblCM_Setup_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCM_Setup_Code.Name = "lblCM_Setup_Code";
-            this.lblCM_Setup_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblCM_Setup_Code.Size = new System.Drawing.Size(151, 62);
             this.lblCM_Setup_Code.TabIndex = 22;
             this.lblCM_Setup_Code.Tag = "0";
             this.lblCM_Setup_Code.Text = "14000";
@@ -303,10 +314,11 @@
             // 
             this.pnlTable.SetColumnSpan(this.lblCM_Setup, 2);
             this.lblCM_Setup.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCM_Setup.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblCM_Setup.Location = new System.Drawing.Point(361, 442);
+            this.lblCM_Setup.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblCM_Setup.Location = new System.Drawing.Point(360, 442);
+            this.lblCM_Setup.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCM_Setup.Name = "lblCM_Setup";
-            this.lblCM_Setup.Size = new System.Drawing.Size(503, 62);
+            this.lblCM_Setup.Size = new System.Drawing.Size(505, 62);
             this.lblCM_Setup.TabIndex = 21;
             this.lblCM_Setup.Tag = "0";
             this.lblCM_Setup.Text = "SETUP_NEW_PRODUCT";
@@ -318,10 +330,11 @@
             // lblCM_EI_Code
             // 
             this.lblCM_EI_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCM_EI_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblCM_EI_Code.Location = new System.Drawing.Point(871, 379);
+            this.lblCM_EI_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblCM_EI_Code.Location = new System.Drawing.Point(870, 379);
+            this.lblCM_EI_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCM_EI_Code.Name = "lblCM_EI_Code";
-            this.lblCM_EI_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblCM_EI_Code.Size = new System.Drawing.Size(151, 62);
             this.lblCM_EI_Code.TabIndex = 20;
             this.lblCM_EI_Code.Tag = "0";
             this.lblCM_EI_Code.Text = "17300";
@@ -335,10 +348,11 @@
             this.lblCM_EI.BackColor = System.Drawing.Color.Lime;
             this.pnlTable.SetColumnSpan(this.lblCM_EI, 2);
             this.lblCM_EI.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCM_EI.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblCM_EI.Location = new System.Drawing.Point(361, 379);
+            this.lblCM_EI.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblCM_EI.Location = new System.Drawing.Point(360, 379);
+            this.lblCM_EI.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCM_EI.Name = "lblCM_EI";
-            this.lblCM_EI.Size = new System.Drawing.Size(503, 62);
+            this.lblCM_EI.Size = new System.Drawing.Size(505, 62);
             this.lblCM_EI.TabIndex = 19;
             this.lblCM_EI.Tag = "0";
             this.lblCM_EI.Text = "IMPROVE_PROCESSING_EI";
@@ -350,10 +364,11 @@
             // lblCM_EE_Code
             // 
             this.lblCM_EE_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCM_EE_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblCM_EE_Code.Location = new System.Drawing.Point(871, 316);
+            this.lblCM_EE_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblCM_EE_Code.Location = new System.Drawing.Point(870, 316);
+            this.lblCM_EE_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCM_EE_Code.Name = "lblCM_EE_Code";
-            this.lblCM_EE_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblCM_EE_Code.Size = new System.Drawing.Size(151, 62);
             this.lblCM_EE_Code.TabIndex = 18;
             this.lblCM_EE_Code.Tag = "0";
             this.lblCM_EE_Code.Text = "17200";
@@ -366,10 +381,11 @@
             // 
             this.pnlTable.SetColumnSpan(this.lblCM_EE, 2);
             this.lblCM_EE.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCM_EE.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblCM_EE.Location = new System.Drawing.Point(361, 316);
+            this.lblCM_EE.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblCM_EE.Location = new System.Drawing.Point(360, 316);
+            this.lblCM_EE.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCM_EE.Name = "lblCM_EE";
-            this.lblCM_EE.Size = new System.Drawing.Size(503, 62);
+            this.lblCM_EE.Size = new System.Drawing.Size(505, 62);
             this.lblCM_EE.TabIndex = 17;
             this.lblCM_EE.Tag = "0";
             this.lblCM_EE.Text = "IMPROVE_EQUIPMENT_EE";
@@ -381,11 +397,12 @@
             // lblCM
             // 
             this.lblCM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCM.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblCM.Location = new System.Drawing.Point(157, 316);
+            this.lblCM.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblCM.Location = new System.Drawing.Point(156, 316);
+            this.lblCM.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCM.Name = "lblCM";
             this.pnlTable.SetRowSpan(this.lblCM, 3);
-            this.lblCM.Size = new System.Drawing.Size(197, 188);
+            this.lblCM.Size = new System.Drawing.Size(199, 188);
             this.lblCM.TabIndex = 16;
             this.lblCM.Tag = "0";
             this.lblCM.Text = "CM";
@@ -396,10 +413,11 @@
             // lblPM_Unscheduled_QC_Code
             // 
             this.lblPM_Unscheduled_QC_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPM_Unscheduled_QC_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblPM_Unscheduled_QC_Code.Location = new System.Drawing.Point(871, 253);
+            this.lblPM_Unscheduled_QC_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPM_Unscheduled_QC_Code.Location = new System.Drawing.Point(870, 253);
+            this.lblPM_Unscheduled_QC_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPM_Unscheduled_QC_Code.Name = "lblPM_Unscheduled_QC_Code";
-            this.lblPM_Unscheduled_QC_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblPM_Unscheduled_QC_Code.Size = new System.Drawing.Size(151, 62);
             this.lblPM_Unscheduled_QC_Code.TabIndex = 15;
             this.lblPM_Unscheduled_QC_Code.Tag = "0";
             this.lblPM_Unscheduled_QC_Code.Text = "15200";
@@ -411,10 +429,11 @@
             // lblPM_Unscheduled_QC
             // 
             this.lblPM_Unscheduled_QC.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPM_Unscheduled_QC.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblPM_Unscheduled_QC.Location = new System.Drawing.Point(616, 253);
+            this.lblPM_Unscheduled_QC.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPM_Unscheduled_QC.Location = new System.Drawing.Point(615, 253);
+            this.lblPM_Unscheduled_QC.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPM_Unscheduled_QC.Name = "lblPM_Unscheduled_QC";
-            this.lblPM_Unscheduled_QC.Size = new System.Drawing.Size(248, 62);
+            this.lblPM_Unscheduled_QC.Size = new System.Drawing.Size(250, 62);
             this.lblPM_Unscheduled_QC.TabIndex = 14;
             this.lblPM_Unscheduled_QC.Tag = "0";
             this.lblPM_Unscheduled_QC.Text = "CHECK_QUALITY";
@@ -426,10 +445,11 @@
             // lblPM_Unscheduled_EQ_Code
             // 
             this.lblPM_Unscheduled_EQ_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPM_Unscheduled_EQ_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblPM_Unscheduled_EQ_Code.Location = new System.Drawing.Point(871, 190);
+            this.lblPM_Unscheduled_EQ_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPM_Unscheduled_EQ_Code.Location = new System.Drawing.Point(870, 190);
+            this.lblPM_Unscheduled_EQ_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPM_Unscheduled_EQ_Code.Name = "lblPM_Unscheduled_EQ_Code";
-            this.lblPM_Unscheduled_EQ_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblPM_Unscheduled_EQ_Code.Size = new System.Drawing.Size(151, 62);
             this.lblPM_Unscheduled_EQ_Code.TabIndex = 13;
             this.lblPM_Unscheduled_EQ_Code.Tag = "0";
             this.lblPM_Unscheduled_EQ_Code.Text = "15100";
@@ -441,10 +461,11 @@
             // lblPM_Unscheduled_EQ
             // 
             this.lblPM_Unscheduled_EQ.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPM_Unscheduled_EQ.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblPM_Unscheduled_EQ.Location = new System.Drawing.Point(616, 190);
+            this.lblPM_Unscheduled_EQ.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPM_Unscheduled_EQ.Location = new System.Drawing.Point(615, 190);
+            this.lblPM_Unscheduled_EQ.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPM_Unscheduled_EQ.Name = "lblPM_Unscheduled_EQ";
-            this.lblPM_Unscheduled_EQ.Size = new System.Drawing.Size(248, 62);
+            this.lblPM_Unscheduled_EQ.Size = new System.Drawing.Size(250, 62);
             this.lblPM_Unscheduled_EQ.TabIndex = 12;
             this.lblPM_Unscheduled_EQ.Tag = "0";
             this.lblPM_Unscheduled_EQ.Text = "CHECK_EQUIPMENT";
@@ -456,11 +477,12 @@
             // lblPM_Unscheduled
             // 
             this.lblPM_Unscheduled.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPM_Unscheduled.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblPM_Unscheduled.Location = new System.Drawing.Point(361, 190);
+            this.lblPM_Unscheduled.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPM_Unscheduled.Location = new System.Drawing.Point(360, 190);
+            this.lblPM_Unscheduled.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPM_Unscheduled.Name = "lblPM_Unscheduled";
             this.pnlTable.SetRowSpan(this.lblPM_Unscheduled, 2);
-            this.lblPM_Unscheduled.Size = new System.Drawing.Size(248, 125);
+            this.lblPM_Unscheduled.Size = new System.Drawing.Size(250, 125);
             this.lblPM_Unscheduled.TabIndex = 11;
             this.lblPM_Unscheduled.Tag = "0";
             this.lblPM_Unscheduled.Text = "IRREGULAR_PM";
@@ -472,10 +494,11 @@
             // lblPM_Scheduled_Code
             // 
             this.lblPM_Scheduled_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPM_Scheduled_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblPM_Scheduled_Code.Location = new System.Drawing.Point(871, 127);
+            this.lblPM_Scheduled_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPM_Scheduled_Code.Location = new System.Drawing.Point(870, 127);
+            this.lblPM_Scheduled_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPM_Scheduled_Code.Name = "lblPM_Scheduled_Code";
-            this.lblPM_Scheduled_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblPM_Scheduled_Code.Size = new System.Drawing.Size(151, 62);
             this.lblPM_Scheduled_Code.TabIndex = 10;
             this.lblPM_Scheduled_Code.Tag = "0";
             this.lblPM_Scheduled_Code.Text = "12000";
@@ -488,10 +511,11 @@
             // 
             this.pnlTable.SetColumnSpan(this.lblPM_Scheduled, 2);
             this.lblPM_Scheduled.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPM_Scheduled.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblPM_Scheduled.Location = new System.Drawing.Point(361, 127);
+            this.lblPM_Scheduled.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPM_Scheduled.Location = new System.Drawing.Point(360, 127);
+            this.lblPM_Scheduled.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPM_Scheduled.Name = "lblPM_Scheduled";
-            this.lblPM_Scheduled.Size = new System.Drawing.Size(503, 62);
+            this.lblPM_Scheduled.Size = new System.Drawing.Size(505, 62);
             this.lblPM_Scheduled.TabIndex = 9;
             this.lblPM_Scheduled.Tag = "0";
             this.lblPM_Scheduled.Text = "REGULAR_PM";
@@ -503,11 +527,12 @@
             // lblPM
             // 
             this.lblPM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPM.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblPM.Location = new System.Drawing.Point(157, 127);
+            this.lblPM.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblPM.Location = new System.Drawing.Point(156, 127);
+            this.lblPM.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPM.Name = "lblPM";
             this.pnlTable.SetRowSpan(this.lblPM, 3);
-            this.lblPM.Size = new System.Drawing.Size(197, 188);
+            this.lblPM.Size = new System.Drawing.Size(199, 188);
             this.lblPM.TabIndex = 8;
             this.lblPM.Tag = "0";
             this.lblPM.Text = "PM";
@@ -518,10 +543,11 @@
             // lblBM_Manual_Code
             // 
             this.lblBM_Manual_Code.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblBM_Manual_Code.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblBM_Manual_Code.Location = new System.Drawing.Point(871, 64);
+            this.lblBM_Manual_Code.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblBM_Manual_Code.Location = new System.Drawing.Point(870, 64);
+            this.lblBM_Manual_Code.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblBM_Manual_Code.Name = "lblBM_Manual_Code";
-            this.lblBM_Manual_Code.Size = new System.Drawing.Size(149, 62);
+            this.lblBM_Manual_Code.Size = new System.Drawing.Size(151, 62);
             this.lblBM_Manual_Code.TabIndex = 7;
             this.lblBM_Manual_Code.Tag = "0";
             this.lblBM_Manual_Code.Text = "03000";
@@ -534,10 +560,11 @@
             // 
             this.pnlTable.SetColumnSpan(this.lblBM_Manual, 2);
             this.lblBM_Manual.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblBM_Manual.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblBM_Manual.Location = new System.Drawing.Point(361, 64);
+            this.lblBM_Manual.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblBM_Manual.Location = new System.Drawing.Point(360, 64);
+            this.lblBM_Manual.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblBM_Manual.Name = "lblBM_Manual";
-            this.lblBM_Manual.Size = new System.Drawing.Size(503, 62);
+            this.lblBM_Manual.Size = new System.Drawing.Size(505, 62);
             this.lblBM_Manual.TabIndex = 6;
             this.lblBM_Manual.Tag = "0";
             this.lblBM_Manual.Text = "BREAKDOWN_MANUAL";
@@ -549,10 +576,11 @@
             // lblBM
             // 
             this.lblBM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblBM.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblBM.Location = new System.Drawing.Point(157, 64);
+            this.lblBM.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblBM.Location = new System.Drawing.Point(156, 64);
+            this.lblBM.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblBM.Name = "lblBM";
-            this.lblBM.Size = new System.Drawing.Size(197, 62);
+            this.lblBM.Size = new System.Drawing.Size(199, 62);
             this.lblBM.TabIndex = 5;
             this.lblBM.Tag = "0";
             this.lblBM.Text = "BM";
@@ -563,11 +591,12 @@
             // lblDown
             // 
             this.lblDown.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDown.Font = new System.Drawing.Font("맑은 고딕", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.lblDown.Location = new System.Drawing.Point(4, 64);
+            this.lblDown.Font = new System.Drawing.Font("Malgun Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lblDown.Location = new System.Drawing.Point(3, 64);
+            this.lblDown.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDown.Name = "lblDown";
             this.pnlTable.SetRowSpan(this.lblDown, 11);
-            this.lblDown.Size = new System.Drawing.Size(146, 703);
+            this.lblDown.Size = new System.Drawing.Size(148, 703);
             this.lblDown.TabIndex = 4;
             this.lblDown.Text = "DOWN";
             this.lblDown.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -579,10 +608,11 @@
             this.label4.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label4.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label4.Location = new System.Drawing.Point(871, 1);
+            this.label4.Font = new System.Drawing.Font("Malgun Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label4.Location = new System.Drawing.Point(870, 1);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(149, 62);
+            this.label4.Size = new System.Drawing.Size(151, 62);
             this.label4.TabIndex = 3;
             this.label4.Text = "Code";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -593,10 +623,11 @@
             this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlTable.SetColumnSpan(this.label3, 2);
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label3.Location = new System.Drawing.Point(361, 1);
+            this.label3.Font = new System.Drawing.Font("Malgun Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label3.Location = new System.Drawing.Point(360, 1);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(503, 62);
+            this.label3.Size = new System.Drawing.Size(505, 62);
             this.label3.TabIndex = 2;
             this.label3.Text = "Description";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -606,10 +637,11 @@
             this.label2.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label2.Location = new System.Drawing.Point(157, 1);
+            this.label2.Font = new System.Drawing.Font("Malgun Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label2.Location = new System.Drawing.Point(156, 1);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(197, 62);
+            this.label2.Size = new System.Drawing.Size(199, 62);
             this.label2.TabIndex = 1;
             this.label2.Text = "TP Index";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -619,10 +651,11 @@
             this.label1.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(4, 1);
+            this.label1.Font = new System.Drawing.Font("Malgun Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.label1.Location = new System.Drawing.Point(3, 1);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(146, 62);
+            this.label1.Size = new System.Drawing.Size(148, 62);
             this.label1.TabIndex = 0;
             this.label1.Text = "EQP State";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -633,11 +666,12 @@
             // 
             // FormTpmLossCode
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1024, 768);
             this.Controls.Add(this.pnlTable);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MinimumSize = new System.Drawing.Size(1024, 768);
             this.Name = "FormTpmLossCode";
             this.Text = "FormTpmLossCode";
