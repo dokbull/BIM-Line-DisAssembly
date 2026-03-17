@@ -1,7 +1,9 @@
-﻿using lib.plc;
+﻿using DevAge.Windows.Forms;
+using lib.plc;
 using Lib.UI.Generic.DarkMode;
 using Lib.UI.Generic.DarkMode.Forms;
 using Lib.UI.Generic.Icons;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +20,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using System.Xml;
 using System.Xml.Linq;
 using static bim_base.CSTATION;
@@ -33,7 +36,8 @@ namespace bim_base.data.CIM
     // TODO LHJ : check ui guide spec. and need make function UI of ETC sheet in scenario spec (data menu - function)
     internal class Automation
     {
-        DateTime startTime;
+        DateTime startTimeAlive;
+        DateTime startTimeFDC;
 
         #region Delegate
 
@@ -57,7 +61,7 @@ namespace bim_base.data.CIM
 
         #region Constants
 
-        private const int HANDSHAKE_TIMEOUT_MILLISECONDS = 5000;
+        private const int HANDSHAKE_TIMEOUT_MILLISECONDS = 30000;
         private const int BIT_COUNT = 16;
         private const int HISTORY_MAX_COUNT = 100;
 
@@ -227,7 +231,7 @@ namespace bim_base.data.CIM
                 if (m_timeout.isElasped() == true)
                     return false;
 
-                Util.waitTick(100);
+                Util.waitTick(1);
             }
         }
 
@@ -433,12 +437,13 @@ namespace bim_base.data.CIM
             {
                 bool alive = this.ReadBit(CIMRead.READ_B.ALIVEBIT_1);
 
-                TimeSpan ts = DateTime.Now - startTime;
+
+                TimeSpan ts = DateTime.Now - startTimeAlive;
 
                 if (ts.TotalSeconds > 5)
                 {
                     this.WriteBit(WRITE_B.ALIVEBIT_1, !alive);
-                    DateTime startTime = DateTime.Now;
+                    startTimeAlive = DateTime.Now;
                 }
                 //DateTime startTime = DateTime.Now;
                 
@@ -477,7 +482,10 @@ namespace bim_base.data.CIM
                 return;
 
 
-            startTime = DateTime.Now;
+            startTimeAlive = DateTime.Now;
+            startTimeFDC = DateTime.Now;
+
+            PpidChange(Conf.CURR_MODEL_IDX);
 
             while (true)
             {
@@ -492,7 +500,10 @@ namespace bim_base.data.CIM
 
                 this.ReportMonitoringData();
                 this.ReportSampleProcessingState();
-                Thread.Sleep(100);
+
+                this.EquipConstantQuery();
+                
+                Thread.Sleep(1);
             }
         }
 
@@ -675,7 +686,7 @@ namespace bim_base.data.CIM
 
                 m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
 
-                this.SleepWithDoEvent(1);
+                this.SleepWithDoEvent(100);
             }
             catch
             {
@@ -717,11 +728,39 @@ namespace bim_base.data.CIM
                 {
                     string text = m_Reader.wordData(READ_W.ASCII_3_EF20_FormattedProcessProgramSendRecipeNumber).text;
 
-                    nSelectedIdx = Util.toInt32(text.PadLeft(2));
-                    string cmd = text.PadRight(1);
+                    string cleaned = new string(text.TakeWhile(char.IsDigit).ToArray());
+                    nSelectedIdx = Util.toInt32(cleaned);
+                    //nSelectedIdx = Util.toInt32(text.PadLeft(2));
+                    //string cmd = text.PadRight(4);
+                    char ch;
 
-                    sRecipeName = m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text;
-                    int PPID_MODE = m_Reader.wordData(READ_W.ASCII_20_DF96_PICK_PP_WAIT_NAME).value;
+                    if (text.Contains("N"))
+                    {
+                        ch = 'N';
+                    }
+                    else if (text.Contains("O"))
+                    {
+                        ch = 'O';
+                    }
+                    else if (text.Contains("D"))
+                    {
+                        ch = 'D';
+                    }
+                    else if (text.Contains("G"))
+                    {
+                        ch = 'G';
+                    }
+                    else if (text.Contains("C"))
+                    {
+                        ch = 'C';
+                    }
+                    else
+                        return;
+
+                    //char ch = cleaned[2];   // 0-based index → 3번째
+         
+                    sRecipeName = m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text.Replace("\0", "");
+                    int PPID_MODE = Convert.ToInt32(m_Reader.wordData(READ_W.ASCII_2_DF7E_FormattedProcessProgramSendCCode).text);
 
                     //정상이면 0
                     //EQP already exist PPID : Nak 8
@@ -737,23 +776,26 @@ namespace bim_base.data.CIM
                     //    // C fix
                     //}
 
-                    if (cmd == "N" || cmd == "O")
+                    if( (ch == 'N') || (ch == 'O') )
                     {
                         if (PPID_MODE == 1)
                         {
-                            ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
+                            ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
 
-                            if (nSelectedIdx <= 90)
+                            //if (nSelectedIdx <= 90)
+                            if(true)
                             {
                                 if (INFO.modelName() == "") //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
                                 {
                                     var p = ReadTeachPos();
-                                    ModelInfo newInfo = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
+                                    ModelInfo newInfo = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
 
                                     newInfo.setTeachPos(p);
+                                    newInfo.saveModelName(m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text);
+
                                     SendRecipeDownloadReply(0);
 
-                                    PpidCreate(nSelectedIdx - 1);
+                                    PpidCreate(nSelectedIdx, ch, true);
                                 }
                                 else
                                 {
@@ -772,18 +814,20 @@ namespace bim_base.data.CIM
                         }
 
                     }
-                    else if (cmd == "D" || cmd == "G")
+                    else if ((ch == 'D') || (ch == 'G'))
+                    //else if (cmd.Contains("D") || cmd.Contains("G"))
                     {
                         if (PPID_MODE == 2)
                         {
-                            ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
+                            ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
 
-                            if (nSelectedIdx <= 90)
+                            //if (nSelectedIdx <= 90)
+                            if(true)
                             {
-                                if (INFO.modelName() == "") //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
+                                if (INFO.modelName() != "") //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
                                 {
                                     SendRecipeDownloadReply(0);
-                                    PpidDelete(nSelectedIdx - 1);
+                                    PpidDelete(nSelectedIdx, ch);
                                 }
                                 else
                                 {
@@ -800,19 +844,21 @@ namespace bim_base.data.CIM
                             SendRecipeDownloadReply(8);
                         }
                     }
-                    else if (cmd == "C")
+                    else if (ch == 'C')
+                    //else if (cmd.Contains("C"))
                     {
-                        ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
+                        ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
 
-                        if (INFO.modelName() != sRecipeName) //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
+                        string sNewName = INFO.modelName().Replace("\0", "");
+                        if (sNewName == sRecipeName) //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
                         {
                             var p = ReadTeachPos();
-                            ModelInfo newInfo = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
+                            ModelInfo newInfo = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
 
                             newInfo.setTeachPos(p);
                             SendRecipeDownloadReply(0);
 
-                            ParameterChange(nSelectedIdx - 1);
+                            ParameterChange(nSelectedIdx);
                         }
                         else
                         {
@@ -831,6 +877,7 @@ namespace bim_base.data.CIM
             }
             finally
             {
+                m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, false);
                 //m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
             }
 
@@ -838,10 +885,21 @@ namespace bim_base.data.CIM
 
         private void SendRecipeDownloadReply(int nNum)
         {
-            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_1_125D_FormattedProcessProgramAck).text = Convert.ToString(nNum);
+            if(nNum == 0)
+                m_Writer.wordData((WRITE_W)WRITE_W.ASCII_1_125D_FormattedProcessProgramAck).text = "0";
+            else
+                m_Writer.wordData((WRITE_W)WRITE_W.ASCII_1_125D_FormattedProcessProgramAck).text = Convert.ToString(nNum);
+
+            this.SleepWithDoEvent(500);
             m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, true);
-            this.SleepWithDoEvent(1);
-            m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, false);
+            
+            this.SleepWithDoEvent(2000);
+
+            if(m_Reader.readBit(READ_B.FORMATTEDPROCESSPROGRAMSEND2_52) == true)
+                m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, false);
+            //this.HandShakeSignal(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, true, CIMRead.READ_B.FORMATTEDPROCESSPROGRAMSEND2_52, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
+
+            //this.SleepWithDoEvent(1000);
         }
 
         private void RequestParameterQuery()
@@ -906,42 +964,55 @@ namespace bim_base.data.CIM
         {
             try
             {
+                TimeSpan ts = DateTime.Now - startTimeFDC; ;
 
-                if (GetMonitoringDataEvent == null)
+                if (ts.TotalSeconds > 1)
+                {
+                    startTimeFDC = DateTime.Now;
+                }
+                else
                     return;
+                //if (GetMonitoringDataEvent == null)
+                //    return;
 
                 var fdc = GetMonitoringDataEvent.Invoke();
 
                 int Index = (int)WRITE_B.PlugRemove_CV_In_Sensor;
 
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_IN]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_MID]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_OUT]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.ALIGN_CV_IN]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.ALIGN_CV_OUT]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_IN]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_OUT]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_IN_1]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_IN_2]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_OUT]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_IN]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_MID]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_LD_CV_OUT]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.ALIGN_CV_IN]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.ALIGN_CV_OUT]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_IN]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_OUT]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_IN_1]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_IN_2]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_ULD_CV_OUT]);
 
                 Index = (int)WRITE_B.Detach_Transfer_Grip_Detect_Sensor;
 
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_IN_PP_GRIP]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_IN_REVERSE_DETECT]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_SHUTTLE_STAGE_2_DETECT]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_OUT_PP_GRIP_1]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_OUT_PP_GRIP_2]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_SHUTTLE_STAGE_3_DETECT]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_OUT]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_PP_VAC]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_REVERSE_DETECT_1]);
-                m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_REVERSE_DETECT_2]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_IN_PP_GRIP]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_IN_REVERSE_DETECT]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_SHUTTLE_STAGE_2_DETECT]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_OUT_PP_GRIP_1]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_OUT_PP_GRIP_2]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_SHUTTLE_STAGE_3_DETECT]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.MOLD_ULD_CV_OUT]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_PP_VAC]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_REVERSE_DETECT_1]);
+                //m_Writer.setBit((WRITE_B)Index++, fdc.Inputs[INPUT.UB_OUT_REVERSE_DETECT_2]);
 
-                for(int i = 0; i < fdc.TackTime.Count -1; i++)
-                    m_Writer.wordData((WRITE_W)(WRITE_W.DEC_2_B500_Tack1+1)).value = (int)fdc.TackTime[i];
+                //for (int i = 0; i < fdc.TackTime.Count - 1; i++)
+                //    m_Writer.wordData((WRITE_W)(WRITE_W.DEC_2_B500_Tack1 + 1)).value = (int)fdc.TackTime[i];
 
-                m_Writer.wordData((WRITE_W)(WRITE_W.DEC_2_B53E_TackRealTime)).value = (int)fdc.TackTime[fdc.TackTime.Count - 1];
+                //m_Writer.wordData((WRITE_W)(WRITE_W.DEC_2_B53E_TackRealTime)).value = (int)fdc.TackTime[fdc.TackTime.Count - 1];
+
+                m_Writer.wordData(WRITE_W.ASCII_20_AFD4_PlasmaCellID).text = "PLASMA_CELL_ID";
+                m_Writer.wordData(WRITE_W.DEC_2_AFE8_PlasmaStepID).value = 1;
+                m_Writer.wordData(WRITE_W.DEC_2_AFEA_PlasmaSpeed).value = 2;
+                m_Writer.wordData(WRITE_W.DEC_2_AFEC_PlasmaPass).value = 1;
+
             }
             catch
             {
@@ -1434,6 +1505,8 @@ namespace bim_base.data.CIM
                 form.Dispose();
                 form = null;
 
+                this.SleepWithDoEvent(200);
+
                 this.SetEqState(EnumMoveState.Pause);
                 this.WriteBit(WRITE_B.TPMLOSS_15, true);
                 this.WaitBitSignal(READ_B.TPMLOSS_15, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
@@ -1710,7 +1783,7 @@ namespace bim_base.data.CIM
 
             m_Writer.setBit(WRITE_B.PPIDCHANGE_21, true);
 
-            CElaspedTimer m_timeout = new CElaspedTimer(1000);
+            CElaspedTimer m_timeout = new CElaspedTimer(10000);
 
             bool ret = false;
             m_timeout.start();
@@ -1730,6 +1803,8 @@ namespace bim_base.data.CIM
                 Util.waitTick(100);
             }
 
+            m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
+
             return ret;
 
 
@@ -1737,14 +1812,26 @@ namespace bim_base.data.CIM
         }
 
         // PPID 생성
-        public bool PpidCreate(int index = 0)
+        public bool PpidCreate(int index = 0, char ch = 'O', bool bRemote = false)
         {
             //if (this.IsInitialized == false)
             //    return false;
 
             Conf.CURR_MODEL_IDX = index;
             //ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
+
+          
+            if (!bRemote)
+            {
+                if (index < 91)
+                    Common.MODEL[index].saveModelName("MODEL_" + (index).ToString());
+                else
+                    Common.MODEL[index].saveModelName("TT_MODEL_" + (index).ToString());
+            }
+            
+
             ModelInfo INFO = Common.MODEL_INFO(index);
+            //INFO.saveModelName("MODEL_" + (index).ToString());
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
             m_Writer.wordData((WRITE_W)WRITE_W.DEC_2_9224_PPIDMode).value = 1;
@@ -1754,20 +1841,55 @@ namespace bim_base.data.CIM
             //1-90 -> 상위에서 받는거. TT_ X
             //91-99-> 내부에서 만드는거 TT_로 시작
             //string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "O";
-            string sName = (index).ToString() + "O";
+            string sName = (index).ToString() + ch;
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
 
             WriteTeachPos(INFO);
 
             //if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
             //    return false;
-            Common.MODEL[index].saveModelName(sName);
+            //Common.MODEL[index].saveModelName(sName);
             UpdateModelList();
 
-            if (this.HandShakeSignal(WRITE_B.PARAMETERCHANGE2_23, true, READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
-                return false;
+            //m_Reader.setBit(READ_B.PARAMETERCHANGE2_23, true);
+
+            //if (this.WaitBitSignal(READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+            //    return false;
+
+            //m_Reader.setBit(READ_B.PARAMETERCHANGE2_23, false);
+
+            //if (this.HandShakeSignal(WRITE_B.PARAMETERCHANGE2_23, true, READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+            //    return false;
 
             //yjlee.. Original Source >>
+
+            m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, true);
+
+            CElaspedTimer m_timeout = new CElaspedTimer(10000);
+
+            bool ret = false;
+            m_timeout.start();
+
+            while (true)
+            {
+                if (m_Reader.readBit(READ_B.PARAMETERCHANGE2_23) == true)
+                {
+                    m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, false);
+                    ret = true;
+                    break;
+                }
+
+                if (m_timeout.isElasped() == true)
+                    break;
+
+                Util.waitTick(100);
+            }
+
+            m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, false);
+
+            return ret;
+
+
             //m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, true);
 
             //CElaspedTimer m_timeout = new CElaspedTimer(1000);
@@ -1842,7 +1964,7 @@ namespace bim_base.data.CIM
         }
 
         // PPID 삭제
-        public bool PpidDelete(int Index = 0)
+        public bool PpidDelete(int Index = 0, char ch = 'D')
         {
             //if (this.IsInitialized == false)
             //    return false;
@@ -1856,7 +1978,7 @@ namespace bim_base.data.CIM
 
             //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
             //string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "D";
-            string sName = (Index).ToString() + "D";
+            string sName = (Index).ToString("00") + ch;
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
 
             Common.MODEL[Index].saveModelName("");
@@ -1888,6 +2010,8 @@ namespace bim_base.data.CIM
 
                 Util.waitTick(100);
             }
+
+            m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, false);
 
             return true;
         }
@@ -1936,7 +2060,7 @@ namespace bim_base.data.CIM
 
             //s
             //string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "O";
-            string sName = (index + 1).ToString() + "C";
+            string sName = (index).ToString() + "C";
 
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
             //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
@@ -1989,11 +2113,44 @@ namespace bim_base.data.CIM
             ModelInfo Mc = Common.MC;
             WriteMcPos(Mc);
 
+            
+
+
+            //m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true);
+
+            //if (this.WaitBitSignal(READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+            //    return;
+
+            // m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, false);
+
+            m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true);
+
             Thread.Sleep(200);
+            //Common.MODEL[index].saveModelName(INFO.modelName());
+
+            CElaspedTimer m_timeout = new CElaspedTimer(10000);
+
+            bool ret = false;
+            m_timeout.start();
+
+            while (true)
+            {
+                if (m_Reader.readBit(READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24) == true)
+                {
+                    m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, false);
+                    ret = true;
+                    break;
+                }
+
+                if (m_timeout.isElasped() == true)
+                    break;
+
+                Util.waitTick(100);
+            }
 
             //값이 있으면 EquipmentConstantParameterChangeEvent
             //값이 없으면 EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24
-            this.HandShakeSignal(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
+            //this.HandShakeSignal(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
 
 
             //if (this.HandShakeSignal(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)

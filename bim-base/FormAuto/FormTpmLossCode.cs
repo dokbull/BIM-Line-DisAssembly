@@ -507,37 +507,37 @@ namespace bim_base
             switch (tpCode)
             {
                 case CIMEnumeric.EnumTpCode.BM_Manual_Code:
-                    this.SelectedTpDescription = "고장_수동";
+                    this.SelectedTpDescription = "BREAKDOWN_MENUAL";
                     break;
                 case CIMEnumeric.EnumTpCode.PM_Scheduled_Code:
-                    this.SelectedTpDescription = "정기_PM";
+                    this.SelectedTpDescription = "REGULAR_PM";
                     break;
                 case CIMEnumeric.EnumTpCode.PM_Unscheduled_EQ_Code:
-                    this.SelectedTpDescription = "비정기_PM_설비점검";
+                    this.SelectedTpDescription = "CHECK_EQUIPMENT";
                     break;
                 case CIMEnumeric.EnumTpCode.PM_Unscheduled_QC_Code:
-                    this.SelectedTpDescription = "비정기_PM_품질점검";
+                    this.SelectedTpDescription = "CHECK_QUALITY";
                     break;
                 case CIMEnumeric.EnumTpCode.CM_EE_Code:
-                    this.SelectedTpDescription = "설비_개량_보전_EE";
+                    this.SelectedTpDescription = "IMPROVE_EQUIPMENT_EE";
                     break;
                 case CIMEnumeric.EnumTpCode.CM_EI_Code:
-                    this.SelectedTpDescription = "설비_개량_보전_EI";
+                    this.SelectedTpDescription = "IMPROVE_PROCESSING_EI";
                     break;
                 case CIMEnumeric.EnumTpCode.CM_Setup_Code:
-                    this.SelectedTpDescription = "신규제품_SET_UP";
+                    this.SelectedTpDescription = "SETUP_NEW_PRODUCT";
                     break;
                 case CIMEnumeric.EnumTpCode.ModelChange_Same_Code:
-                    this.SelectedTpDescription = "동품종_변경";
+                    this.SelectedTpDescription = "CHANGE_SAME_MODEL";
                     break;
                 case CIMEnumeric.EnumTpCode.ModelChange_Diff_Code:
-                    this.SelectedTpDescription = "이품종_변경";
+                    this.SelectedTpDescription = "CHANGE_DIFFERENT_MODEL";
                     break;
                 case CIMEnumeric.EnumTpCode.Materials_Change_Code:
-                    this.SelectedTpDescription = "자재_교체";
+                    this.SelectedTpDescription = "CHANGE_MATERIAL";
                     break;
                 case CIMEnumeric.EnumTpCode.Materials_Down_Code:
-                    this.SelectedTpDescription = "자재_DOWN";
+                    this.SelectedTpDescription = "DOWN_MATERIAL";
                     break;
                 default:
                     this.SelectedTpDescription = string.Empty;

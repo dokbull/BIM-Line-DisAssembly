@@ -1,4 +1,5 @@
-﻿using System;
+﻿using bim_base.data.CIM;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -89,6 +90,8 @@ namespace bim_base
             resMsg.ShowDialog();
 
             main.writeSetupLog("FormSubDataModel::changeButton_Click name:" + selModel.modelName());
+
+            Automation.Instance.PpidChange(modelIdx);
         }
 
         private void newModelName_Click(object sender, EventArgs e)

@@ -500,5 +500,13 @@ namespace bim_base
             new FormCIMSimulationMonitor(main).Show();
             new FormAutomationTester().Show();
         }
+
+        private void cvSpeedButton_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 11; i++)
+            {
+                main.frenic().setFrequency(i, 60.0d);
+            }
+        }
     }
 }

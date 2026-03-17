@@ -90,7 +90,7 @@ namespace bim_base
                 }
             }
 
-            //scanTimeLabel.Text = main.scanTime().ToString() + "ms";
+            lbMessage2.Text = main.scanTime().ToString() + "ms";
         }
 
         private void FormTop_Load(object sender, EventArgs e)

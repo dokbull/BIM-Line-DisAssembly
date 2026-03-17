@@ -350,5 +350,10 @@ namespace bim_base
 
             Automation.Instance.PpidDelete(number);
         }
+
+        private void btnEquipConstantQuery_Click(object sender, EventArgs e)
+        {
+            Automation.Instance.EquipConstantUpdate();
+        }
     }
 }

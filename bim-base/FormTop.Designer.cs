@@ -377,7 +377,6 @@
             this.lbMessage2.Size = new System.Drawing.Size(106, 23);
             this.lbMessage2.TabIndex = 1141;
             this.lbMessage2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lbMessage2.Visible = false;
             // 
             // lbMessage3
             // 

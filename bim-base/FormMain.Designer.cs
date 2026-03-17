@@ -31,9 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.mainTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.uiTimer = new System.Windows.Forms.Timer(this.components);
-            this.serialMES = new System.IO.Ports.SerialPort(this.components);
             this.serialFRENIC = new System.IO.Ports.SerialPort(this.components);
-            this.serialFENIC2 = new System.IO.Ports.SerialPort(this.components);
             this.SuspendLayout();
             // 
             // mainTableLayout
@@ -56,23 +54,12 @@
             this.uiTimer.Interval = 1000;
             this.uiTimer.Tick += new System.EventHandler(this.uiTimer_Tick);
             // 
-            // serialMES
-            // 
-            this.serialMES.PortName = "COM4";
-            // 
             // serialFRENIC
             // 
             this.serialFRENIC.BaudRate = 19200;
-            this.serialFRENIC.PortName = "COM7";
+            this.serialFRENIC.PortName = "COM8";
             this.serialFRENIC.StopBits = System.IO.Ports.StopBits.Two;
             this.serialFRENIC.WriteBufferSize = 4096;
-            // 
-            // serialFENIC2
-            // 
-            this.serialFENIC2.BaudRate = 19200;
-            this.serialFENIC2.PortName = "COM8";
-            this.serialFENIC2.StopBits = System.IO.Ports.StopBits.Two;
-            this.serialFENIC2.WriteBufferSize = 4096;
             // 
             // FormMain
             // 
@@ -98,9 +85,7 @@
 
         private System.Windows.Forms.TableLayoutPanel mainTableLayout;
         private System.Windows.Forms.Timer uiTimer;
-        public System.IO.Ports.SerialPort serialMES;
         public System.IO.Ports.SerialPort serialFRENIC;
-        public System.IO.Ports.SerialPort serialFENIC2;
     }
 }
 

@@ -121,6 +121,10 @@ namespace bim_base
         public bool m_bSetupVS = false;
         public TimerDelay _TimSetupVS = new TimerDelay();
 
+        // SCAN TIME
+        CStopWatch m_stopWatch = new CStopWatch();
+        long m_scanTime = 0;
+
         public ProcessMain()
         {
             if (File.Exists(Common.PATH + "\\simulation") == true)
@@ -534,8 +538,9 @@ namespace bim_base
             m_once = true;
 
             m_frenic = new CSerialFRENIC(FormMain.inst().serialFRENIC, 11);
+            watchFrenic();
 
-            //Automation.Instance.WriteBit(WRITE_B.ALIVEBIT_1, true);
+            m_stopWatch.Start();
 
             while (true)
             {
@@ -597,7 +602,9 @@ namespace bim_base
 
                 runWork();
 
-                Thread.Sleep(30);
+                m_scanTime = m_stopWatch.GetElapsedTime(CStopWatch.TIME_UNIT.MILLISECOND, true);
+
+                Thread.Sleep(10);
             }
 
             if (m_lib != null) 
@@ -613,6 +620,11 @@ namespace bim_base
             }
 
             Debug.debug("ProcessMain::run END");
+        }
+
+        public long scanTime()
+        {
+            return m_scanTime;
         }
 
 
@@ -742,6 +754,7 @@ namespace bim_base
             }
 
             m_isAuto = value;
+
             Automation.Instance.EqControlMode = (this.m_isAuto ? CIMEnumeric.EnumEqControlMode.Auto : CIMEnumeric.EnumEqControlMode.Manual);
             switch (Automation.Instance.EqControlMode)
             {
@@ -984,7 +997,7 @@ namespace bim_base
             lock (m_tactTimeList)
             {
                 if (m_tactTimeList.Count > 30)
-                    m_tactTimeList.Remove(0);
+                    m_tactTimeList.RemoveAt(0);
 
                 m_tactTimeList.Add(tactTime);
             }

@@ -108,6 +108,7 @@
             this.towerR = new CStatusLabel();
             this.towerY = new CStatusLabel();
             this.towerG = new CStatusLabel();
+            this.cvSpeedButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.TacTimeLayout.SuspendLayout();
@@ -537,6 +538,7 @@
             // mainPanel
             // 
             this.mainPanel.BackColor = System.Drawing.Color.White;
+            this.mainPanel.Controls.Add(this.cvSpeedButton);
             this.mainPanel.Controls.Add(this.btnCimTester);
             this.mainPanel.Controls.Add(this.a11);
             this.mainPanel.Controls.Add(this.a10);
@@ -608,7 +610,7 @@
             this.a11.AutoSize = true;
             this.a11.Location = new System.Drawing.Point(731, 480);
             this.a11.Name = "a11";
-            this.a11.Size = new System.Drawing.Size(85, 29);
+            this.a11.Size = new System.Drawing.Size(57, 20);
             this.a11.TabIndex = 220;
             this.a11.Text = "label3";
             // 
@@ -617,7 +619,7 @@
             this.a10.AutoSize = true;
             this.a10.Location = new System.Drawing.Point(610, 480);
             this.a10.Name = "a10";
-            this.a10.Size = new System.Drawing.Size(85, 29);
+            this.a10.Size = new System.Drawing.Size(57, 20);
             this.a10.TabIndex = 221;
             this.a10.Text = "label3";
             // 
@@ -626,7 +628,7 @@
             this.a9.AutoSize = true;
             this.a9.Location = new System.Drawing.Point(485, 480);
             this.a9.Name = "a9";
-            this.a9.Size = new System.Drawing.Size(85, 29);
+            this.a9.Size = new System.Drawing.Size(57, 20);
             this.a9.TabIndex = 222;
             this.a9.Text = "label3";
             // 
@@ -635,7 +637,7 @@
             this.a8.AutoSize = true;
             this.a8.Location = new System.Drawing.Point(353, 480);
             this.a8.Name = "a8";
-            this.a8.Size = new System.Drawing.Size(85, 29);
+            this.a8.Size = new System.Drawing.Size(57, 20);
             this.a8.TabIndex = 223;
             this.a8.Text = "label3";
             // 
@@ -644,7 +646,7 @@
             this.a7.AutoSize = true;
             this.a7.Location = new System.Drawing.Point(220, 480);
             this.a7.Name = "a7";
-            this.a7.Size = new System.Drawing.Size(85, 29);
+            this.a7.Size = new System.Drawing.Size(57, 20);
             this.a7.TabIndex = 224;
             this.a7.Text = "label3";
             // 
@@ -653,7 +655,7 @@
             this.a6.AutoSize = true;
             this.a6.Location = new System.Drawing.Point(80, 480);
             this.a6.Name = "a6";
-            this.a6.Size = new System.Drawing.Size(85, 29);
+            this.a6.Size = new System.Drawing.Size(57, 20);
             this.a6.TabIndex = 225;
             this.a6.Text = "label3";
             // 
@@ -662,7 +664,7 @@
             this.s11.AutoSize = true;
             this.s11.Location = new System.Drawing.Point(731, 457);
             this.s11.Name = "s11";
-            this.s11.Size = new System.Drawing.Size(85, 29);
+            this.s11.Size = new System.Drawing.Size(57, 20);
             this.s11.TabIndex = 226;
             this.s11.Text = "label3";
             // 
@@ -671,7 +673,7 @@
             this.s10.AutoSize = true;
             this.s10.Location = new System.Drawing.Point(610, 457);
             this.s10.Name = "s10";
-            this.s10.Size = new System.Drawing.Size(85, 29);
+            this.s10.Size = new System.Drawing.Size(57, 20);
             this.s10.TabIndex = 227;
             this.s10.Text = "label3";
             // 
@@ -680,7 +682,7 @@
             this.s9.AutoSize = true;
             this.s9.Location = new System.Drawing.Point(485, 457);
             this.s9.Name = "s9";
-            this.s9.Size = new System.Drawing.Size(85, 29);
+            this.s9.Size = new System.Drawing.Size(57, 20);
             this.s9.TabIndex = 228;
             this.s9.Text = "label3";
             // 
@@ -689,7 +691,7 @@
             this.s8.AutoSize = true;
             this.s8.Location = new System.Drawing.Point(353, 457);
             this.s8.Name = "s8";
-            this.s8.Size = new System.Drawing.Size(85, 29);
+            this.s8.Size = new System.Drawing.Size(57, 20);
             this.s8.TabIndex = 229;
             this.s8.Text = "label3";
             // 
@@ -698,7 +700,7 @@
             this.s7.AutoSize = true;
             this.s7.Location = new System.Drawing.Point(220, 457);
             this.s7.Name = "s7";
-            this.s7.Size = new System.Drawing.Size(85, 29);
+            this.s7.Size = new System.Drawing.Size(57, 20);
             this.s7.TabIndex = 230;
             this.s7.Text = "label3";
             // 
@@ -707,7 +709,7 @@
             this.s6.AutoSize = true;
             this.s6.Location = new System.Drawing.Point(80, 457);
             this.s6.Name = "s6";
-            this.s6.Size = new System.Drawing.Size(85, 29);
+            this.s6.Size = new System.Drawing.Size(57, 20);
             this.s6.TabIndex = 231;
             this.s6.Text = "label3";
             // 
@@ -716,7 +718,7 @@
             this.f11.AutoSize = true;
             this.f11.Location = new System.Drawing.Point(731, 432);
             this.f11.Name = "f11";
-            this.f11.Size = new System.Drawing.Size(85, 29);
+            this.f11.Size = new System.Drawing.Size(57, 20);
             this.f11.TabIndex = 232;
             this.f11.Text = "label3";
             // 
@@ -725,7 +727,7 @@
             this.f10.AutoSize = true;
             this.f10.Location = new System.Drawing.Point(610, 432);
             this.f10.Name = "f10";
-            this.f10.Size = new System.Drawing.Size(85, 29);
+            this.f10.Size = new System.Drawing.Size(57, 20);
             this.f10.TabIndex = 233;
             this.f10.Text = "label3";
             // 
@@ -734,7 +736,7 @@
             this.f9.AutoSize = true;
             this.f9.Location = new System.Drawing.Point(485, 432);
             this.f9.Name = "f9";
-            this.f9.Size = new System.Drawing.Size(85, 29);
+            this.f9.Size = new System.Drawing.Size(57, 20);
             this.f9.TabIndex = 234;
             this.f9.Text = "label3";
             // 
@@ -743,7 +745,7 @@
             this.f8.AutoSize = true;
             this.f8.Location = new System.Drawing.Point(353, 432);
             this.f8.Name = "f8";
-            this.f8.Size = new System.Drawing.Size(85, 29);
+            this.f8.Size = new System.Drawing.Size(57, 20);
             this.f8.TabIndex = 235;
             this.f8.Text = "label3";
             // 
@@ -752,7 +754,7 @@
             this.f7.AutoSize = true;
             this.f7.Location = new System.Drawing.Point(220, 432);
             this.f7.Name = "f7";
-            this.f7.Size = new System.Drawing.Size(85, 29);
+            this.f7.Size = new System.Drawing.Size(57, 20);
             this.f7.TabIndex = 236;
             this.f7.Text = "label3";
             // 
@@ -761,7 +763,7 @@
             this.f6.AutoSize = true;
             this.f6.Location = new System.Drawing.Point(80, 432);
             this.f6.Name = "f6";
-            this.f6.Size = new System.Drawing.Size(85, 29);
+            this.f6.Size = new System.Drawing.Size(57, 20);
             this.f6.TabIndex = 237;
             this.f6.Text = "label3";
             // 
@@ -770,7 +772,7 @@
             this.alarm5.AutoSize = true;
             this.alarm5.Location = new System.Drawing.Point(610, 382);
             this.alarm5.Name = "alarm5";
-            this.alarm5.Size = new System.Drawing.Size(85, 29);
+            this.alarm5.Size = new System.Drawing.Size(57, 20);
             this.alarm5.TabIndex = 219;
             this.alarm5.Text = "label3";
             // 
@@ -779,7 +781,7 @@
             this.alarm4.AutoSize = true;
             this.alarm4.Location = new System.Drawing.Point(485, 382);
             this.alarm4.Name = "alarm4";
-            this.alarm4.Size = new System.Drawing.Size(85, 29);
+            this.alarm4.Size = new System.Drawing.Size(57, 20);
             this.alarm4.TabIndex = 210;
             this.alarm4.Text = "label3";
             // 
@@ -788,7 +790,7 @@
             this.alarm3.AutoSize = true;
             this.alarm3.Location = new System.Drawing.Point(353, 382);
             this.alarm3.Name = "alarm3";
-            this.alarm3.Size = new System.Drawing.Size(85, 29);
+            this.alarm3.Size = new System.Drawing.Size(57, 20);
             this.alarm3.TabIndex = 217;
             this.alarm3.Text = "label3";
             // 
@@ -797,7 +799,7 @@
             this.alarm2.AutoSize = true;
             this.alarm2.Location = new System.Drawing.Point(220, 382);
             this.alarm2.Name = "alarm2";
-            this.alarm2.Size = new System.Drawing.Size(85, 29);
+            this.alarm2.Size = new System.Drawing.Size(57, 20);
             this.alarm2.TabIndex = 216;
             this.alarm2.Text = "label3";
             // 
@@ -806,7 +808,7 @@
             this.alarm1.AutoSize = true;
             this.alarm1.Location = new System.Drawing.Point(80, 382);
             this.alarm1.Name = "alarm1";
-            this.alarm1.Size = new System.Drawing.Size(85, 29);
+            this.alarm1.Size = new System.Drawing.Size(57, 20);
             this.alarm1.TabIndex = 215;
             this.alarm1.Text = "label3";
             // 
@@ -815,7 +817,7 @@
             this.state5.AutoSize = true;
             this.state5.Location = new System.Drawing.Point(610, 359);
             this.state5.Name = "state5";
-            this.state5.Size = new System.Drawing.Size(85, 29);
+            this.state5.Size = new System.Drawing.Size(57, 20);
             this.state5.TabIndex = 214;
             this.state5.Text = "label3";
             // 
@@ -824,7 +826,7 @@
             this.state4.AutoSize = true;
             this.state4.Location = new System.Drawing.Point(485, 359);
             this.state4.Name = "state4";
-            this.state4.Size = new System.Drawing.Size(85, 29);
+            this.state4.Size = new System.Drawing.Size(57, 20);
             this.state4.TabIndex = 213;
             this.state4.Text = "label3";
             // 
@@ -833,7 +835,7 @@
             this.state3.AutoSize = true;
             this.state3.Location = new System.Drawing.Point(353, 359);
             this.state3.Name = "state3";
-            this.state3.Size = new System.Drawing.Size(85, 29);
+            this.state3.Size = new System.Drawing.Size(57, 20);
             this.state3.TabIndex = 212;
             this.state3.Text = "label3";
             // 
@@ -842,7 +844,7 @@
             this.state2.AutoSize = true;
             this.state2.Location = new System.Drawing.Point(220, 359);
             this.state2.Name = "state2";
-            this.state2.Size = new System.Drawing.Size(85, 29);
+            this.state2.Size = new System.Drawing.Size(57, 20);
             this.state2.TabIndex = 211;
             this.state2.Text = "label3";
             // 
@@ -851,7 +853,7 @@
             this.state1.AutoSize = true;
             this.state1.Location = new System.Drawing.Point(80, 359);
             this.state1.Name = "state1";
-            this.state1.Size = new System.Drawing.Size(85, 29);
+            this.state1.Size = new System.Drawing.Size(57, 20);
             this.state1.TabIndex = 218;
             this.state1.Text = "label3";
             // 
@@ -860,7 +862,7 @@
             this.freq5.AutoSize = true;
             this.freq5.Location = new System.Drawing.Point(610, 334);
             this.freq5.Name = "freq5";
-            this.freq5.Size = new System.Drawing.Size(85, 29);
+            this.freq5.Size = new System.Drawing.Size(57, 20);
             this.freq5.TabIndex = 209;
             this.freq5.Text = "label3";
             // 
@@ -869,7 +871,7 @@
             this.freq4.AutoSize = true;
             this.freq4.Location = new System.Drawing.Point(485, 334);
             this.freq4.Name = "freq4";
-            this.freq4.Size = new System.Drawing.Size(85, 29);
+            this.freq4.Size = new System.Drawing.Size(57, 20);
             this.freq4.TabIndex = 208;
             this.freq4.Text = "label3";
             // 
@@ -878,7 +880,7 @@
             this.freq3.AutoSize = true;
             this.freq3.Location = new System.Drawing.Point(353, 334);
             this.freq3.Name = "freq3";
-            this.freq3.Size = new System.Drawing.Size(85, 29);
+            this.freq3.Size = new System.Drawing.Size(57, 20);
             this.freq3.TabIndex = 207;
             this.freq3.Text = "label3";
             // 
@@ -887,7 +889,7 @@
             this.freq2.AutoSize = true;
             this.freq2.Location = new System.Drawing.Point(220, 334);
             this.freq2.Name = "freq2";
-            this.freq2.Size = new System.Drawing.Size(85, 29);
+            this.freq2.Size = new System.Drawing.Size(57, 20);
             this.freq2.TabIndex = 206;
             this.freq2.Text = "label3";
             // 
@@ -896,7 +898,7 @@
             this.freq1.AutoSize = true;
             this.freq1.Location = new System.Drawing.Point(80, 334);
             this.freq1.Name = "freq1";
-            this.freq1.Size = new System.Drawing.Size(85, 29);
+            this.freq1.Size = new System.Drawing.Size(57, 20);
             this.freq1.TabIndex = 205;
             this.freq1.Text = "label3";
             // 
@@ -1134,6 +1136,16 @@
             this.towerG.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.towerG.DoubleClick += new System.EventHandler(this.tower_DoubleClick);
             // 
+            // cvSpeedButton
+            // 
+            this.cvSpeedButton.Location = new System.Drawing.Point(107, 231);
+            this.cvSpeedButton.Name = "cvSpeedButton";
+            this.cvSpeedButton.Size = new System.Drawing.Size(193, 46);
+            this.cvSpeedButton.TabIndex = 239;
+            this.cvSpeedButton.Text = "C/V SET SPEED";
+            this.cvSpeedButton.UseVisualStyleBackColor = true;
+            this.cvSpeedButton.Click += new System.EventHandler(this.cvSpeedButton_Click);
+            // 
             // FormAuto
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1239,5 +1251,6 @@
         private System.Windows.Forms.CheckBox outputStopCheckBox;
         private System.Windows.Forms.CheckBox outOfPPlanCheckBox;
         private System.Windows.Forms.Button btnCimTester;
+        private System.Windows.Forms.Button cvSpeedButton;
     }
 }

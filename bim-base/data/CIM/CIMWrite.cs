@@ -2244,7 +2244,13 @@ public class CIMWrite
         DEC_2_A334_InPpZAcc,
         DEC_2_A336_InPpYAcc,
 
-        NONE_4552_A338_ECMRESERVED,
+        //NONE_4552_A338_ECMRESERVED,       //yj.lee 2026.03.17 need to check
+        NONE_3228_A338_ECMRESERVED,
+        ASCII_20_AFD4_PlasmaCellID,
+        DEC_2_AFE8_PlasmaStepID,
+        DEC_2_AFEA_PlasmaSpeed,
+        DEC_2_AFEC_PlasmaPass,
+        NONE_1298_AFEE_FDCRESERVED,
         #endregion "ECM Param <<"
 
         #region "FDC Param >>"
