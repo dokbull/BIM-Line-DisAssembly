@@ -57,23 +57,28 @@
             this.btnTrackInLoading = new System.Windows.Forms.Button();
             this.btnEqStateDefault = new System.Windows.Forms.Button();
             this.btnAlarmOccured_Light = new System.Windows.Forms.Button();
+            this.tbPPIDIndex = new System.Windows.Forms.TextBox();
+            this.btnPPIDDelete = new System.Windows.Forms.Button();
+            this.btnParameterChange = new System.Windows.Forms.Button();
+            this.btnPPIDCreate = new System.Windows.Forms.Button();
+            this.btnPPIDChange = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 6);
+            this.label1.Location = new System.Drawing.Point(27, 6);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 13);
+            this.label1.Size = new System.Drawing.Size(0, 12);
             this.label1.TabIndex = 1;
             // 
             // btnHandShake
             // 
-            this.btnHandShake.Location = new System.Drawing.Point(10, 56);
+            this.btnHandShake.Location = new System.Drawing.Point(12, 52);
             this.btnHandShake.Margin = new System.Windows.Forms.Padding(2);
             this.btnHandShake.Name = "btnHandShake";
-            this.btnHandShake.Size = new System.Drawing.Size(120, 36);
+            this.btnHandShake.Size = new System.Drawing.Size(140, 33);
             this.btnHandShake.TabIndex = 2;
             this.btnHandShake.Text = "H/S";
             this.btnHandShake.UseVisualStyleBackColor = true;
@@ -81,10 +86,10 @@
             // 
             // lblInitialized
             // 
-            this.lblInitialized.Location = new System.Drawing.Point(8, 20);
+            this.lblInitialized.Location = new System.Drawing.Point(9, 18);
             this.lblInitialized.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblInitialized.Name = "lblInitialized";
-            this.lblInitialized.Size = new System.Drawing.Size(122, 34);
+            this.lblInitialized.Size = new System.Drawing.Size(142, 31);
             this.lblInitialized.TabIndex = 3;
             this.lblInitialized.Text = "Initialized";
             this.lblInitialized.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -95,20 +100,20 @@
             // 
             // lblRunScan
             // 
-            this.lblRunScan.Location = new System.Drawing.Point(133, 20);
+            this.lblRunScan.Location = new System.Drawing.Point(155, 18);
             this.lblRunScan.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblRunScan.Name = "lblRunScan";
-            this.lblRunScan.Size = new System.Drawing.Size(122, 34);
+            this.lblRunScan.Size = new System.Drawing.Size(142, 31);
             this.lblRunScan.TabIndex = 4;
             this.lblRunScan.Text = "Scan CIM Request";
             this.lblRunScan.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblRunProcessing
             // 
-            this.lblRunProcessing.Location = new System.Drawing.Point(247, 20);
+            this.lblRunProcessing.Location = new System.Drawing.Point(288, 18);
             this.lblRunProcessing.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblRunProcessing.Name = "lblRunProcessing";
-            this.lblRunProcessing.Size = new System.Drawing.Size(122, 34);
+            this.lblRunProcessing.Size = new System.Drawing.Size(142, 31);
             this.lblRunProcessing.TabIndex = 5;
             this.lblRunProcessing.Text = "Processing";
             this.lblRunProcessing.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -116,20 +121,20 @@
             // lblRunProcessingList
             // 
             this.lblRunProcessingList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblRunProcessingList.Location = new System.Drawing.Point(373, 20);
+            this.lblRunProcessingList.Location = new System.Drawing.Point(435, 18);
             this.lblRunProcessingList.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblRunProcessingList.Name = "lblRunProcessingList";
-            this.lblRunProcessingList.Size = new System.Drawing.Size(172, 34);
+            this.lblRunProcessingList.Size = new System.Drawing.Size(200, 32);
             this.lblRunProcessingList.TabIndex = 6;
             this.lblRunProcessingList.Text = "Run Processing List";
             this.lblRunProcessingList.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnSetDateTime
             // 
-            this.btnSetDateTime.Location = new System.Drawing.Point(498, 58);
+            this.btnSetDateTime.Location = new System.Drawing.Point(581, 54);
             this.btnSetDateTime.Margin = new System.Windows.Forms.Padding(2);
             this.btnSetDateTime.Name = "btnSetDateTime";
-            this.btnSetDateTime.Size = new System.Drawing.Size(46, 34);
+            this.btnSetDateTime.Size = new System.Drawing.Size(54, 31);
             this.btnSetDateTime.TabIndex = 8;
             this.btnSetDateTime.Text = "SetDateTime";
             this.btnSetDateTime.UseVisualStyleBackColor = true;
@@ -137,19 +142,19 @@
             // 
             // DateTimeTextBox
             // 
-            this.DateTimeTextBox.Location = new System.Drawing.Point(373, 65);
+            this.DateTimeTextBox.Location = new System.Drawing.Point(435, 60);
             this.DateTimeTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.DateTimeTextBox.Name = "DateTimeTextBox";
-            this.DateTimeTextBox.Size = new System.Drawing.Size(123, 20);
+            this.DateTimeTextBox.Size = new System.Drawing.Size(143, 21);
             this.DateTimeTextBox.TabIndex = 9;
             this.DateTimeTextBox.TextChanged += new System.EventHandler(this.DataTimeTextBox_TextChanged);
             // 
             // btnTpmLossStart
             // 
-            this.btnTpmLossStart.Location = new System.Drawing.Point(10, 96);
+            this.btnTpmLossStart.Location = new System.Drawing.Point(12, 89);
             this.btnTpmLossStart.Margin = new System.Windows.Forms.Padding(2);
             this.btnTpmLossStart.Name = "btnTpmLossStart";
-            this.btnTpmLossStart.Size = new System.Drawing.Size(89, 33);
+            this.btnTpmLossStart.Size = new System.Drawing.Size(104, 30);
             this.btnTpmLossStart.TabIndex = 10;
             this.btnTpmLossStart.Text = "TPMLossStart";
             this.btnTpmLossStart.UseVisualStyleBackColor = true;
@@ -157,10 +162,10 @@
             // 
             // btnTpmLossReplyOn
             // 
-            this.btnTpmLossReplyOn.Location = new System.Drawing.Point(103, 96);
+            this.btnTpmLossReplyOn.Location = new System.Drawing.Point(120, 89);
             this.btnTpmLossReplyOn.Margin = new System.Windows.Forms.Padding(2);
             this.btnTpmLossReplyOn.Name = "btnTpmLossReplyOn";
-            this.btnTpmLossReplyOn.Size = new System.Drawing.Size(97, 33);
+            this.btnTpmLossReplyOn.Size = new System.Drawing.Size(113, 30);
             this.btnTpmLossReplyOn.TabIndex = 11;
             this.btnTpmLossReplyOn.Text = "TPMLossReplyOn";
             this.btnTpmLossReplyOn.UseVisualStyleBackColor = true;
@@ -168,10 +173,10 @@
             // 
             // btnTpmLossReplyOff
             // 
-            this.btnTpmLossReplyOff.Location = new System.Drawing.Point(203, 96);
+            this.btnTpmLossReplyOff.Location = new System.Drawing.Point(237, 89);
             this.btnTpmLossReplyOff.Margin = new System.Windows.Forms.Padding(2);
             this.btnTpmLossReplyOff.Name = "btnTpmLossReplyOff";
-            this.btnTpmLossReplyOff.Size = new System.Drawing.Size(97, 33);
+            this.btnTpmLossReplyOff.Size = new System.Drawing.Size(113, 30);
             this.btnTpmLossReplyOff.TabIndex = 12;
             this.btnTpmLossReplyOff.Text = "TPMLossReplyOff";
             this.btnTpmLossReplyOff.UseVisualStyleBackColor = true;
@@ -179,20 +184,20 @@
             // 
             // lblTpmLossMonitor
             // 
-            this.lblTpmLossMonitor.Location = new System.Drawing.Point(304, 96);
+            this.lblTpmLossMonitor.Location = new System.Drawing.Point(355, 89);
             this.lblTpmLossMonitor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblTpmLossMonitor.Name = "lblTpmLossMonitor";
-            this.lblTpmLossMonitor.Size = new System.Drawing.Size(122, 33);
+            this.lblTpmLossMonitor.Size = new System.Drawing.Size(142, 30);
             this.lblTpmLossMonitor.TabIndex = 13;
             this.lblTpmLossMonitor.Text = "TPM Monitor";
             this.lblTpmLossMonitor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnTerminalRecv
             // 
-            this.btnTerminalRecv.Location = new System.Drawing.Point(10, 134);
+            this.btnTerminalRecv.Location = new System.Drawing.Point(12, 124);
             this.btnTerminalRecv.Margin = new System.Windows.Forms.Padding(2);
             this.btnTerminalRecv.Name = "btnTerminalRecv";
-            this.btnTerminalRecv.Size = new System.Drawing.Size(89, 33);
+            this.btnTerminalRecv.Size = new System.Drawing.Size(104, 30);
             this.btnTerminalRecv.TabIndex = 14;
             this.btnTerminalRecv.Text = "TerminalRecv";
             this.btnTerminalRecv.UseVisualStyleBackColor = true;
@@ -200,30 +205,30 @@
             // 
             // lblTerminalRecvMonitor
             // 
-            this.lblTerminalRecvMonitor.Location = new System.Drawing.Point(103, 134);
+            this.lblTerminalRecvMonitor.Location = new System.Drawing.Point(120, 124);
             this.lblTerminalRecvMonitor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblTerminalRecvMonitor.Name = "lblTerminalRecvMonitor";
-            this.lblTerminalRecvMonitor.Size = new System.Drawing.Size(176, 33);
+            this.lblTerminalRecvMonitor.Size = new System.Drawing.Size(205, 30);
             this.lblTerminalRecvMonitor.TabIndex = 16;
             this.lblTerminalRecvMonitor.Text = "TerminalRecvMonitor";
             this.lblTerminalRecvMonitor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblTerminalSendMonitor
             // 
-            this.lblTerminalSendMonitor.Location = new System.Drawing.Point(375, 134);
+            this.lblTerminalSendMonitor.Location = new System.Drawing.Point(438, 124);
             this.lblTerminalSendMonitor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblTerminalSendMonitor.Name = "lblTerminalSendMonitor";
-            this.lblTerminalSendMonitor.Size = new System.Drawing.Size(176, 33);
+            this.lblTerminalSendMonitor.Size = new System.Drawing.Size(205, 30);
             this.lblTerminalSendMonitor.TabIndex = 17;
             this.lblTerminalSendMonitor.Text = "TerminalSendMonitor";
             this.lblTerminalSendMonitor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnTerminalSend
             // 
-            this.btnTerminalSend.Location = new System.Drawing.Point(282, 134);
+            this.btnTerminalSend.Location = new System.Drawing.Point(329, 124);
             this.btnTerminalSend.Margin = new System.Windows.Forms.Padding(2);
             this.btnTerminalSend.Name = "btnTerminalSend";
-            this.btnTerminalSend.Size = new System.Drawing.Size(89, 33);
+            this.btnTerminalSend.Size = new System.Drawing.Size(104, 30);
             this.btnTerminalSend.TabIndex = 18;
             this.btnTerminalSend.Text = "TerminalSend";
             this.btnTerminalSend.UseVisualStyleBackColor = true;
@@ -231,21 +236,22 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(280, 204);
+            this.button1.Location = new System.Drawing.Point(327, 188);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(89, 33);
+            this.button1.Size = new System.Drawing.Size(104, 30);
             this.button1.TabIndex = 18;
             this.button1.Text = "Test";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnAlarmOccured_Heavy
             // 
-            this.btnAlarmOccured_Heavy.Location = new System.Drawing.Point(10, 338);
+            this.btnAlarmOccured_Heavy.Location = new System.Drawing.Point(12, 312);
             this.btnAlarmOccured_Heavy.Margin = new System.Windows.Forms.Padding(2);
             this.btnAlarmOccured_Heavy.Name = "btnAlarmOccured_Heavy";
-            this.btnAlarmOccured_Heavy.Size = new System.Drawing.Size(141, 33);
+            this.btnAlarmOccured_Heavy.Size = new System.Drawing.Size(164, 30);
             this.btnAlarmOccured_Heavy.TabIndex = 20;
             this.btnAlarmOccured_Heavy.Text = "Alarm Occured(Heavy)";
             this.btnAlarmOccured_Heavy.UseVisualStyleBackColor = true;
@@ -253,10 +259,10 @@
             // 
             // btnAlarmReleased
             // 
-            this.btnAlarmReleased.Location = new System.Drawing.Point(306, 338);
+            this.btnAlarmReleased.Location = new System.Drawing.Point(357, 312);
             this.btnAlarmReleased.Margin = new System.Windows.Forms.Padding(2);
             this.btnAlarmReleased.Name = "btnAlarmReleased";
-            this.btnAlarmReleased.Size = new System.Drawing.Size(141, 33);
+            this.btnAlarmReleased.Size = new System.Drawing.Size(164, 30);
             this.btnAlarmReleased.TabIndex = 21;
             this.btnAlarmReleased.Text = "Alarm Released";
             this.btnAlarmReleased.UseVisualStyleBackColor = true;
@@ -265,10 +271,10 @@
             // rdobtnAvailiability
             // 
             this.rdobtnAvailiability.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rdobtnAvailiability.Location = new System.Drawing.Point(10, 300);
+            this.rdobtnAvailiability.Location = new System.Drawing.Point(12, 277);
             this.rdobtnAvailiability.Margin = new System.Windows.Forms.Padding(2);
             this.rdobtnAvailiability.Name = "rdobtnAvailiability";
-            this.rdobtnAvailiability.Size = new System.Drawing.Size(141, 33);
+            this.rdobtnAvailiability.Size = new System.Drawing.Size(164, 30);
             this.rdobtnAvailiability.TabIndex = 23;
             this.rdobtnAvailiability.TabStop = true;
             this.rdobtnAvailiability.Text = "EqState : Availiability";
@@ -279,10 +285,10 @@
             // rdobtnInterlock
             // 
             this.rdobtnInterlock.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rdobtnInterlock.Location = new System.Drawing.Point(159, 300);
+            this.rdobtnInterlock.Location = new System.Drawing.Point(186, 277);
             this.rdobtnInterlock.Margin = new System.Windows.Forms.Padding(2);
             this.rdobtnInterlock.Name = "rdobtnInterlock";
-            this.rdobtnInterlock.Size = new System.Drawing.Size(141, 33);
+            this.rdobtnInterlock.Size = new System.Drawing.Size(164, 30);
             this.rdobtnInterlock.TabIndex = 24;
             this.rdobtnInterlock.TabStop = true;
             this.rdobtnInterlock.Text = "EqState : Interlock";
@@ -293,10 +299,10 @@
             // rdobtnMove
             // 
             this.rdobtnMove.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rdobtnMove.Location = new System.Drawing.Point(306, 300);
+            this.rdobtnMove.Location = new System.Drawing.Point(357, 277);
             this.rdobtnMove.Margin = new System.Windows.Forms.Padding(2);
             this.rdobtnMove.Name = "rdobtnMove";
-            this.rdobtnMove.Size = new System.Drawing.Size(141, 33);
+            this.rdobtnMove.Size = new System.Drawing.Size(164, 30);
             this.rdobtnMove.TabIndex = 25;
             this.rdobtnMove.TabStop = true;
             this.rdobtnMove.Text = "EqState : Move";
@@ -307,10 +313,10 @@
             // rdobtnRun
             // 
             this.rdobtnRun.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rdobtnRun.Location = new System.Drawing.Point(451, 300);
+            this.rdobtnRun.Location = new System.Drawing.Point(526, 277);
             this.rdobtnRun.Margin = new System.Windows.Forms.Padding(2);
             this.rdobtnRun.Name = "rdobtnRun";
-            this.rdobtnRun.Size = new System.Drawing.Size(141, 33);
+            this.rdobtnRun.Size = new System.Drawing.Size(164, 30);
             this.rdobtnRun.TabIndex = 26;
             this.rdobtnRun.TabStop = true;
             this.rdobtnRun.Text = "EqState : Run";
@@ -320,10 +326,10 @@
             // 
             // btnTrackOutUnloading
             // 
-            this.btnTrackOutUnloading.Location = new System.Drawing.Point(159, 376);
+            this.btnTrackOutUnloading.Location = new System.Drawing.Point(186, 347);
             this.btnTrackOutUnloading.Margin = new System.Windows.Forms.Padding(2);
             this.btnTrackOutUnloading.Name = "btnTrackOutUnloading";
-            this.btnTrackOutUnloading.Size = new System.Drawing.Size(141, 33);
+            this.btnTrackOutUnloading.Size = new System.Drawing.Size(164, 30);
             this.btnTrackOutUnloading.TabIndex = 28;
             this.btnTrackOutUnloading.Text = "Track Out Unloading";
             this.btnTrackOutUnloading.UseVisualStyleBackColor = true;
@@ -331,10 +337,10 @@
             // 
             // btnTrackInLoading
             // 
-            this.btnTrackInLoading.Location = new System.Drawing.Point(10, 376);
+            this.btnTrackInLoading.Location = new System.Drawing.Point(12, 347);
             this.btnTrackInLoading.Margin = new System.Windows.Forms.Padding(2);
             this.btnTrackInLoading.Name = "btnTrackInLoading";
-            this.btnTrackInLoading.Size = new System.Drawing.Size(141, 33);
+            this.btnTrackInLoading.Size = new System.Drawing.Size(164, 30);
             this.btnTrackInLoading.TabIndex = 27;
             this.btnTrackInLoading.Text = "Track In Loading";
             this.btnTrackInLoading.UseVisualStyleBackColor = true;
@@ -342,10 +348,10 @@
             // 
             // btnEqStateDefault
             // 
-            this.btnEqStateDefault.Location = new System.Drawing.Point(11, 263);
+            this.btnEqStateDefault.Location = new System.Drawing.Point(13, 243);
             this.btnEqStateDefault.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqStateDefault.Name = "btnEqStateDefault";
-            this.btnEqStateDefault.Size = new System.Drawing.Size(581, 33);
+            this.btnEqStateDefault.Size = new System.Drawing.Size(678, 30);
             this.btnEqStateDefault.TabIndex = 29;
             this.btnEqStateDefault.Text = "EqState : All = 2";
             this.btnEqStateDefault.UseVisualStyleBackColor = true;
@@ -353,20 +359,76 @@
             // 
             // btnAlarmOccured_Light
             // 
-            this.btnAlarmOccured_Light.Location = new System.Drawing.Point(159, 337);
+            this.btnAlarmOccured_Light.Location = new System.Drawing.Point(186, 311);
             this.btnAlarmOccured_Light.Margin = new System.Windows.Forms.Padding(2);
             this.btnAlarmOccured_Light.Name = "btnAlarmOccured_Light";
-            this.btnAlarmOccured_Light.Size = new System.Drawing.Size(141, 33);
+            this.btnAlarmOccured_Light.Size = new System.Drawing.Size(164, 30);
             this.btnAlarmOccured_Light.TabIndex = 30;
             this.btnAlarmOccured_Light.Text = "Alarm Occured(Light)";
             this.btnAlarmOccured_Light.UseVisualStyleBackColor = true;
             this.btnAlarmOccured_Light.Click += new System.EventHandler(this.btnAlarmOccured_Light_Click);
             // 
+            // tbPPIDIndex
+            // 
+            this.tbPPIDIndex.Location = new System.Drawing.Point(526, 350);
+            this.tbPPIDIndex.Name = "tbPPIDIndex";
+            this.tbPPIDIndex.Size = new System.Drawing.Size(100, 21);
+            this.tbPPIDIndex.TabIndex = 35;
+            // 
+            // btnPPIDDelete
+            // 
+            this.btnPPIDDelete.Location = new System.Drawing.Point(526, 385);
+            this.btnPPIDDelete.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPPIDDelete.Name = "btnPPIDDelete";
+            this.btnPPIDDelete.Size = new System.Drawing.Size(164, 31);
+            this.btnPPIDDelete.TabIndex = 31;
+            this.btnPPIDDelete.Text = "PPID Delete";
+            this.btnPPIDDelete.UseVisualStyleBackColor = true;
+            this.btnPPIDDelete.Click += new System.EventHandler(this.btnPPIDDelete_Click);
+            // 
+            // btnParameterChange
+            // 
+            this.btnParameterChange.Location = new System.Drawing.Point(357, 385);
+            this.btnParameterChange.Margin = new System.Windows.Forms.Padding(2);
+            this.btnParameterChange.Name = "btnParameterChange";
+            this.btnParameterChange.Size = new System.Drawing.Size(164, 31);
+            this.btnParameterChange.TabIndex = 32;
+            this.btnParameterChange.Text = "Parameter Change";
+            this.btnParameterChange.UseVisualStyleBackColor = true;
+            this.btnParameterChange.Click += new System.EventHandler(this.btnParameterChange_Click);
+            // 
+            // btnPPIDCreate
+            // 
+            this.btnPPIDCreate.Location = new System.Drawing.Point(186, 385);
+            this.btnPPIDCreate.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPPIDCreate.Name = "btnPPIDCreate";
+            this.btnPPIDCreate.Size = new System.Drawing.Size(164, 31);
+            this.btnPPIDCreate.TabIndex = 33;
+            this.btnPPIDCreate.Text = "PPID Create";
+            this.btnPPIDCreate.UseVisualStyleBackColor = true;
+            this.btnPPIDCreate.Click += new System.EventHandler(this.btnPPIDCreate_Click);
+            // 
+            // btnPPIDChange
+            // 
+            this.btnPPIDChange.Location = new System.Drawing.Point(12, 385);
+            this.btnPPIDChange.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPPIDChange.Name = "btnPPIDChange";
+            this.btnPPIDChange.Size = new System.Drawing.Size(164, 31);
+            this.btnPPIDChange.TabIndex = 34;
+            this.btnPPIDChange.Text = "PPID Change";
+            this.btnPPIDChange.UseVisualStyleBackColor = true;
+            this.btnPPIDChange.Click += new System.EventHandler(this.btnPPIDChange_Click);
+            // 
             // FormAutomationTester
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(662, 603);
+            this.ClientSize = new System.Drawing.Size(772, 557);
+            this.Controls.Add(this.tbPPIDIndex);
+            this.Controls.Add(this.btnPPIDDelete);
+            this.Controls.Add(this.btnParameterChange);
+            this.Controls.Add(this.btnPPIDCreate);
+            this.Controls.Add(this.btnPPIDChange);
             this.Controls.Add(this.btnAlarmOccured_Light);
             this.Controls.Add(this.btnEqStateDefault);
             this.Controls.Add(this.btnTrackOutUnloading);
@@ -432,5 +494,10 @@
         private System.Windows.Forms.Button btnTrackInLoading;
         private System.Windows.Forms.Button btnEqStateDefault;
         private System.Windows.Forms.Button btnAlarmOccured_Light;
+        private System.Windows.Forms.TextBox tbPPIDIndex;
+        private System.Windows.Forms.Button btnPPIDDelete;
+        private System.Windows.Forms.Button btnParameterChange;
+        private System.Windows.Forms.Button btnPPIDCreate;
+        private System.Windows.Forms.Button btnPPIDChange;
     }
 }

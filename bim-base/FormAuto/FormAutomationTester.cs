@@ -316,5 +316,39 @@ namespace bim_base
 
             Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.LightAlarm, 2, "Test");
         }
+
+        private void btnPPIDChange_Click(object sender, EventArgs e)
+        {
+            string value = tbPPIDIndex.Text;
+            int number = Convert.ToInt32(value);
+
+            //int number2 = int.Parse(value);
+
+            Automation.Instance.PpidChange(number);
+        }
+
+        private void btnPPIDCreate_Click(object sender, EventArgs e)
+        {
+            string value = tbPPIDIndex.Text;
+            int number = Convert.ToInt32(value);
+
+            Automation.Instance.PpidCreate(number);
+        }
+
+        private void btnParameterChange_Click(object sender, EventArgs e)
+        {
+            string value = tbPPIDIndex.Text;
+            int number = Convert.ToInt32(value);
+
+            Automation.Instance.ParameterChange(number);
+        }
+
+        private void btnPPIDDelete_Click(object sender, EventArgs e)
+        {
+            string value = tbPPIDIndex.Text;
+            int number = Convert.ToInt32(value);
+
+            Automation.Instance.PpidDelete(number);
+        }
     }
 }

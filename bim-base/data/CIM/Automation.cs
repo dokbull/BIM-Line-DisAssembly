@@ -676,7 +676,7 @@ namespace bim_base.data.CIM
 
                 m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, true);
 
-                this.SleepWithDoEvent(1000);
+                this.SleepWithDoEvent(1);
             }
             catch
             {
@@ -687,7 +687,7 @@ namespace bim_base.data.CIM
                 m_Writer.setBit(WRITE_B.CURRENTEQUIPPPIDLISTREQUEST_56, false);
             }
         }
-        
+
         private void UpdateModelList()
         {
             List<string> items = new List<string>();
@@ -721,48 +721,109 @@ namespace bim_base.data.CIM
                     nSelectedIdx = Util.toInt32(text.PadLeft(2));
                     string cmd = text.PadRight(1);
 
-                    if (cmd == "N" || cmd == "O" || cmd == "D" || cmd == "G" || cmd == "C")
-                    {
-                        // N make new teach
-                        // O make without teach
-                        // D delete all teach
-                        // G delete without teach
-                        // C fix
-                    }
+                    sRecipeName = m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text;
+                    int PPID_MODE = m_Reader.wordData(READ_W.ASCII_20_DF96_PICK_PP_WAIT_NAME).value;
 
-                    //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
-
-                    m_Writer.wordData((WRITE_W)WRITE_W.ASCII_1_125D_FormattedProcessProgramAck).text = "0";
-
-                    m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, true);
+                    //정상이면 0
+                    //EQP already exist PPID : Nak 8
+                    //other case : Nak 7
 
 
-                    //sRecipeName = m_Reader.wordData(READ_W.ASCII_20_DF82_PPID).text?.Trim() ?? "";
-
-                    //POS[] pos = ReadTeachPos();
-
-                    //for (int i = 0; i < (int)TEACH_POS.MAX; i++)
+                    //(cmd == "N" || cmd == "O" || cmd == "D" || cmd == "G" || cmd == "C")
                     //{
-                    //    Common.MODEL[nSelectedIdx].setTeachPos(i, pos[i]);
+                    //    // N make new teach
+                    //    // O make without teach
+                    //    // D delete all teach
+                    //    // G delete without teach
+                    //    // C fix
                     //}
 
-                    //m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, true);
+                    if (cmd == "N" || cmd == "O")
+                    {
+                        if (PPID_MODE == 1)
+                        {
+                            ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
 
-                    //ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
-                    //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
+                            if (nSelectedIdx <= 90)
+                            {
+                                if (INFO.modelName() == "") //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
+                                {
+                                    var p = ReadTeachPos();
+                                    ModelInfo newInfo = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
 
-                    //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 1;
-                    //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_9226_PPID).text = INFO.modelName();
+                                    newInfo.setTeachPos(p);
+                                    SendRecipeDownloadReply(0);
 
-                    //WriteTeachPos(INFO);
+                                    PpidCreate(nSelectedIdx - 1);
+                                }
+                                else
+                                {
+                                    SendRecipeDownloadReply(8);
+                                }
 
-                    //this.HandShakeSignal(
-                    //    WRITE_B.PPIDCHANGE_21,
-                    //    true,
-                    //    READ_B.PPIDCHANGE_21,
-                    //    true,
-                    //    HANDSHAKE_TIMEOUT_SECONDS);
+                            }
+                            else
+                            {
+                                SendRecipeDownloadReply(7);
+                            }
+                        }
+                        else
+                        {
+                            SendRecipeDownloadReply(8);
+                        }
 
+                    }
+                    else if (cmd == "D" || cmd == "G")
+                    {
+                        if (PPID_MODE == 2)
+                        {
+                            ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
+
+                            if (nSelectedIdx <= 90)
+                            {
+                                if (INFO.modelName() == "") //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
+                                {
+                                    SendRecipeDownloadReply(0);
+                                    PpidDelete(nSelectedIdx - 1);
+                                }
+                                else
+                                {
+                                    SendRecipeDownloadReply(8);
+                                }
+                            }
+                            else
+                            {
+                                SendRecipeDownloadReply(7);
+                            }
+                        }
+                        else
+                        {
+                            SendRecipeDownloadReply(8);
+                        }
+                    }
+                    else if (cmd == "C")
+                    {
+                        ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
+
+                        if (INFO.modelName() != sRecipeName) //ASCII_1_125D_FormattedProcessProgramAck Cerrect case 0
+                        {
+                            var p = ReadTeachPos();
+                            ModelInfo newInfo = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
+
+                            newInfo.setTeachPos(p);
+                            SendRecipeDownloadReply(0);
+
+                            ParameterChange(nSelectedIdx - 1);
+                        }
+                        else
+                        {
+                            SendRecipeDownloadReply(8);
+                        }
+                    }
+                    else
+                    {
+                        SendRecipeDownloadReply(7);
+                    }
                 }
             }
             catch
@@ -774,6 +835,14 @@ namespace bim_base.data.CIM
                 //m_Writer.setBit(WRITE_B.PPIDCHANGE_21, false);
             }
 
+        }
+
+        private void SendRecipeDownloadReply(int nNum)
+        {
+            m_Writer.wordData((WRITE_W)WRITE_W.ASCII_1_125D_FormattedProcessProgramAck).text = Convert.ToString(nNum);
+            m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, true);
+            this.SleepWithDoEvent(1);
+            m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMSEND2_52, false);
         }
 
         private void RequestParameterQuery()
@@ -806,7 +875,7 @@ namespace bim_base.data.CIM
                     if (nSelectedIdx < 0 && nSelectedIdx > 99)
                         return;
 
-                    ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx-1);// Common.MODEL[0];
+                    ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx - 1);// Common.MODEL[0];
                     m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
                     m_Writer.wordData((WRITE_W)WRITE_W.DEC_2_9224_PPIDMode).value = 0;
@@ -816,7 +885,7 @@ namespace bim_base.data.CIM
 
                     m_Writer.setBit(WRITE_B.FORMATTEDPROCESSPROGRAMREQUEST_55, true);
 
-                    this.SleepWithDoEvent(1000);
+                    this.SleepWithDoEvent(1);
                 }
             }
             catch
@@ -1539,12 +1608,13 @@ namespace bim_base.data.CIM
         //int CommandHoldTimeMs = 5000;
 
         // PPID Change (JOB Change)
-        public bool PpidChange()
+        public bool PpidChange(int index = 0)
         {
             //if (this.IsInitialized == false)
             //    return false;
 
-            ModelInfo info = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);
+            Conf.CURR_MODEL_IDX = index;
+            ModelInfo info = Common.MODEL_INFO(index);
 
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = info.modelName();
 
@@ -1582,10 +1652,9 @@ namespace bim_base.data.CIM
             //if (this.IsInitialized == false)
             //    return false;
 
-            //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_2_9224_PPIDMode).value = 3;
             Conf.CURR_MODEL_IDX = index;
             //ModelInfo INFO = Common.MODEL_INFO(Conf.CURR_MODEL_IDX);// Common.MODEL[0];
-            ModelInfo INFO = Common.MODEL_INFO(index);// Common.MODEL[0];
+            ModelInfo INFO = Common.MODEL_INFO(index);
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
 
             m_Writer.wordData((WRITE_W)WRITE_W.DEC_2_9224_PPIDMode).value = 1;
@@ -1597,18 +1666,18 @@ namespace bim_base.data.CIM
             //string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "O";
             string sName = (index).ToString() + "O";
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
-           
+
             WriteTeachPos(INFO);
 
             //if(this.HandShakeSignal(WRITE_B.PPIDCHANGE_21, true, READ_B.PPIDCHANGE_21, true, HANDSHAKE_TIMEOUT_SECONDS) == false)
             //    return false;
-            Common.MODEL[81].saveModelName(sName);
+            Common.MODEL[index].saveModelName(sName);
             UpdateModelList();
 
-            if(this.HandShakeSignal(WRITE_B.PARAMETERCHANGE2_23, true, READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+            if (this.HandShakeSignal(WRITE_B.PARAMETERCHANGE2_23, true, READ_B.PARAMETERCHANGE2_23, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
                 return false;
-            
-//yjlee.. Original Source >>
+
+            //yjlee.. Original Source >>
             //m_Writer.setBit(WRITE_B.PARAMETERCHANGE2_23, true);
 
             //CElaspedTimer m_timeout = new CElaspedTimer(1000);
@@ -1777,7 +1846,7 @@ namespace bim_base.data.CIM
 
             //s
             //string sName = (Conf.CURR_MODEL_IDX + 1).ToString() + "O";
-            string sName = (index+1).ToString() + "C";
+            string sName = (index + 1).ToString() + "C";
 
             m_Writer.wordData((WRITE_W)WRITE_W.ASCII_3_23D9_ParameterChange2RecipeNumber).text = sName; //추후 문서 보고 수정 필요.
             //ParameterChange2RecipeNumber    PPID Number룰 데로 추가 필요.
@@ -1817,7 +1886,8 @@ namespace bim_base.data.CIM
         #endregion
 
         #region Public Method : CIM ECM
-        public void EquipConstantQuery()
+        //public void EquipConstantQuery()
+        public void EquipConstantUpdate()
         {
             if (this.IsInitialized == false)
                 return;
@@ -1826,12 +1896,25 @@ namespace bim_base.data.CIM
             //EquipmentConstantParameterChangeEvent 값변경시에 이 필드만 활성화 시켜주면됨. 
             //리플라이 bit 확인후 바로 끔.
 
-            m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true);
+            ModelInfo Mc = Common.MC;
+            WriteMcPos(Mc);
 
-            if (m_Reader.readBit(CIMRead.READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24) == true)
-            {
-                m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, false);
-            }
+            Thread.Sleep(200);
+
+            //값이 있으면 EquipmentConstantParameterChangeEvent
+            //값이 없으면 EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24
+            this.HandShakeSignal(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
+
+
+            //if (this.HandShakeSignal(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true, HANDSHAKE_TIMEOUT_MILLISECONDS) == false)
+            //    return false;
+
+            //m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, true);
+
+            //if (m_Reader.readBit(CIMRead.READ_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24) == true)
+            //{
+            //    m_Writer.setBit(WRITE_B.EQUIPMENTCONSTANTPARAMETERCHANGEEVENT_24, false);
+            //}
             //if (m_Reader.readBit(CIMRead.READ_B.EQUIPCONSTANTNAMELIST_53) == true)
             {
                 //double[] vel = new double[(int)AXIS.MAX];
@@ -1856,7 +1939,7 @@ namespace bim_base.data.CIM
             }
         }
 
-        public void ConstantnameListQuery()
+        public void EquipConstantQuery()
         {
             if (this.IsInitialized == false)
                 return;
@@ -1865,7 +1948,6 @@ namespace bim_base.data.CIM
             {
                 ModelInfo Mc = Common.MC;
                 //데이터 필드 업데이트 
-
 
                 //ModelInfo INFO = Common.MODEL_INFO(nSelectedIdx);// Common.MODEL[0];
                 //m_Writer.wordData((WRITE_W)WRITE_W.ASCII_20_0014_EQPPPID).text = INFO.modelName();
@@ -1878,16 +1960,19 @@ namespace bim_base.data.CIM
 
                 m_Writer.setBit(WRITE_B.EQUIPCONSTANTNAMELIST_53, true);
 
-                this.SleepWithDoEvent(1000);
+                this.SleepWithDoEvent(1);
 
-                m_Writer.setBit(WRITE_B.EQUIPCONSTANTNAMELIST_53, true);    //시퀀스 다이어 그램 화살표 이상.
+                m_Writer.setBit(WRITE_B.EQUIPCONSTANTNAMELIST_53, false);    //시퀀스 다이어 그램 화살표 이상.
             }
 
-            
-            
-
         }
+
+
         #endregion
 
+        public void TestAlive()
+        {
+            WriteBit(WRITE_B.ALIVEBIT_1, true);
+        }
     }
 }

@@ -90,6 +90,50 @@ public class ModelInfo
         }
     }
 
+    public void setTeachPos(int index, POS pos)
+    {
+        m_teachPos[index] = pos;
+    }
+
+    public void setTeachPos(POS[] pos)
+    {
+        m_teachPos = pos;
+    }
+
+    public string teachPosString(int teachPos)
+    {
+        return teachPosString((TEACH_POS)teachPos);
+    }
+
+    public string teachPosString(TEACH_POS teachPos)
+    {
+        string retn = "";
+        Type enumType = typeof(TEACH_POS);
+        MemberInfo[] memberInfos = enumType.GetMember(teachPos.ToString());
+        if (memberInfos.Length > 0)
+            retn = teachPos.ToString();
+
+        return retn;
+    }
+
+    public bool existModelCheck(string name)
+    {
+        bool ret = false;
+        DirectoryInfo dirInfo = new DirectoryInfo(Common.MODEL_PATH);
+        FileInfo[] fileInfo = dirInfo.GetFiles();
+        for (int i = 0; i < fileInfo.Length; i++)
+        {
+            if (fileInfo[i].Name.ToUpper() == name.ToUpper())
+            {
+                ret = true;
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+
     public void load()
     {
         loadModelName(); 
