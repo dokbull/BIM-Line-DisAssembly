@@ -552,7 +552,7 @@ namespace bim_base.data.CIM
                 //if (this.m_MessageBoxOpcall.Visible == false)
                 //{
                 //    // 맨 처음에 받은 하나만 보존
-                //    this.m_MessageBoxOpcall.ID = $"{opCallNum}";
+                //    this.m_MessageBoxOpcall. = $"{opCallNum}";
                 //    this.m_MessageBoxOpcall.Message = strOpCallText;
                 //}
 
@@ -1118,10 +1118,10 @@ namespace bim_base.data.CIM
             }).ConfigureAwait(true);
 
 
-            this.m_MessageBoxOpcall.TitleButtonClickEvent += MessageBoxOpcall_TitleButtonClickEvent;
+            this.m_MessageBoxTerminalDisplay.TitleButtonClickEvent += MessageBoxTerminalDisplay_TitleButtonClickEvent;
         }
 
-        private void MessageBoxOpcall_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
+        private void MessageBoxTerminalDisplay_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
         {
             switch (button)
             {
