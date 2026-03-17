@@ -190,7 +190,7 @@ namespace bim_base
                 lblTerminalSendMonitor.Text = $"송신 시작 Text = {sendText}";
 
                 // 송신 작업을 제대로 await
-                await Task.Run(() => Automation.Instance.SendTerminalDisplayReply(sendText));
+                await Task.Run(() => Automation.Instance.SendReplyTerminalDisplay());
 
                 await Task.Delay(200);
 
@@ -238,7 +238,7 @@ namespace bim_base
 
         private void btnSendTerminalDisplay_Click(object sender, EventArgs e)
         {
-            Automation.Instance.SendTerminalDisplayReply("Disassembly Terminal Message");
+            Automation.Instance.SendReplyTerminalDisplay();
         }
 
         private void btnAlarmOccured_Click(object sender, EventArgs e)

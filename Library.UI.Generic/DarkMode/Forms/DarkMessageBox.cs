@@ -54,6 +54,12 @@ namespace Lib.UI.Generic.DarkMode.Forms
             return true;
         }
 
+        public string Message
+        {
+            get { return this.lblMessage.Text; }
+            set { this.lblMessage.Text = value; }
+        }
+
         public DarkMessageBoxItem SelectedItem { get; set; } = new DarkMessageBoxItem();
 
         public static DarkMessageBox CreateMessageBox(string _TitleText, EnumMessageBoxIcons icon, string message, EnumMessageBoxButtons buttons)

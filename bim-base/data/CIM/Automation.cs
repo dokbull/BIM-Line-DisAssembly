@@ -72,6 +72,20 @@ namespace bim_base.data.CIM
         private Thread mTh_IntervalRun = null;
         private object mLock_IntervalRun = new object();
 
+        private MessageData m_ReceivedTerminalDisplayData = new MessageData();
+        private DarkMessageBox m_MessageBoxTerminalDisplay = DarkMessageBox.CreateMessageBox(
+            "Terminal Dispaly",
+            EnumMessageBoxIcons.Information,
+            string.Empty,
+            EnumMessageBoxButtons.OK);
+
+        private MessageData m_ReceivedOpcallDaeta = new MessageData();
+        private DarkMessageBox m_MessageBoxOpcall = DarkMessageBox.CreateMessageBox(
+            "Operator Call",
+            EnumMessageBoxIcons.Warning,
+            string.Empty,
+            EnumMessageBoxButtons.OK);
+
         #endregion
 
         #region public Properties
@@ -494,20 +508,18 @@ namespace bim_base.data.CIM
 
                 // TODO LHJ : Need manage History
 
-                DarkMessageBox msgbox = DarkMessageBox.CreateMessageBox(
-                    "Received Terminal Display", 
-                    EnumMessageBoxIcons.Information,
-                    msgSummery,
-                    EnumMessageBoxButtons.OK);
+                if(this.m_MessageBoxTerminalDisplay.Visible == false)
+                {
+                    // 맨 처음에 받은 하나만 보존
+                    this.m_ReceivedTerminalDisplayData.ID = $"{messageNum}";
+                    this.m_ReceivedTerminalDisplayData.Message = msgText;
+                }
 
-                msgbox.TopMost = true;
-                msgbox.MaximumSize = new System.Drawing.Size(1024, 768);
-                msgbox.WindowState = FormWindowState.Maximized;
-                msgbox.ShowDialog();
-
-                this.WriteBit(WRITE_B.TERMINALDISPLAY_3, true);
-                this.SleepWithDoEvent(1000);
-                this.WriteBit(WRITE_B.TERMINALDISPLAY_3, false);
+                this.m_MessageBoxTerminalDisplay.Message = msgSummery;
+                this.m_MessageBoxTerminalDisplay.TopMost = true;
+                this.m_MessageBoxTerminalDisplay.MaximumSize = new System.Drawing.Size(1024, 768);
+                this.m_MessageBoxTerminalDisplay.WindowState = FormWindowState.Maximized;
+                this.m_MessageBoxTerminalDisplay.Show();
 
 
             }
@@ -535,6 +547,14 @@ namespace bim_base.data.CIM
                 {
                     this.OperatorCallHistory.RemoveAt(0);
                 }
+
+
+                //if (this.m_MessageBoxOpcall.Visible == false)
+                //{
+                //    // 맨 처음에 받은 하나만 보존
+                //    this.m_MessageBoxOpcall.ID = $"{opCallNum}";
+                //    this.m_MessageBoxOpcall.Message = strOpCallText;
+                //}
 
                 this.WriteBit(WRITE_B.OPERATORCALL_4, true);
 
@@ -1097,6 +1117,27 @@ namespace bim_base.data.CIM
                 }
             }).ConfigureAwait(true);
 
+
+            this.m_MessageBoxOpcall.TitleButtonClickEvent += MessageBoxOpcall_TitleButtonClickEvent;
+        }
+
+        private void MessageBoxOpcall_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
+        {
+            switch (button)
+            {
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
+
+                    this.m_MessageBoxTerminalDisplay.Hide();
+
+                    this.WriteBit(WRITE_B.TERMINALDISPLAY_3, true);
+                    this.SleepWithDoEvent(1000);
+                    this.WriteBit(WRITE_B.TERMINALDISPLAY_3, false);
+
+                    break;
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
+                default:
+                    break;
+            }
         }
 
         public bool SetDateTime()
@@ -1166,14 +1207,14 @@ namespace bim_base.data.CIM
         /// <summary>
         /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
         /// </summary>
-        public void SendTerminalDisplayReply(string _message)
+        public void SendReplyTerminalDisplay()
         {
             if (this.IsInitialized == false)
                 return;
 
             try
             {
-                this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, _message);
+                this.WriteWord(WRITE_W.ASCII_60_1086_TerminalDisplaySnd, this.m_ReceivedTerminalDisplayData.ToString());
                 this.HandShakeSignal(WRITE_B.TERMINALDISPLAY_3, true, CIMRead.READ_B.TERMINALDISPLAY_3, true, HANDSHAKE_TIMEOUT_MILLISECONDS); 
 
             }
