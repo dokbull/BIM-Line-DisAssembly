@@ -264,6 +264,12 @@
     <Compile Include="FormAuto\FormTactTime.Designer.cs">
       <DependentUpon>FormTactTime.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAuto\FormTpmLossCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAuto\FormTpmLossCode.Designer.cs">
+      <DependentUpon>FormTpmLossCode.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormCommon\FormPassWord.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -854,6 +860,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormAuto\FormTactTime.resx">
       <DependentUpon>FormTactTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAuto\FormTpmLossCode.resx">
+      <DependentUpon>FormTpmLossCode.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormAuto\FormUnitInit.resx">
       <DependentUpon>FormUnitInit.cs</DependentUpon>

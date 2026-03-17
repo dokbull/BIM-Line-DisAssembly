@@ -1079,7 +1079,7 @@ namespace bim_base.data.CIM
         {
             this.mTh_IntervalRun = new Thread(new ThreadStart(this.RunScan));
             this.mTh_IntervalRun.IsBackground = true;
-            //this.mTh_IntervalRun.ApartmentState = ApartmentState.STA;
+            this.mTh_IntervalRun.ApartmentState = ApartmentState.STA;
             this.mTh_IntervalRun.Start();
 
             await Task.Run(() =>
@@ -1312,17 +1312,23 @@ namespace bim_base.data.CIM
 
                 // TODO LHJ : Need change PopupUI of ETC Sheet in Scenario Doc
 
-                FormTpmLossCode form = new FormTpmLossCode();
-                form.TopMost = true;
-                form.ShowDialog();
+                DarkMessageBox msgPopup = DarkMessageBox.CreateMessageBox(
+                    "TPM Loss",
+                    Lib.UI.Generic.Icons.EnumMessageBoxIcons.Warning,
+                    "Loss Code를 선택하세요",
+                    Lib.UI.Generic.DarkMode.EnumMessageBoxButtons.OK,
+                    itemsLossCode);
 
+                msgPopup.WindowState = FormWindowState.Maximized;
+                msgPopup.MaximumSize = new System.Drawing.Size(1024, 768);
+                msgPopup.StartPosition = FormStartPosition.CenterScreen;
+                msgPopup.TopMost = true;
+                DialogResult result = msgPopup.ShowDialog();
 
-                this.WriteWord(WRITE_W.DEC_2_120F_TMPLossCode, $"{(int)form.SelectedTpCode}");
-                this.WriteWord(WRITE_W.ASCII_20_1211_TMPLossDescp, form.SelectedTpDescription);
+                this.WriteWord(WRITE_W.DEC_2_120F_TMPLossCode, msgPopup.SelectedItem.ID);
+                this.WriteWord(WRITE_W.ASCII_20_1211_TMPLossDescp, msgPopup.SelectedItem.Text);//TODO LHJ : Need input description of ETC Sheet in Scenario Doc
 
-                form.Close();
-                form.Dispose();
-                form = null;
+                msgPopup.Close();
 
                 this.SetEqState(EnumMoveState.Pause);
                 this.WriteBit(WRITE_B.TPMLOSS_15, true);
@@ -1950,5 +1956,9 @@ namespace bim_base.data.CIM
 
         #endregion
 
+        public void TestAlive()
+        {
+            WriteBit(WRITE_B.ALIVEBIT_1, true);
+        }
     }
 }

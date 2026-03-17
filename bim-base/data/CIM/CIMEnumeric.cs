@@ -124,5 +124,22 @@ namespace bim_base.data.CIM
             Fail,
             Timeout,
         }
+
+
+        public enum EnumTpCode
+        {
+            None = 0,
+            BM_Manual_Code = 3000,
+            PM_Scheduled_Code = 12000,
+            PM_Unscheduled_EQ_Code = 15100,
+            PM_Unscheduled_QC_Code = 15200,
+            CM_EE_Code = 17200,
+            CM_EI_Code = 17300,
+            CM_Setup_Code = 14000,
+            ModelChange_Same_Code = 41100,
+            ModelChange_Diff_Code = 41200,
+            Materials_Change_Code = 35000,
+            Materials_Down_Code = 51000,
+        }
     }
 }
