@@ -47,7 +47,7 @@ namespace bim_base
         STEP m_agoStep = STEP.END;
 
         CElaspedTimer m_vacTimeout = new CElaspedTimer(2 * 1000);
-        CElaspedTimer m_cylTimeout = new CElaspedTimer(2 * 1000);
+        CElaspedTimer m_cylTimeout = new CElaspedTimer(5 * 1000);
 
         public ProcessUbReverseWork(ProcessMain procMain) : base(procMain)
         {

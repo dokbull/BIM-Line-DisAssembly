@@ -48,7 +48,7 @@ namespace bim_base
         STEP m_step = STEP.START;
         STEP m_agoStep = STEP.END;
 
-        CElaspedTimer m_cylTimeout = new CElaspedTimer(2 * 1000);
+        CElaspedTimer m_cylTimeout = new CElaspedTimer(5 * 1000);
 
         public ProcessMoldReverseWork(ProcessMain procMain) : base(procMain)
         {
