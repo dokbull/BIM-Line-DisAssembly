@@ -28,6 +28,8 @@ namespace bim_base.data.CIM
 
         public string Message { get; set; } = string.Empty;
 
+        public int Option { get; set; } = 0;
+
         public override string ToString()
         {
             return $"{this.ID} : {this.Message}";

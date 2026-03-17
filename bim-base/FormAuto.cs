@@ -52,7 +52,10 @@ namespace bim_base
             this.tBlink.Wait();
 
             main.setOutput(OUTPUT.BUZZER_1, false);
+            main.setOutput(OUTPUT.TOWER_R, false);
             main.setOutput(OUTPUT.TOWER_Y, false);
+
+
         }
 
         private bool Automation_GetSampleExistEvent()
@@ -111,10 +114,10 @@ namespace bim_base
 
             main.setOutput(OUTPUT.BUZZER_1, true);
 
-            bool isSignalTowerBlink = true;
-            Task tBlink = Task.Run(async () =>
+            this.m_IsSignalTowerBlink = true;
+            tBlink = Task.Run(async () =>
             {
-                while (isSignalTowerBlink)
+                while (m_IsSignalTowerBlink)
                 {
                     main.setOutput(OUTPUT.TOWER_R, true);
                     main.setOutput(OUTPUT.TOWER_Y, true);
@@ -126,21 +129,6 @@ namespace bim_base
 
             });
 
-            DarkMessageBox popup = DarkMessageBox.CreateMessageBox(
-               "Interlock",
-               EnumMessageBoxIcons.Warning,
-               $"{_ID} : {_Message}",
-               EnumMessageBoxButtons.OK);
-            popup.MaximumSize = new Size(1024, 768);
-            popup.WindowState = FormWindowState.Maximized;
-            popup.ShowDialog();
-
-            isSignalTowerBlink = false;
-            tBlink.Wait();
-
-            main.setOutput(OUTPUT.BUZZER_1, false);
-            main.setOutput(OUTPUT.TOWER_R, false);
-            main.setOutput(OUTPUT.TOWER_Y, false);
         }
 
         private async void Automation_ReleaseInterlockEvent(int _ID, EnumInterlockRCMD _RCMD, string _LogMessage)

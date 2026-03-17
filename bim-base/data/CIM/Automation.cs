@@ -24,6 +24,7 @@ using static bim_base.CSTATION;
 using static bim_base.data.CIM.CIMEnumeric;
 using static CIMRead;
 using static CIMWrite;
+using static LSFenet.FNET;
 using static System.Windows.Forms.AxHost;
 
 namespace bim_base.data.CIM
@@ -80,10 +81,17 @@ namespace bim_base.data.CIM
             string.Empty,
             EnumMessageBoxButtons.OK);
 
-        private MessageData m_ReceivedOpcallDaeta = new MessageData();
+        private MessageData m_ReceivedOpcallData = new MessageData();
         private DarkMessageBox m_MessageBoxOpcall = DarkMessageBox.CreateMessageBox(
             "Operator Call",
             EnumMessageBoxIcons.Warning,
+            string.Empty,
+            EnumMessageBoxButtons.OK);
+
+        private MessageData m_ReceivedInterlockData = new MessageData();
+        private DarkMessageBox m_MessageBoxInterlock = DarkMessageBox.CreateMessageBox(
+            "Interlock",
+            EnumMessageBoxIcons.Error,
             string.Empty,
             EnumMessageBoxButtons.OK);
 
@@ -554,13 +562,13 @@ namespace bim_base.data.CIM
                 if (this.m_MessageBoxOpcall.Visible == false)
                 {
                     // 맨 처음에 받은 하나만 보존
-                    this.m_ReceivedOpcallDaeta.ID = $"{opCallNum}";
-                    this.m_ReceivedOpcallDaeta.Message = strOpCallText;
+                    this.m_ReceivedOpcallData.ID = $"{opCallNum}";
+                    this.m_ReceivedOpcallData.Message = strOpCallText;
                 }
 
                 this.WriteBit(WRITE_B.OPERATORCALL_4, true);
 
-                this.m_MessageBoxTerminalDisplay.Message = this.m_ReceivedOpcallDaeta.ToString();
+                this.m_MessageBoxTerminalDisplay.Message = $"{opCallNum} : strOpCallText";
                 this.m_MessageBoxTerminalDisplay.TopMost = true;
                 this.m_MessageBoxTerminalDisplay.MaximumSize = new System.Drawing.Size(1024, 768);
                 this.m_MessageBoxTerminalDisplay.WindowState = FormWindowState.Maximized;
@@ -592,16 +600,22 @@ namespace bim_base.data.CIM
                 if (Enum.TryParse<EnumInterlockRCMD>(strRCMD, out EnumInterlockRCMD rcmd) == false)
                     return;
 
+                if (this.m_MessageBoxInterlock.Visible == false)
+                {
+                    // 맨 처음에 받은 하나만 보존
+                    this.m_ReceivedInterlockData.ID = $"{interlockID}";
+                    this.m_ReceivedInterlockData.Message = strMessage;
+                    this.m_ReceivedInterlockData.Option = (int)rcmd;
+                }
+
                 // Set Interlock
-                string logMessage = $"{rcmd} Interlock (RCMD={(int)rcmd}) : {strMessage}";
-                this.InterlockHistory.Add(new HistoryItem(DateTime.Now, $"{interlockID}", logMessage));
+                this.InterlockHistory.Add(new HistoryItem(DateTime.Now, $"{interlockID}", strMessage));
                 if (this.InterlockHistory.Count > HISTORY_MAX_COUNT)
                 {
                     this.InterlockHistory.RemoveAt(0);
                 }
 
                 // TODO CHECK LHJ to HJP : 알람이 발생하더라도 인터락 요청 상태이면 정상가동 불가
-                // TODO CHECK LHJ : 여러개가 중복되어 수신될 경우, UI Popup에는 제일 마지막에 수신된 메세지, Confirm 보고는 제일 처음에 수신된 메세지
                 this.WriteWord(WRITE_W.ASCII_10_1040_InterlockIDComfirm, $"{interlockID}");
                 this.WriteWord(WRITE_W.ASCII_60_104A_InterlockMessageConfirm, strMessage);
 
@@ -611,36 +625,20 @@ namespace bim_base.data.CIM
 
                 this.SleepWithDoEvent(500);
 
+                string logMessage = $"{interlockID} : {strMessage}";
+
+                this.m_MessageBoxInterlock.Message = logMessage;
+                this.m_MessageBoxInterlock.TopMost = true;
+                this.m_MessageBoxInterlock.MaximumSize = new System.Drawing.Size(1024, 768);
+                this.m_MessageBoxInterlock.WindowState = FormWindowState.Maximized;
+                this.m_MessageBoxInterlock.Show();
+
                 if (this.ReceivedInterlockEvent == null)
                     throw new Exception("ReceivedInterlockEvent is not set.");
-
-                logMessage = $"{interlockID} : {strMessage}";
 
                 // Show Popup + Signal Tower ON + Buzzor ON 
                 ReceivedInterlockEvent.Invoke($"{interlockID}", strMessage, rcmd);
 
-                // Interlock Released (=Clear Popup)
-                this.WriteBit(WRITE_B.INTERLOCK_5, false);
-
-                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
-
-                this.WaitBitSignal(READ_B.INTERLOCKCONFIRM_42, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
-                this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
-
-                this.InterlockHistory.Add(new HistoryItem(DateTime.Now, strID, logMessage));
-                if (this.InterlockHistory.Count > HISTORY_MAX_COUNT)
-                {
-                    this.InterlockHistory.RemoveAt(0);
-                }
-
-                if (this.ReleaseInterlockEvent == null)
-                    throw new Exception("RequestAutoNormalModeEvent is not set.");
-
-                this.ReleaseInterlockEvent?.Invoke(interlockID, rcmd, logMessage);
-
-                // TODO LHJ->HJP : Change State to Auto Start
-                //this.SetEqState(EnumInterlockState.Off);
-                //this.SetEqState(EnumMoveState.Runnning);
 
 
             }
@@ -1115,6 +1113,51 @@ namespace bim_base.data.CIM
 
             this.m_MessageBoxTerminalDisplay.TitleButtonClickEvent += MessageBoxTerminalDisplay_TitleButtonClickEvent;
             this.m_MessageBoxOpcall.TitleButtonClickEvent += MessageBoxOpcall_TitleButtonClickEvent;
+            this.m_MessageBoxInterlock.TitleButtonClickEvent += MessageBoxInterlock_TitleButtonClickEvent;
+        }
+
+        private void MessageBoxInterlock_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
+        {
+            switch (button)
+            {
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
+
+                    // Interlock Released (=Clear Popup)
+
+                    this.OnResetSignalTowerBuzzorEvent?.Invoke();
+                    this.m_MessageBoxInterlock.Hide();
+
+                    // Confirm 보고는 제일 처음에 수신된 메세지로 보고
+                    this.WriteBit(WRITE_B.INTERLOCK_5, false);
+                    this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
+
+                    this.WaitBitSignal(READ_B.INTERLOCKCONFIRM_42, true, HANDSHAKE_TIMEOUT_MILLISECONDS);
+                    this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, false);
+
+
+                    this.InterlockHistory.Add(new HistoryItem(DateTime.Now, this.m_ReceivedInterlockData.ID, this.m_ReceivedInterlockData.Message));
+                    if (this.InterlockHistory.Count > HISTORY_MAX_COUNT)
+                    {
+                        this.InterlockHistory.RemoveAt(0);
+                    }
+
+                    if (this.ReleaseInterlockEvent == null)
+                        throw new Exception("RequestAutoNormalModeEvent is not set.");
+
+                    this.ReleaseInterlockEvent?.Invoke(
+                        int.Parse(this.m_ReceivedInterlockData.ID), 
+                        (EnumInterlockRCMD)this.m_ReceivedInterlockData.Option, 
+                        this.m_ReceivedInterlockData.Message);
+
+                    // TODO LHJ->HJP : Change State to Auto Start
+                    //this.SetEqState(EnumInterlockState.Off);
+                    //this.SetEqState(EnumMoveState.Runnning);
+
+                    break;
+                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
+                default:
+                    break;
+            }
         }
 
         private void MessageBoxOpcall_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
@@ -1128,8 +1171,8 @@ namespace bim_base.data.CIM
 
                     // Confirm 보고는 제일 처음에 수신된 메세지로 보고
 
-                    this.WriteWord(WRITE_W.ASCII_10_0F80_OPCallIDComfirm, $"{this.m_ReceivedOpcallDaeta.ID}");
-                    this.WriteWord(WRITE_W.ASCII_60_0F8A_OPCallMessageConfirm, this.m_ReceivedOpcallDaeta.Message);
+                    this.WriteWord(WRITE_W.ASCII_10_0F80_OPCallIDComfirm, $"{this.m_ReceivedOpcallData.ID}");
+                    this.WriteWord(WRITE_W.ASCII_60_0F8A_OPCallMessageConfirm, this.m_ReceivedOpcallData.Message);
 
                     this.SleepWithDoEvent(500);
 
