@@ -155,7 +155,7 @@
             this.lblMaterials_Down.Size = new System.Drawing.Size(503, 73);
             this.lblMaterials_Down.TabIndex = 31;
             this.lblMaterials_Down.Tag = "0";
-            this.lblMaterials_Down.Text = "자재_DOWN";
+            this.lblMaterials_Down.Text = "DOWN_MATERIAL";
             this.lblMaterials_Down.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblMaterials_Down.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblMaterials_Down.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -186,7 +186,7 @@
             this.lblMaterials_Change.Size = new System.Drawing.Size(503, 62);
             this.lblMaterials_Change.TabIndex = 29;
             this.lblMaterials_Change.Tag = "0";
-            this.lblMaterials_Change.Text = "자재_교체";
+            this.lblMaterials_Change.Text = "CHANGE_MATERIAL";
             this.lblMaterials_Change.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblMaterials_Change.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblMaterials_Change.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -202,7 +202,7 @@
             this.lblMaterials.Size = new System.Drawing.Size(197, 136);
             this.lblMaterials.TabIndex = 28;
             this.lblMaterials.Tag = "0";
-            this.lblMaterials.Text = "자재";
+            this.lblMaterials.Text = "MATERIAL";
             this.lblMaterials.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblMaterials.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
             this.lblMaterials.MouseLeave += new System.EventHandler(this.lblTPCode_MouseLeave);
@@ -232,7 +232,7 @@
             this.lblModelChange_Diff.Size = new System.Drawing.Size(503, 62);
             this.lblModelChange_Diff.TabIndex = 26;
             this.lblModelChange_Diff.Tag = "0";
-            this.lblModelChange_Diff.Text = "이품종_변경";
+            this.lblModelChange_Diff.Text = "CHANGE_DIFFERENT_MODEL";
             this.lblModelChange_Diff.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblModelChange_Diff.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblModelChange_Diff.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -263,7 +263,7 @@
             this.lblModelChange_Same.Size = new System.Drawing.Size(503, 62);
             this.lblModelChange_Same.TabIndex = 24;
             this.lblModelChange_Same.Tag = "0";
-            this.lblModelChange_Same.Text = "동품종_변경";
+            this.lblModelChange_Same.Text = "CHANGE_SAME_MODEL";
             this.lblModelChange_Same.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblModelChange_Same.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblModelChange_Same.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -279,7 +279,7 @@
             this.lblModelChange.Size = new System.Drawing.Size(197, 125);
             this.lblModelChange.TabIndex = 23;
             this.lblModelChange.Tag = "0";
-            this.lblModelChange.Text = "기종변경";
+            this.lblModelChange.Text = "CHANGE_MODEL";
             this.lblModelChange.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblModelChange.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
             this.lblModelChange.MouseLeave += new System.EventHandler(this.lblTPCode_MouseLeave);
@@ -309,7 +309,7 @@
             this.lblCM_Setup.Size = new System.Drawing.Size(503, 62);
             this.lblCM_Setup.TabIndex = 21;
             this.lblCM_Setup.Tag = "0";
-            this.lblCM_Setup.Text = "신규제품_SET_UP";
+            this.lblCM_Setup.Text = "SETUP_NEW_PRODUCT";
             this.lblCM_Setup.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblCM_Setup.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblCM_Setup.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -341,7 +341,7 @@
             this.lblCM_EI.Size = new System.Drawing.Size(503, 62);
             this.lblCM_EI.TabIndex = 19;
             this.lblCM_EI.Tag = "0";
-            this.lblCM_EI.Text = "공정_개량_보전_EI";
+            this.lblCM_EI.Text = "IMPROVE_PROCESSING_EI";
             this.lblCM_EI.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblCM_EI.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblCM_EI.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -372,7 +372,7 @@
             this.lblCM_EE.Size = new System.Drawing.Size(503, 62);
             this.lblCM_EE.TabIndex = 17;
             this.lblCM_EE.Tag = "0";
-            this.lblCM_EE.Text = "설비_개량_보전_EE";
+            this.lblCM_EE.Text = "IMPROVE_EQUIPMENT_EE";
             this.lblCM_EE.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblCM_EE.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblCM_EE.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -417,7 +417,7 @@
             this.lblPM_Unscheduled_QC.Size = new System.Drawing.Size(248, 62);
             this.lblPM_Unscheduled_QC.TabIndex = 14;
             this.lblPM_Unscheduled_QC.Tag = "0";
-            this.lblPM_Unscheduled_QC.Text = "품질점검";
+            this.lblPM_Unscheduled_QC.Text = "CHECK_QUALITY";
             this.lblPM_Unscheduled_QC.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblPM_Unscheduled_QC.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblPM_Unscheduled_QC.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -447,7 +447,7 @@
             this.lblPM_Unscheduled_EQ.Size = new System.Drawing.Size(248, 62);
             this.lblPM_Unscheduled_EQ.TabIndex = 12;
             this.lblPM_Unscheduled_EQ.Tag = "0";
-            this.lblPM_Unscheduled_EQ.Text = "설비점검";
+            this.lblPM_Unscheduled_EQ.Text = "CHECK_EQUIPMENT";
             this.lblPM_Unscheduled_EQ.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblPM_Unscheduled_EQ.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblPM_Unscheduled_EQ.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -463,7 +463,7 @@
             this.lblPM_Unscheduled.Size = new System.Drawing.Size(248, 125);
             this.lblPM_Unscheduled.TabIndex = 11;
             this.lblPM_Unscheduled.Tag = "0";
-            this.lblPM_Unscheduled.Text = "비정기_PM";
+            this.lblPM_Unscheduled.Text = "IRREGULAR_PM";
             this.lblPM_Unscheduled.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblPM_Unscheduled.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblPM_Unscheduled.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -494,7 +494,7 @@
             this.lblPM_Scheduled.Size = new System.Drawing.Size(503, 62);
             this.lblPM_Scheduled.TabIndex = 9;
             this.lblPM_Scheduled.Tag = "0";
-            this.lblPM_Scheduled.Text = "정기_PM";
+            this.lblPM_Scheduled.Text = "REGULAR_PM";
             this.lblPM_Scheduled.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblPM_Scheduled.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblPM_Scheduled.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
@@ -540,7 +540,7 @@
             this.lblBM_Manual.Size = new System.Drawing.Size(503, 62);
             this.lblBM_Manual.TabIndex = 6;
             this.lblBM_Manual.Tag = "0";
-            this.lblBM_Manual.Text = "고장_수동";
+            this.lblBM_Manual.Text = "BREAKDOWN_MANUAL";
             this.lblBM_Manual.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblBM_Manual.Click += new System.EventHandler(this.lblTPCode_Click);
             this.lblBM_Manual.MouseEnter += new System.EventHandler(this.lblTPCode_MouseEnter);
