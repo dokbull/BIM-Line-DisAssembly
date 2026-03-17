@@ -44,7 +44,7 @@ namespace bim_base
 
         CElaspedTimer m_cvRunTimer = new CElaspedTimer(10 * 1000);
         CElaspedTimer m_cvOverRunTime = new CElaspedTimer(1 * 1000);
-        CElaspedTimer m_cylTimeout = new CElaspedTimer(2 * 1000);
+        CElaspedTimer m_cylTimeout = new CElaspedTimer(5 * 1000);
         CElaspedTimer m_actDelay = new CElaspedTimer(500);
 
         public ProcessAlignCvWork(ProcessMain procMain) : base(procMain)

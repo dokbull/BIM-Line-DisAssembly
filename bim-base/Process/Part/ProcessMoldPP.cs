@@ -57,7 +57,7 @@ namespace bim_base
         ACTION m_action = ACTION.WAIT;
 
         CElaspedTimer m_actionDelay = new CElaspedTimer(250);
-        CElaspedTimer m_cylTimeout = new CElaspedTimer(2 * 1000);
+        CElaspedTimer m_cylTimeout = new CElaspedTimer(5 * 1000);
 
         public ProcessMoldPP(ProcessMain procMain) : base(procMain)
         {

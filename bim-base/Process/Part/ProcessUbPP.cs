@@ -56,7 +56,7 @@ namespace bim_base
         ACTION m_action = ACTION.WAIT;
 
         CElaspedTimer m_actionDelay = new CElaspedTimer(250);
-        CElaspedTimer m_cylTimeout = new CElaspedTimer(2 * 1000);
+        CElaspedTimer m_cylTimeout = new CElaspedTimer(5 * 1000);
 
         public ProcessUbPP(ProcessMain procMain) : base(procMain)
         {
@@ -316,6 +316,15 @@ namespace bim_base
                                     setReverseVac2();
 
                                 break;
+                        }
+
+                        if (m_action == ACTION.PICK)
+                        {
+                            m_actionDelay.setTime(2000);
+                        }
+                        else
+                        {
+                            m_actionDelay.setTime(250);
                         }
 
                         m_cylTimeout.start();
