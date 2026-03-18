@@ -1185,6 +1185,11 @@ namespace bim_base.data.CIM
                     this.MessageBoxInterlock.Hide();
 
                     // Confirm 보고는 제일 처음에 수신된 메세지로 보고
+                    this.WriteWord(WRITE_W.ASCII_10_1040_InterlockIDComfirm, $"{this.m_ReceivedInterlockData.ID}");
+                    this.WriteWord(WRITE_W.ASCII_60_104A_InterlockMessageConfirm, this.m_ReceivedInterlockData.Message);
+
+                    this.SleepWithDoEvent(500);
+
                     this.WriteBit(WRITE_B.INTERLOCK_5, false);
                     this.WriteBit(WRITE_B.INTERLOCKCONFIRM_42, true);
 
