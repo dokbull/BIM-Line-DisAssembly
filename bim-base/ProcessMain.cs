@@ -755,6 +755,7 @@ namespace bim_base
 
             m_isAuto = value;
 
+#if true
             Automation.Instance.EqControlMode = (this.m_isAuto ? CIMEnumeric.EnumEqControlMode.Auto : CIMEnumeric.EnumEqControlMode.Manual);
             switch (Automation.Instance.EqControlMode)
             {
@@ -769,6 +770,7 @@ namespace bim_base
                     break;
                 default: break;
             }
+#endif
         }
 
         public void pause()
