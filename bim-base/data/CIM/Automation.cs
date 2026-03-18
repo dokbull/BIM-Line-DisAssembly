@@ -231,7 +231,7 @@ namespace bim_base.data.CIM
                 if (m_timeout.isElasped() == true)
                     return false;
 
-                Util.waitTick(1);
+                Util.waitTick(100);
             }
         }
 
@@ -445,27 +445,6 @@ namespace bim_base.data.CIM
                     this.WriteBit(WRITE_B.ALIVEBIT_1, !alive);
                     startTimeAlive = DateTime.Now;
                 }
-                //DateTime startTime = DateTime.Now;
-                
-
-                //while (val != _waitValue)
-                //{
-                //    if (_timeoutSeconds > 0 && ts.TotalSeconds >= _timeoutSeconds)
-                //    {
-                //        throw new Exception("WaitBitSignal Timeout Occurred. Addr: " + _addr.ToString() + ", WaitValue: " + _waitValue.ToString());
-                //    }
-
-                //    val = this.ReadBit(_addr);
-
-                //    if (val == _waitValue) { return; }
-
-                //    this.SleepWithDoEvent(1);
-                //    ts = DateTime.Now - startTime;
-                //}
-
-
-                //this.HandShakeSignal(WRITE_B.ALIVEBIT_1, !alive, CIMRead.READ_B.ALIVEBIT_1, !alive, HANDSHAKE_TIMEOUT_SECONDS);
-
             }
             catch
             {
@@ -537,13 +516,13 @@ namespace bim_base.data.CIM
                 }
 
 
-                Automation.Instance.MessageBoxTerminalDisplay.Message = msgSummery;
-                Automation.Instance.MessageBoxTerminalDisplay.TopMost = true;
-                Automation.Instance.MessageBoxTerminalDisplay.MaximumSize = new System.Drawing.Size(1024, 768);
-                Automation.Instance.MessageBoxTerminalDisplay.WindowState = FormWindowState.Maximized;
-                Automation.Instance.MessageBoxTerminalDisplay.Refresh();
+                this.MessageBoxTerminalDisplay.Message = msgSummery;
+                this.MessageBoxTerminalDisplay.TopMost = true;
+                this.MessageBoxTerminalDisplay.MaximumSize = new System.Drawing.Size(1024, 768);
+                this.MessageBoxTerminalDisplay.WindowState = FormWindowState.Maximized;
+                this.MessageBoxTerminalDisplay.Refresh();
 
-                Task.Run(async () => Automation.Instance.MessageBoxTerminalDisplay.ShowDialog());
+                Task.Run(async () => this.MessageBoxTerminalDisplay.ShowDialog());
 
             }
             catch
@@ -553,42 +532,49 @@ namespace bim_base.data.CIM
 
         private void RequestOperatorCall()
         {
-                try
+            try
+            {
+                if (this.ReadBit(CIMRead.READ_B.OPERATORCALL_4) == false)
+                    return;
+
+                string strOpCallNum = this.ReadWord(CIMRead.READ_W.ASCII_10_D058_OperatorCallID);
+                string strOpCallText = this.ReadWord(CIMRead.READ_W.ASCII_60_D062_OperatorCallText);
+
+                if (int.TryParse(strOpCallNum, out int opCallNum) == false)
+                    return;
+
+                this.OperatorCallHistory.Add(new HistoryItem(DateTime.Now, $"{opCallNum}", strOpCallText));
+
+                if (this.OperatorCallHistory.Count > HISTORY_MAX_COUNT)
                 {
-                    if (this.ReadBit(CIMRead.READ_B.OPERATORCALL_4) == false)
-                        return;
-
-                    string strOpCallNum = this.ReadWord(CIMRead.READ_W.ASCII_10_D058_OperatorCallID);
-                    string strOpCallText = this.ReadWord(CIMRead.READ_W.ASCII_60_D062_OperatorCallText);
-
-                    if (int.TryParse(strOpCallNum, out int opCallNum) == false)
-                        return;
-
-                    this.OperatorCallHistory.Add(new HistoryItem(DateTime.Now, $"{opCallNum}", strOpCallText));
-
-                    if (this.OperatorCallHistory.Count > HISTORY_MAX_COUNT)
-                    {
-                        this.OperatorCallHistory.RemoveAt(0);
-                    }
-
-
-                    if (this.MessageBoxOpcall.Visible == false)
-                    {
-                        // 맨 처음에 받은 하나만 보존
-                        this.m_ReceivedOpcallData.ID = $"{opCallNum}";
-                        this.m_ReceivedOpcallData.Message = strOpCallText;
-                    }
-
-                    this.WriteBit(WRITE_B.OPERATORCALL_4, true);
-
-
-                    // TODO CHECK LHJ to HJP : 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
-                    ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
-
+                    this.OperatorCallHistory.RemoveAt(0);
                 }
-                catch
+
+
+                if (this.MessageBoxOpcall.Visible == false)
                 {
+                    // 맨 처음에 받은 하나만 보존
+                    this.m_ReceivedOpcallData.ID = $"{opCallNum}";
+                    this.m_ReceivedOpcallData.Message = strOpCallText;
                 }
+
+                this.WriteBit(WRITE_B.OPERATORCALL_4, true);
+
+                this.MessageBoxOpcall.Message = $"{opCallNum} : {strOpCallText}";
+                this.MessageBoxOpcall.TopMost = true;
+                this.MessageBoxOpcall.MaximumSize = new System.Drawing.Size(1024, 768);
+                this.MessageBoxOpcall.WindowState = FormWindowState.Maximized;
+                this.MessageBoxOpcall.Refresh();
+
+                Task.Run(async () => this.MessageBoxOpcall.ShowDialog());
+
+                // TODO CHECK LHJ to HJP : 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
+                ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
+
+            }
+            catch
+            {
+            }
         }
 
         private void RequestInterlcokState()
@@ -637,6 +623,15 @@ namespace bim_base.data.CIM
 
                 if (this.ReceivedInterlockEvent == null)
                     throw new Exception("ReceivedInterlockEvent is not set.");
+
+                string logMessage = $"{interlockID} : {strMessage}";
+                this.MessageBoxInterlock.Message = logMessage;
+                this.MessageBoxInterlock.TopMost = true;
+                this.MessageBoxInterlock.MaximumSize = new System.Drawing.Size(1024, 768);
+                this.MessageBoxInterlock.WindowState = FormWindowState.Maximized;
+                this.MessageBoxInterlock.Refresh();
+
+                Task.Run(async () => this.MessageBoxInterlock.ShowDialog());
 
                 // Show Popup + Signal Tower ON + Buzzor ON 
                 ReceivedInterlockEvent.Invoke($"{interlockID}", strMessage, rcmd);
@@ -1357,7 +1352,7 @@ namespace bim_base.data.CIM
         /// <summary>
         /// 터치화면에서 팝업 메세지 확인 및 Clear 시 호출
         /// </summary>
-        public void SendOperatorCall(string _message)
+        public void SendReplyOperatorCall(string _message)
         {
             if (this.IsInitialized == false)
                 return;
