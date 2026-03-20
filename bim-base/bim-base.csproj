@@ -402,6 +402,12 @@
     <Compile Include="FormData\FormTimer.Designer.cs">
       <DependentUpon>FormTimer.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormData\FormServoVelocity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormServoVelocity.Designer.cs">
+      <DependentUpon>FormServoVelocity.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormManual.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -426,6 +432,8 @@
     <Compile Include="FormTeach\FormTeachMoldPP.Designer.cs">
       <DependentUpon>FormTeachMoldPP.cs</DependentUpon>
     </Compile>
+    <Compile Include="lib\Event\EventManager.cs" />
+    <Compile Include="lib\Event\EventMessage.cs" />
     <Compile Include="lib\extControl\CIOButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -926,6 +934,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormPortSetting.resx">
       <DependentUpon>FormPortSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormServoVelocity.resx">
+      <DependentUpon>FormServoVelocity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormSetLimit.resx">
       <DependentUpon>FormSetLimit.cs</DependentUpon>

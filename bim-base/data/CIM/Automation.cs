@@ -86,11 +86,11 @@ namespace bim_base.data.CIM
             EnumMessageBoxButtons.OK);
 
         private MessageData m_ReceivedOpcallData = new MessageData();
-        public DarkMessageBox MessageBoxOpcall = DarkMessageBox.CreateMessageBox(
-            "Operator Call",
-            EnumMessageBoxIcons.Warning,
-            string.Empty,
-            EnumMessageBoxButtons.OK);
+        //public DarkMessageBox MessageBoxOpcall = DarkMessageBox.CreateMessageBox(
+        //    "Operator Call",
+        //    EnumMessageBoxIcons.Warning,
+        //    string.Empty,
+        //    EnumMessageBoxButtons.OK);
 
         private MessageData m_ReceivedInterlockData = new MessageData();
         public DarkMessageBox MessageBoxInterlock = DarkMessageBox.CreateMessageBox(
@@ -306,6 +306,10 @@ namespace bim_base.data.CIM
             }
         }
 
+        private Thread m_commThread;
+        private bool m_commStop = false;
+        private bool m_isConnected = false;
+        
         // Invoke to set local system time. Requires the process to have the appropriate privileges (usually admin).
         [StructLayout(LayoutKind.Sequential)]
         private struct SYSTEMTIME
@@ -386,7 +390,7 @@ namespace bim_base.data.CIM
 
         private bool ReportInitializeCIM()
         {
-            if (this.IsInitialized) return false;
+            if (!this.IsInitialized) return false;
 
             this.ResetSignals();
 
@@ -452,41 +456,55 @@ namespace bim_base.data.CIM
         }
 
 
+
         private void RunScan()
         {
-            if (this.OpenCCIE() == false)
-                return;
-
-            if (this.ReportInitializeCIM() == false)
-                return;
-
-
-            startTimeAlive = DateTime.Now;
-            startTimeFDC = DateTime.Now;
-
-            PpidChange(Conf.CURR_MODEL_IDX);
+            bool initDone = false;
 
             while (true)
             {
-                this.Alive();
-                this.RequestTerminalDisplay();
-                this.RequestOperatorCall();
-                this.RequestInterlcokState();
-                this.RequestPpidList();
-                this.RequestDateTimeSet();
-                this.RequestRecipeDownload();
-                this.RequestParameterQuery();
+                try
+                {
+                    if (!initDone)
+                    {
+                        if (this.ReportInitializeCIM())
+                        {
+                            initDone = true;
+                            this.IsInitialized = true;
+                        }
+                        else
+                        {
+                            Thread.Sleep(1000); // 재시도
+                            continue;
+                        }
+                    }
 
-                this.ReportMonitoringData();
-                this.ReportSampleProcessingState();
+                    // 정상 루프
+                    this.Alive();
+                    this.RequestTerminalDisplay();
+                    this.RequestOperatorCall();
+                    this.RequestInterlcokState();
+                    this.RequestPpidList();
+                    this.RequestDateTimeSet();
+                    this.RequestRecipeDownload();
+                    this.RequestParameterQuery();
 
-                this.EquipConstantQuery();
-                
+                    this.ReportMonitoringData();
+                    this.ReportSampleProcessingState();
+
+                    this.EquipConstantQuery();
+                }
+                catch (Exception ex)
+                {
+                    Debug.debug(ex.ToString());
+                    initDone = false; // 다시 초기화 시도
+                }
+
                 Thread.Sleep(1);
             }
         }
 
-        #endregion
+#endregion
 
         #region Private Method : CIM Request
 
@@ -550,27 +568,25 @@ namespace bim_base.data.CIM
                     this.OperatorCallHistory.RemoveAt(0);
                 }
 
+                EventManager.Instance.Publish(
+                    new EventMessage(
+                        SenderNames.Automation,
+                        EventSubject.SHOW_OP_CALL,
+                        new OpCallMessageEventParam
+                        {
+                            CallNum = opCallNum,
+                            CallText = strOpCallText
+                        }
+                    )
+                );
 
-                if (this.MessageBoxOpcall.Visible == false)
-                {
-                    // 맨 처음에 받은 하나만 보존
-                    this.m_ReceivedOpcallData.ID = $"{opCallNum}";
-                    this.m_ReceivedOpcallData.Message = strOpCallText;
-                }
+                //if (this.MessageBoxOpcall.Visible == false)
+                //{
+                this.m_ReceivedOpcallData.ID = $"{opCallNum}";
+                this.m_ReceivedOpcallData.Message = strOpCallText;
+                //}
 
                 this.WriteBit(WRITE_B.OPERATORCALL_4, true);
-
-                this.MessageBoxOpcall.Message = $"{opCallNum} : {strOpCallText}";
-                this.MessageBoxOpcall.TopMost = true;
-                this.MessageBoxOpcall.MaximumSize = new System.Drawing.Size(1024, 768);
-                this.MessageBoxOpcall.WindowState = FormWindowState.Maximized;
-                this.MessageBoxOpcall.Refresh();
-
-                Task.Run(async () => this.MessageBoxOpcall.ShowDialog());
-
-                // TODO CHECK LHJ to HJP : 설비 정지 필요, 터치판넬에서 메세지 팝업 확인
-                ReceivedOperatorCallEvent?.Invoke(opCallNum, strOpCallText);
-
             }
             catch
             {
@@ -1094,26 +1110,50 @@ namespace bim_base.data.CIM
             //this.mTh_IntervalRun.ApartmentState = ApartmentState.STA;
             this.mTh_IntervalRun.Start();
 
-            await Task.Run(() =>
-            {
-                DateTime start = DateTime.Now;
-                TimeSpan ts = DateTime.Now - start;
-
-                while (this.IsInitialized == false)
-                {
-                    this.SleepWithDoEvent(1000);
-
-                    ts = DateTime.Now - start;
-                    if (ts.TotalMilliseconds >= HANDSHAKE_TIMEOUT_MILLISECONDS)
-                        break;
-                }
-            }).ConfigureAwait(true);
-
+            StartCommThread();
 
             this.MessageBoxTerminalDisplay.TitleButtonClickEvent += MessageBoxTerminalDisplay_TitleButtonClickEvent;
-            this.MessageBoxOpcall.TitleButtonClickEvent += MessageBoxOpcall_TitleButtonClickEvent;
+            
             this.MessageBoxInterlock.TitleButtonClickEvent += MessageBoxInterlock_TitleButtonClickEvent;
         }
+
+        private void StartCommThread()
+        {
+            m_commThread = new Thread(CommLoop);
+            m_commThread.IsBackground = true;
+            m_commThread.Start();
+        }
+
+        private void CommLoop()
+        {
+            while (!m_commStop)
+            {
+                try
+                {
+                    if (!m_isConnected)
+                    {
+                        m_isConnected = OpenCCIE();
+
+                        if (!m_isConnected)
+                        {
+                            Thread.Sleep(1000); // 재시도 텀
+                            continue;
+                        }
+                    }
+
+                    SyncCommCCIE();
+                }
+                catch (Exception ex)
+                {
+                    Debug.debug(ex.ToString());
+                    m_isConnected = false; // 끊기면 재연결
+                }
+
+                Thread.Sleep(50);
+            }
+        }
+
+    
 
         private void MessageBoxInterlock_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
         {
@@ -1160,34 +1200,6 @@ namespace bim_base.data.CIM
                     break;
                 case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
                 default:
-                    break;
-            }
-        }
-
-        private void MessageBoxOpcall_TitleButtonClickEvent(Lib.UI.Generic.DarkMode.Controls.EnumTitleButton button)
-        {
-            switch (button)
-            {
-                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button1:
-                default:
-                    break;
-                case Lib.UI.Generic.DarkMode.Controls.EnumTitleButton.Button2:
-
-                    this.OnResetSignalTowerBuzzorEvent?.Invoke();
-                    this.MessageBoxOpcall.Hide();
-
-                    // Confirm 보고는 제일 처음에 수신된 메세지로 보고
-
-                    this.WriteWord(WRITE_W.ASCII_10_0F80_OPCallIDComfirm, $"{this.m_ReceivedOpcallData.ID}");
-                    this.WriteWord(WRITE_W.ASCII_60_0F8A_OPCallMessageConfirm, this.m_ReceivedOpcallData.Message);
-
-                    this.SleepWithDoEvent(500);
-
-                    this.WriteBit(WRITE_B.OPCALLCONFIRM_41, true);
-                    this.SleepWithDoEvent(1000);
-                    this.WriteBit(WRITE_B.OPERATORCALL_4, false);
-                    this.WriteBit(WRITE_B.OPCALLCONFIRM_41, false);
-
                     break;
             }
         }
