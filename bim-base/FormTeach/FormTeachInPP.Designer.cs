@@ -52,8 +52,11 @@
             this.motorPosGrid = new CSourceGrid();
             this.ui_timer = new System.Windows.Forms.Timer(this.components);
             this.jogControl1 = new bim_base.JogControl();
+            this.mySqlDataAdapter1 = new MySqlConnector.MySqlDataAdapter();
+            this.cSourceGrid1 = new CSourceGrid();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
+            this.motorPosGrid.SuspendLayout();
             this.SuspendLayout();
             // 
             // label3
@@ -306,6 +309,7 @@
             // motorPosGrid
             // 
             this.tableLayoutPanel3.SetColumnSpan(this.motorPosGrid, 5);
+            this.motorPosGrid.Controls.Add(this.cSourceGrid1);
             this.motorPosGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.motorPosGrid.EnableSort = true;
             this.motorPosGrid.Location = new System.Drawing.Point(3, 3);
@@ -325,11 +329,31 @@
             // jogControl1
             // 
             this.jogControl1.BackColor = System.Drawing.Color.White;
-            this.jogControl1.Font = new System.Drawing.Font("SamsungOne 800C", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.jogControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.jogControl1.Location = new System.Drawing.Point(745, 12);
             this.jogControl1.Name = "jogControl1";
             this.jogControl1.Size = new System.Drawing.Size(246, 350);
             this.jogControl1.TabIndex = 58;
+            // 
+            // mySqlDataAdapter1
+            // 
+            this.mySqlDataAdapter1.DeleteCommand = null;
+            this.mySqlDataAdapter1.InsertCommand = null;
+            this.mySqlDataAdapter1.SelectCommand = null;
+            this.mySqlDataAdapter1.UpdateBatchSize = 0;
+            this.mySqlDataAdapter1.UpdateCommand = null;
+            // 
+            // cSourceGrid1
+            // 
+            this.cSourceGrid1.EnableSort = true;
+            this.cSourceGrid1.Location = new System.Drawing.Point(504, 195);
+            this.cSourceGrid1.Name = "cSourceGrid1";
+            this.cSourceGrid1.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.cSourceGrid1.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.cSourceGrid1.Size = new System.Drawing.Size(200, 100);
+            this.cSourceGrid1.TabIndex = 4;
+            this.cSourceGrid1.TabStop = true;
+            this.cSourceGrid1.ToolTipText = "";
             // 
             // FormTeachInPP
             // 
@@ -339,13 +363,14 @@
             this.Controls.Add(this.jogControl1);
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.tableLayoutPanel3);
-            this.Font = new System.Drawing.Font("SamsungOne 800", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "FormTeachInPP";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormTeachPP";
             this.Load += new System.EventHandler(this.FormTeachPP_Load);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
+            this.motorPosGrid.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -375,5 +400,7 @@
         private System.Windows.Forms.Button reverseDownButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private MySqlConnector.MySqlDataAdapter mySqlDataAdapter1;
+        private CSourceGrid cSourceGrid1;
     }
 }

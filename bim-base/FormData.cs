@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
+using bim_base.lib.Interfaces;
 
 namespace bim_base
 {
@@ -39,26 +40,37 @@ namespace bim_base
 
         void LoadView(Form form)
         {
+            // 기존 컨트롤 제거 + Dispose
+            foreach (Control ctrl in pnlView.Controls)
+            {
+                ctrl.Dispose();
+            }
             pnlView.Controls.Clear();
 
             form.TopLevel = false;
             form.FormBorderStyle = FormBorderStyle.None;
             form.Dock = DockStyle.Fill;
 
-            if (form is FormServoVelocity f)
+            // 공통 인터페이스 방식 추천 (아래 설명 있음)
+            if (form is IViewCloseable f)
             {
                 f.OnCloseRequested += () =>
                 {
+                    foreach (Control ctrl in pnlView.Controls)
+                    {
+                        ctrl.Dispose();
+                    }
                     pnlView.Controls.Clear();
-                    pnlView.SendToBack(); // 👈 여기서 처리
+                    pnlView.SendToBack();
                 };
             }
 
             pnlView.Controls.Add(form);
             form.Show();
 
-            pnlView.BringToFront(); // 👈 보여줄 때만 앞으로
+            pnlView.BringToFront();
         }
+
         //void LoadView(Form form)
         //{
         //    pnlView.Controls.Clear();
@@ -182,6 +194,16 @@ namespace bim_base
         private void btnServoVelocity_Click(object sender, EventArgs e)
         {
             LoadView(new FormServoVelocity(main));
+        }
+
+        private void btnServoLimit_Click(object sender, EventArgs e)
+        {
+            LoadView(new FormServoLimit(main));
+        }
+
+        private void btnServoOrigin_Click(object sender, EventArgs e)
+        {
+            LoadView(new FormServoOrigin(main));
         }
 
         private void motorDelayButton_Click(object sender, EventArgs e)

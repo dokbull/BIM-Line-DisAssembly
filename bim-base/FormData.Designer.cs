@@ -170,6 +170,7 @@
             this.btnServoOrigin.TabIndex = 1207;
             this.btnServoOrigin.Text = "Servo Origin";
             this.btnServoOrigin.UseVisualStyleBackColor = false;
+            this.btnServoOrigin.Click += new System.EventHandler(this.btnServoOrigin_Click);
             // 
             // btnServoLimit
             // 
@@ -184,6 +185,7 @@
             this.btnServoLimit.TabIndex = 1206;
             this.btnServoLimit.Text = "Servo Limit";
             this.btnServoLimit.UseVisualStyleBackColor = false;
+            this.btnServoLimit.Click += new System.EventHandler(this.btnServoLimit_Click);
             // 
             // btnServoVelocity
             // 

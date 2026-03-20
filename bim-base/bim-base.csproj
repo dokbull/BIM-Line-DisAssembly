@@ -402,6 +402,18 @@
     <Compile Include="FormData\FormPortSetting.Designer.cs">
       <DependentUpon>FormPortSetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormData\FormServoLimit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormServoLimit.Designer.cs">
+      <DependentUpon>FormServoLimit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormServoOrigin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormServoOrigin.Designer.cs">
+      <DependentUpon>FormServoOrigin.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormData\FormSetLimit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -458,6 +470,7 @@
     <Compile Include="lib\extControl\CIOButton.Designer.cs">
       <DependentUpon>CIOButton.cs</DependentUpon>
     </Compile>
+    <Compile Include="lib\Interface\IViewCloseable.cs" />
     <Compile Include="lib\IO\AjinAIO.cs" />
     <Compile Include="lib\IO\AjinRtexDIO.cs" />
     <Compile Include="lib\IO\CrevisModbusIO.cs" />
@@ -958,6 +971,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormPortSetting.resx">
       <DependentUpon>FormPortSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormServoLimit.resx">
+      <DependentUpon>FormServoLimit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormServoOrigin.resx">
+      <DependentUpon>FormServoOrigin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormServoVelocity.resx">
       <DependentUpon>FormServoVelocity.cs</DependentUpon>
