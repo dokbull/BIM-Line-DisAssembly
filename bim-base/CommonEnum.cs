@@ -53,6 +53,56 @@ public enum DELAY
     MAX = 512,
 }
 
+// Motor Delay List
+public enum MOTOR_DELAY
+{
+    MOLD_LD_CV_RUN = 3,
+    ALIGN_CV_RUN,
+    MOLD_ULD_CV_RUN,
+    UB_ULD_CV_RUN,
+    UB_CV_1_RUN,
+    UB_CV_2_RUN,
+    MOLD_CV_1_RUN,
+    MOLD_CV_2_RUN,
+    MOLD_CV_3_RUN,
+    MOLD_CV_4_RUN,
+    MOLD_CV_5_RUN,
+}
+
+// Cylinder Delay List
+public enum CYLINDER_DELAY
+{
+    //UB_PP_Z_UP = 0,
+    //UB_PP_Z_DOWN,
+    //UB_PP_Y_FWD,
+    //UB_PP_Y_BWD,
+    //MOLD_PP_ZL_UP,
+    //MOLD_PP_ZL_DOWN,
+    //MOLD_PP_ZR_UP,
+    //MOLD_PP_ZR_DOWN,
+    //MOLD_PP_X_FWD,
+    //MOLD_PP_X_BWD,
+    //BASE_X_FWD,
+    //BASE_X_BWD,
+    //IN_PP_Z_UP,
+    //IN_PP_Z_DOWN,
+    //IN_PP_Y_FWD,
+    //IN_PP_Y_BWD,
+}
+
+// Vacuum Delay List
+public enum VACUUM_DELAY
+{
+    //UB_PP_Z_VAC_ON = 0,
+    //UB_PP_Z_VAC_OFF,
+    //MOLD_PP_ZL_VAC_ON,
+    //MOLD_PP_ZL_VAC_OFF,
+    //MOLD_PP_ZR_VAC_ON,
+    //MOLD_PP_ZR_VAC_OFF,
+    //IN_PP_Z_VAC_ON,
+    //IN_PP_Z_VAC_OFF,
+}
+
 public enum JOG_SPEED
 {
     LOW = 0,
