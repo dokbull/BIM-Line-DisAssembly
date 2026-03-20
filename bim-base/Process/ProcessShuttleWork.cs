@@ -404,8 +404,8 @@ namespace bim_base
 
                 case STEP.CALL_MOLD_PLACE:
                     {
-                        if (MOLD_WORK.isWaitShuttle() == true)
-                            MOLD_WORK.setShuttleCall();
+                        if (MOLD_WORK.isWaitShuttleRight() == true)
+                            MOLD_WORK.setShuttleRightCall();
 
                         m_step = STEP.LOCK_PRDDUCT;
                     }
@@ -446,6 +446,9 @@ namespace bim_base
                                 return;
                             }
                         }
+
+                        if (MOLD_WORK.isWaitShuttleLeft() == true)
+                            MOLD_WORK.setShuttleLeftCall();
 
                         m_actDelay.start();
 
@@ -533,8 +536,8 @@ namespace bim_base
 
                 case STEP.WAIT_MOLD_WORK:
                     {
-                        if (MOLD_WORK.isWaitShuttle() == true)
-                            MOLD_WORK.setShuttleCall();
+                        if (MOLD_WORK.isWaitShuttleRight() == true)
+                            MOLD_WORK.setShuttleRightCall();
 
                         // WAIT MOLD WORK
                     }

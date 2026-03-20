@@ -21,6 +21,9 @@ namespace bim_base
 
             WAIT_SHUTTLE_LEFT,
 
+            CALL_LEFT,
+            CHECK_CALL_LEFT,
+
             PICK_LEFT,
             CHECK_PICK_LEFT,
 
@@ -69,7 +72,7 @@ namespace bim_base
         public STEP step() { return m_step; }
         public STEP agoStep() { return m_agoStep; }
 
-        public bool isWaitShuttle()
+        public bool isWaitShuttleRight()
         {
             if (m_step == STEP.WAIT_SHUTTLE_RIGHT)
                 return true;
@@ -77,9 +80,9 @@ namespace bim_base
             return false;
         }
 
-        public void setShuttleCall()
+        public void setShuttleRightCall()
         {
-            if (isWaitShuttle() == false)
+            if (isWaitShuttleRight() == false)
                 return;
 
             m_step = STEP.CHECK_PLACE;
@@ -88,6 +91,22 @@ namespace bim_base
         public long elaspedTactTime()
         {
             return m_tactTimeCheck.GetElapsedTime(CStopWatch.TIME_UNIT.MILLISECOND, false);
+        }
+
+        public bool isWaitShuttleLeft()
+        {
+            if (m_step == STEP.WAIT_SHUTTLE_LEFT)
+                return true;
+
+            return false;
+        }
+
+        public void setShuttleLeftCall()
+        {
+            if (isWaitShuttleLeft() == false)
+                return;
+
+            m_step = STEP.CALL_LEFT;
         }
 
         public override void run()
@@ -194,6 +213,26 @@ namespace bim_base
                             return;
 
                         m_step = STEP.PICK_LEFT;
+                    }
+                    break;
+
+                case STEP.CALL_LEFT:
+                    {
+                        bool ret = MOLD_PP.start(ProcessMoldPP.TARGET.LEFT, ProcessMoldPP.ACTION.WAIT);
+
+                        if (ret == false)
+                            return;
+
+                        m_step = STEP.CHECK_CALL_LEFT;
+                    }
+                    break;
+
+                case STEP.CHECK_CALL_LEFT:
+                    {
+                        if (MOLD_PP.isRun() == true)
+                            return;                      
+
+                        m_step = STEP.WAIT_SHUTTLE_LEFT;
                     }
                     break;
 
