@@ -12,5 +12,28 @@ namespace bim_base
             InitializeComponent();
             this.main = main;
         }
+
+        // Save Button Click
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            save();
+            main.writeBottomHistory("Motor Delay parameter change.");
+            CMessageBox.showInfo(MessageText.saveMessage);
+        }
+
+        // Exit Button Click
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        // Save
+        private void save()
+        {
+
+        }
+
+        // Form Data Load
+        // Load
     }
 }
