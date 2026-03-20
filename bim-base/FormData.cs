@@ -183,6 +183,24 @@ namespace bim_base
         {
             LoadView(new FormServoVelocity(main));
         }
+
+        private void motorDelayButton_Click(object sender, EventArgs e)
+        {
+            FormMotorDelay dlg = new FormMotorDelay(main);
+            dlg.ShowDialog();
+        }
+
+        private void cylinderDelayButton_Click(object sender, EventArgs e)
+        {
+            FormCylinderDelay dlg = new FormCylinderDelay(main);
+            dlg.ShowDialog();
+        }
+
+        private void vacuumDelayButton_Click(object sender, EventArgs e)
+        {
+            FormVacuumDelay dlg = new FormVacuumDelay(main);
+            dlg.ShowDialog();
+        }
     }
 }
 

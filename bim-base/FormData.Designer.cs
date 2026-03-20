@@ -30,6 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             this.pnlFormData = new System.Windows.Forms.Panel();
+            this.vacuumDelayButton = new System.Windows.Forms.Button();
+            this.cylinderDelayButton = new System.Windows.Forms.Button();
+            this.motorDelayButton = new System.Windows.Forms.Button();
             this.motorVelButton = new System.Windows.Forms.Button();
             this.btnServoOrigin = new System.Windows.Forms.Button();
             this.btnServoLimit = new System.Windows.Forms.Button();
@@ -63,6 +66,9 @@
             // pnlFormData
             // 
             this.pnlFormData.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlFormData.Controls.Add(this.vacuumDelayButton);
+            this.pnlFormData.Controls.Add(this.cylinderDelayButton);
+            this.pnlFormData.Controls.Add(this.motorDelayButton);
             this.pnlFormData.Controls.Add(this.motorVelButton);
             this.pnlFormData.Controls.Add(this.btnServoOrigin);
             this.pnlFormData.Controls.Add(this.btnServoLimit);
@@ -90,6 +96,51 @@
             this.pnlFormData.Name = "pnlFormData";
             this.pnlFormData.Size = new System.Drawing.Size(984, 588);
             this.pnlFormData.TabIndex = 0;
+            // 
+            // vacuumDelayButton
+            // 
+            this.vacuumDelayButton.BackColor = System.Drawing.Color.White;
+            this.vacuumDelayButton.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.Control;
+            this.vacuumDelayButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.vacuumDelayButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.vacuumDelayButton.Location = new System.Drawing.Point(517, 327);
+            this.vacuumDelayButton.Margin = new System.Windows.Forms.Padding(7);
+            this.vacuumDelayButton.Name = "vacuumDelayButton";
+            this.vacuumDelayButton.Size = new System.Drawing.Size(200, 50);
+            this.vacuumDelayButton.TabIndex = 1211;
+            this.vacuumDelayButton.Text = "Vacuum Delay";
+            this.vacuumDelayButton.UseVisualStyleBackColor = false;
+            this.vacuumDelayButton.Click += new System.EventHandler(this.vacuumDelayButton_Click);
+            // 
+            // cylinderDelayButton
+            // 
+            this.cylinderDelayButton.BackColor = System.Drawing.Color.White;
+            this.cylinderDelayButton.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.Control;
+            this.cylinderDelayButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cylinderDelayButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.cylinderDelayButton.Location = new System.Drawing.Point(517, 248);
+            this.cylinderDelayButton.Margin = new System.Windows.Forms.Padding(7);
+            this.cylinderDelayButton.Name = "cylinderDelayButton";
+            this.cylinderDelayButton.Size = new System.Drawing.Size(200, 50);
+            this.cylinderDelayButton.TabIndex = 1210;
+            this.cylinderDelayButton.Text = "Cylinder Delay";
+            this.cylinderDelayButton.UseVisualStyleBackColor = false;
+            this.cylinderDelayButton.Click += new System.EventHandler(this.cylinderDelayButton_Click);
+            // 
+            // motorDelayButton
+            // 
+            this.motorDelayButton.BackColor = System.Drawing.Color.White;
+            this.motorDelayButton.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.Control;
+            this.motorDelayButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.motorDelayButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.motorDelayButton.Location = new System.Drawing.Point(517, 169);
+            this.motorDelayButton.Margin = new System.Windows.Forms.Padding(7);
+            this.motorDelayButton.Name = "motorDelayButton";
+            this.motorDelayButton.Size = new System.Drawing.Size(200, 50);
+            this.motorDelayButton.TabIndex = 1209;
+            this.motorDelayButton.Text = "Motor Delay";
+            this.motorDelayButton.UseVisualStyleBackColor = false;
+            this.motorDelayButton.Click += new System.EventHandler(this.motorDelayButton_Click);
             // 
             // motorVelButton
             // 
@@ -226,6 +277,7 @@
             this.timerSettingButton.TabIndex = 1200;
             this.timerSettingButton.Text = "Timer";
             this.timerSettingButton.UseVisualStyleBackColor = false;
+            this.timerSettingButton.Click += new System.EventHandler(this.timerSettingButton_Click);
             // 
             // colorButton6
             // 
@@ -539,5 +591,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label softLimitLabel;
         private System.Windows.Forms.Timer ui_timer;
+        private System.Windows.Forms.Button vacuumDelayButton;
+        private System.Windows.Forms.Button cylinderDelayButton;
+        private System.Windows.Forms.Button motorDelayButton;
     }
 }

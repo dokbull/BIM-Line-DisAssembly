@@ -336,6 +336,12 @@
     <Compile Include="FormComponent\UnitPPTray.Designer.cs">
       <DependentUpon>UnitPPTray.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormData\FormCylinderDelay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormCylinderDelay.Designer.cs">
+      <DependentUpon>FormCylinderDelay.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormData\FormDataModel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -378,6 +384,12 @@
     <Compile Include="FormData\FormJogVelocity.Designer.cs">
       <DependentUpon>FormJogVelocity.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormData\FormMotorDelay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormMotorDelay.Designer.cs">
+      <DependentUpon>FormMotorDelay.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormData\FormMotorVelocity.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -407,6 +419,12 @@
     </Compile>
     <Compile Include="FormData\FormServoVelocity.Designer.cs">
       <DependentUpon>FormServoVelocity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormData\FormVacuumDelay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormData\FormVacuumDelay.Designer.cs">
+      <DependentUpon>FormVacuumDelay.cs</DependentUpon>
     </Compile>
     <Compile Include="FormManual.cs">
       <SubType>Form</SubType>
@@ -908,6 +926,9 @@
     <EmbeddedResource Include="FormComponent\UnitPPTray.resx">
       <DependentUpon>UnitPPTray.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormCylinderDelay.resx">
+      <DependentUpon>FormCylinderDelay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormDataModel.resx">
       <DependentUpon>FormDataModel.cs</DependentUpon>
     </EmbeddedResource>
@@ -929,6 +950,9 @@
     <EmbeddedResource Include="FormData\FormJogVelocity.resx">
       <DependentUpon>FormJogVelocity.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormMotorDelay.resx">
+      <DependentUpon>FormMotorDelay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormMotorVelocity.resx">
       <DependentUpon>FormMotorVelocity.cs</DependentUpon>
     </EmbeddedResource>
@@ -943,6 +967,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormData\FormTimer.resx">
       <DependentUpon>FormTimer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormData\FormVacuumDelay.resx">
+      <DependentUpon>FormVacuumDelay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLog.resx">
       <DependentUpon>FormLog.cs</DependentUpon>
