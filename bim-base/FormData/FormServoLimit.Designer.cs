@@ -34,7 +34,7 @@
             this.btnBatch = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
-            this.MotorVelGrid = new CSourceGrid();
+            this.MotorServoLimitGrid = new CSourceGrid();
             this.SuspendLayout();
             // 
             // colorButton1
@@ -101,24 +101,24 @@
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
-            // MotorVelGrid
+            // MotorServoLimitGrid
             // 
-            this.MotorVelGrid.EnableSort = true;
-            this.MotorVelGrid.Location = new System.Drawing.Point(14, 75);
-            this.MotorVelGrid.Name = "MotorVelGrid";
-            this.MotorVelGrid.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.MotorVelGrid.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.MotorVelGrid.Size = new System.Drawing.Size(808, 500);
-            this.MotorVelGrid.TabIndex = 22;
-            this.MotorVelGrid.TabStop = true;
-            this.MotorVelGrid.ToolTipText = "";
+            this.MotorServoLimitGrid.EnableSort = true;
+            this.MotorServoLimitGrid.Location = new System.Drawing.Point(14, 75);
+            this.MotorServoLimitGrid.Name = "MotorServoLimitGrid";
+            this.MotorServoLimitGrid.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.MotorServoLimitGrid.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.MotorServoLimitGrid.Size = new System.Drawing.Size(808, 500);
+            this.MotorServoLimitGrid.TabIndex = 22;
+            this.MotorServoLimitGrid.TabStop = true;
+            this.MotorServoLimitGrid.ToolTipText = "";
             // 
             // FormServoLimit
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1004, 585);
             this.Controls.Add(this.colorButton1);
-            this.Controls.Add(this.MotorVelGrid);
+            this.Controls.Add(this.MotorServoLimitGrid);
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.btnPrev);
             this.Controls.Add(this.btnBatch);
@@ -128,6 +128,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormServoLimit";
             this.Text = "FormServoLimit";
+            this.Load += new System.EventHandler(this.FormServoLimit_Load);
             this.ResumeLayout(false);
 
         }
@@ -135,7 +136,7 @@
         #endregion
 
         private SUserControls.ColorButton colorButton1;
-        private CSourceGrid MotorVelGrid;
+        private CSourceGrid MotorServoLimitGrid;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.Button btnBatch;

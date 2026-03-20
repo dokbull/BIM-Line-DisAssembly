@@ -203,7 +203,13 @@ namespace bim_base
 
         private void btnServoOrigin_Click(object sender, EventArgs e)
         {
-            LoadView(new FormServoOrigin(main));
+            //LoadView(new FormServoOrigin(main));
+
+            if (main.isAuto())
+                return;
+
+            FormAxisOrigin dlg = new FormAxisOrigin(main);
+            dlg.ShowDialog(this);
         }
 
         private void motorDelayButton_Click(object sender, EventArgs e)

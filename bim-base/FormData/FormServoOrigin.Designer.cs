@@ -34,7 +34,7 @@
             this.btnBatch = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
-            this.MotorVelGrid = new CSourceGrid();
+            this.MotorOriginGrid = new CSourceGrid();
             this.SuspendLayout();
             // 
             // colorButton1
@@ -101,24 +101,24 @@
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
-            // MotorVelGrid
+            // MotorOriginGrid
             // 
-            this.MotorVelGrid.EnableSort = true;
-            this.MotorVelGrid.Location = new System.Drawing.Point(22, 95);
-            this.MotorVelGrid.Name = "MotorVelGrid";
-            this.MotorVelGrid.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
-            this.MotorVelGrid.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.MotorVelGrid.Size = new System.Drawing.Size(808, 500);
-            this.MotorVelGrid.TabIndex = 15;
-            this.MotorVelGrid.TabStop = true;
-            this.MotorVelGrid.ToolTipText = "";
+            this.MotorOriginGrid.EnableSort = true;
+            this.MotorOriginGrid.Location = new System.Drawing.Point(22, 95);
+            this.MotorOriginGrid.Name = "MotorOriginGrid";
+            this.MotorOriginGrid.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.MotorOriginGrid.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.MotorOriginGrid.Size = new System.Drawing.Size(808, 500);
+            this.MotorOriginGrid.TabIndex = 15;
+            this.MotorOriginGrid.TabStop = true;
+            this.MotorOriginGrid.ToolTipText = "";
             // 
             // FormServoOrigin
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1020, 624);
             this.Controls.Add(this.colorButton1);
-            this.Controls.Add(this.MotorVelGrid);
+            this.Controls.Add(this.MotorOriginGrid);
             this.Controls.Add(this.btnNext);
             this.Controls.Add(this.btnPrev);
             this.Controls.Add(this.btnBatch);
@@ -128,6 +128,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormServoOrigin";
             this.Text = "FormServoOrigin";
+            this.Load += new System.EventHandler(this.FormServoOrigin_Load);
             this.ResumeLayout(false);
 
         }
@@ -135,7 +136,7 @@
         #endregion
 
         private SUserControls.ColorButton colorButton1;
-        private CSourceGrid MotorVelGrid;
+        private CSourceGrid MotorOriginGrid;
         private System.Windows.Forms.Button btnNext;
         private System.Windows.Forms.Button btnPrev;
         private System.Windows.Forms.Button btnBatch;

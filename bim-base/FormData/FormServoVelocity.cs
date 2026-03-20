@@ -34,6 +34,8 @@ namespace bim_base
         {
             InitMotorGrid();
             LoadVelocity();
+
+            MotorVelGrid.MouseDoubleClick += MotorVelGrid_DoubleClick;
         }
 
         private void InitMotorGrid()
@@ -41,6 +43,7 @@ namespace bim_base
             CSourceGrid g = MotorVelGrid;
 
             g.Selection.EnableMultiSelection = false;
+            //g.Edit.EnableEdit = false;
 
             g.setRowCol((int)AXIS.MAX + 1, 7, true, true);
 
@@ -115,6 +118,56 @@ namespace bim_base
             }
         }
 
+        private void MotorVelGrid_DoubleClick(object sender, EventArgs e)
+        {
+            CSourceGrid g = MotorVelGrid;
+
+            int row = g.Selection.ActivePosition.Row;
+            int col = g.Selection.ActivePosition.Column;
+
+            // =========================
+            // 조건: 데이터 영역만 허용
+            // =========================
+            if (row <= 0) return;   // 헤더 제외
+            if (col <= 0) return;   // Axis 이름 제외
+
+            object cellValue = g.cell(row, col).Value;
+            string curValue = cellValue?.ToString() ?? "0";
+
+            // =========================
+            // Numpad 팝업
+            // =========================
+            FormNumpad dlg = new FormNumpad(curValue, true);
+            DialogResult res = dlg.ShowDialog();
+
+            if (res == DialogResult.OK)
+            {
+                string newText = dlg.getNewValue();
+                double value = Util.toDouble(newText);
+
+                // =========================
+                // 범위 제한
+                // =========================
+                if (value > 1000) value = 1000;
+                if (value < 0) value = 0;
+
+                // =========================
+                // 변경 체크
+                // =========================
+                if (curValue != value.ToString())
+                    m_checkChange = true;
+
+                // =========================
+                // 값 적용
+                // =========================
+                g.cell(row, col).Value = value.ToString("0.##");
+
+                // =========================
+                // 변경 표시 (추천 👍)
+                // =========================
+                g.setColors(row, col, Color.Yellow, Color.Black);
+            }
+        }
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveGridToConf();
