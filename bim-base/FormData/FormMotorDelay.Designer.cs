@@ -173,7 +173,7 @@
             this.Controls.Add(this.colorButton2);
             this.Name = "FormMotorDelay";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Load += new System.EventHandler(this.FormMotorDelay_Load);
+            this.Load += new System.EventHandler(this.motorDelay_Load);
             this.Text = "FormMotorDelay";
             this.ResumeLayout(false);
 

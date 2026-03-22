@@ -34,8 +34,8 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.colorButton3 = new SUserControls.ColorButton();
             this.colorButton1 = new SUserControls.ColorButton();
-            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.colorButton2 = new SUserControls.ColorButton();
+            this.CylinderListGrid = new CSourceGrid();
             this.SuspendLayout();
             // 
             // saveButton
@@ -131,30 +131,6 @@
             this.colorButton1.Text = "Cylinder Delay Setting";
             this.colorButton1.UseVisualStyleBackColor = true;
             // 
-            // tableLayoutPanel6
-            // 
-            this.tableLayoutPanel6.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel6.ColumnCount = 2;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 320F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.Location = new System.Drawing.Point(520, 96);
-            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-            this.tableLayoutPanel6.RowCount = 11;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(441, 366);
-            this.tableLayoutPanel6.TabIndex = 1164;
-            // 
             // colorButton2
             // 
             this.colorButton2.BorderLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
@@ -171,20 +147,33 @@
             this.colorButton2.TabIndex = 1166;
             this.colorButton2.UseVisualStyleBackColor = true;
             // 
+            // CylinderListGrid
+            // 
+            this.CylinderListGrid.EnableSort = true;
+            this.CylinderListGrid.Location = new System.Drawing.Point(520, 98);
+            this.CylinderListGrid.Name = "CylinderListGrid";
+            this.CylinderListGrid.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.CylinderListGrid.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.CylinderListGrid.Size = new System.Drawing.Size(442, 364);
+            this.CylinderListGrid.TabIndex = 1170;
+            this.CylinderListGrid.TabStop = true;
+            this.CylinderListGrid.ToolTipText = "";
+            // 
             // FormCylinderDelay
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1003, 567);
             this.ControlBox = false;
+            this.Controls.Add(this.CylinderListGrid);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.exitButton);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.colorButton3);
             this.Controls.Add(this.colorButton1);
-            this.Controls.Add(this.tableLayoutPanel6);
             this.Controls.Add(this.colorButton2);
             this.Name = "FormCylinderDelay";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Load += new System.EventHandler(this.cylinderDelay_Load);
             this.Text = "FormCylinderDelay";
             this.ResumeLayout(false);
 
@@ -197,7 +186,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private SUserControls.ColorButton colorButton3;
         private SUserControls.ColorButton colorButton1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private SUserControls.ColorButton colorButton2;
+        private CSourceGrid CylinderListGrid;
     }
 }
