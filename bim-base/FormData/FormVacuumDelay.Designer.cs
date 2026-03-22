@@ -130,7 +130,7 @@
             this.NextButton.BorderThickness = 0F;
             this.NextButton.Checked = false;
             this.NextButton.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
-            this.NextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold);
+            this.NextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold);
             this.NextButton.GradientBottom = System.Drawing.Color.White;
             this.NextButton.GradientTop = System.Drawing.Color.White;
             this.NextButton.Location = new System.Drawing.Point(375, 503);
@@ -139,6 +139,7 @@
             this.NextButton.TabIndex = 1178;
             this.NextButton.Text = "Next";
             this.NextButton.UseVisualStyleBackColor = true;
+            this.NextButton.Click += new System.EventHandler(this.NextButton_Click);
             // 
             // PreviouslyButton
             // 
@@ -146,7 +147,7 @@
             this.PreviouslyButton.BorderThickness = 0F;
             this.PreviouslyButton.Checked = false;
             this.PreviouslyButton.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
-            this.PreviouslyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold);
+            this.PreviouslyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold);
             this.PreviouslyButton.GradientBottom = System.Drawing.Color.White;
             this.PreviouslyButton.GradientTop = System.Drawing.Color.White;
             this.PreviouslyButton.Location = new System.Drawing.Point(44, 503);
@@ -155,6 +156,7 @@
             this.PreviouslyButton.TabIndex = 1179;
             this.PreviouslyButton.Text = "Prev";
             this.PreviouslyButton.UseVisualStyleBackColor = true;
+            this.PreviouslyButton.Click += new System.EventHandler(this.PreviouslyButton_Click);
             // 
             // FormVacuumDelay
             // 
@@ -170,7 +172,7 @@
             this.Controls.Add(this.colorButton2);
             this.Name = "FormVacuumDelay";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "FormVacuumDelay";
+            this.Text = "VacuumDelay";
             this.ResumeLayout(false);
 
         }

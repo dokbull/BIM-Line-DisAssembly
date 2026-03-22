@@ -8,7 +8,7 @@ namespace bim_base
     {
         ProcessMain main = null;
 
-        const int PAGE_SIZE = 10;
+        int m_pageSize = 10;
         int m_currentPage = 0;
         int m_totalPage = 0;
 
@@ -25,11 +25,7 @@ namespace bim_base
             m_values = (VACUUM_DELAY[])Enum.GetValues(typeof(VACUUM_DELAY));
             m_delayData = new int[m_names.Length];
 
-            m_totalPage = (m_names.Length - 1) / PAGE_SIZE;
-
-            // 페이지 이동 버튼 이벤트 등록
-            NextButton.Click += NextButton_Click;
-            PreviouslyButton.Click += PreviouslyButton_Click;
+            m_totalPage = (m_names.Length - 1) / m_pageSize;
 
             gridInit();         // 그리드 초기화
             load();             // 저장된 딜레이 값 로드
@@ -42,7 +38,7 @@ namespace bim_base
             CSourceGrid grid = VacuumListGrid;
 
             grid.Selection.EnableMultiSelection = false;
-            grid.setRowCol(PAGE_SIZE, 2, true, false);
+            grid.setRowCol(m_pageSize, 2, true, false);
             grid.setTextAlignment(DevAge.Drawing.ContentAlignment.MiddleCenter);
             grid.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
 
@@ -51,13 +47,13 @@ namespace bim_base
             grid.Columns[1].Width = grid.Width * 35 / 100;
 
             // 모든 셀에 클릭 컨트롤러 등록
-            for (int r = 0; r < PAGE_SIZE; r++)
+            for (int i = 0; i < m_pageSize; i++)
             {
-                for (int c = 0; c < 2; c++)
+                for (int j = 0; j < 2; j++)
                 {
                     var controller = new CellClickController();
                     controller.CellClicked += OnVacuumValue_Click;
-                    grid.cell(r, c).AddController(controller);
+                    grid.cell(i, j).AddController(controller);
                 }
             }
         }
@@ -66,25 +62,25 @@ namespace bim_base
         private void refreshGrid()
         {
             CSourceGrid grid = VacuumListGrid;
-            int startIdx = m_currentPage * PAGE_SIZE;   // 현재 페이지의 시작 데이터 인덱스
+            int startIdx = m_currentPage * m_pageSize;   // 현재 페이지의 시작 데이터 인덱스
 
-            for (int r = 0; r < PAGE_SIZE; r++)
+            for (int i = 0; i < m_pageSize; i++)
             {
-                int dataIdx = startIdx + r;
+                int dataIdx = startIdx + i;
 
                 if (dataIdx < m_names.Length)
                 {
-                    grid.setValue(r, 0, m_names[dataIdx].Replace("_", " "));
-                    grid.setColors(r, 0, Color.White, Color.Black);
-                    grid.setValue(r, 1, m_delayData[dataIdx].ToString());
-                    grid.setColors(r, 1, Color.White, Color.Black);
+                    grid.setValue(i, 0, m_names[dataIdx].Replace("_", " "));
+                    grid.setColors(i, 0, Color.White, Color.Black);
+                    grid.setValue(i, 1, m_delayData[dataIdx].ToString() + " Sec");
+                    grid.setColors(i, 1, Color.White, Color.Black);
                 }
                 else
                 {
-                    grid.setValue(r, 0, "");
-                    grid.setBackColor(r, 0, Color.LightGray);
-                    grid.setValue(r, 1, "");
-                    grid.setBackColor(r, 1, Color.LightGray);
+                    grid.setValue(i, 0, "");
+                    grid.setBackColor(i, 0, Color.White);
+                    grid.setValue(i, 1, "");
+                    grid.setBackColor(i, 1, Color.White);
                 }
             }
 
@@ -101,7 +97,7 @@ namespace bim_base
 
             if (col != 1) return;
 
-            int dataIdx = m_currentPage * PAGE_SIZE + row;
+            int dataIdx = m_currentPage * m_pageSize + row;
             if (dataIdx >= m_names.Length) return;
 
             // Numpad 팝업
@@ -113,7 +109,7 @@ namespace bim_base
             {
                 int value = Util.toInt32(dlg.getNewValue());
                 m_delayData[dataIdx] = value;
-                VacuumListGrid.setValue(row, 1, value.ToString());
+                VacuumListGrid.setValue(row, 1, value.ToString() + " Sec");
             }
         }
 
@@ -135,6 +131,12 @@ namespace bim_base
                 m_currentPage--;
                 refreshGrid();
             }
+        }
+
+        // Exit Button Click
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
         // Save Button Click
@@ -161,12 +163,6 @@ namespace bim_base
             {
                 m_delayData[i] = Conf.delayTime(m_values[i]);
             }
-        }
-
-        // Exit Button Click
-        private void exitButton_Click(object sender, EventArgs e)
-        {
-            this.Close();
         }
     }
 }

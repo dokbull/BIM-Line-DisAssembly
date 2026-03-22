@@ -148,7 +148,7 @@ public enum CYLINDER_DELAY
 public enum VACUUM_DELAY
 {
     // ALIGN CV
-    ALIGN_CV_VAC = 54,
+    ALIGN_CV_VAC = 58,
 
     // UB OUT PP
     UB_OUT_PP_VAC,

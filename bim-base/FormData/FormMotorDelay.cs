@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace bim_base
@@ -8,62 +7,136 @@ namespace bim_base
     public partial class FormMotorDelay : Form
     {
         ProcessMain main = null;
-        CSourceGrid motorGrid = null;
-        string[] motorNames = null;
-        int count = 0;
+
+        int m_pageSize = 10;
+        int m_currentPage = 0;
+        int m_totalPage = 0;
+
+        string[] m_names = null;
+        MOTOR_DELAY[] m_values = null;
+        int[] m_delayData = null;
 
         public FormMotorDelay(ProcessMain main)
         {
             InitializeComponent();
             this.main = main;
-        }
 
-        // Motor Delay Data Load
-        private void motorDelay_Load(object sender, EventArgs e)
-        {
+            m_names = Enum.GetNames(typeof(MOTOR_DELAY));
+            m_values = (MOTOR_DELAY[])Enum.GetValues(typeof(MOTOR_DELAY));
+            m_delayData = new int[m_names.Length];
+
+            m_totalPage = (m_names.Length - 1) / m_pageSize;
+
             gridInit();
             load();
+            refreshGrid();
         }
 
-        // grid Initialize
+        // Grid Initialization
         private void gridInit()
         {
-            motorGrid = MotorListGrid;
-            motorNames = Enum.GetNames(typeof(MOTOR_DELAY));
-            count = motorNames.Length;
+            CSourceGrid grid = MotorListGrid;
 
-            motorGrid.Selection.EnableMultiSelection = false;
-            motorGrid.setRowCol(10, 2, true, true);
-            motorGrid.setTextAlignment(DevAge.Drawing.ContentAlignment.MiddleCenter);
-            motorGrid.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
+            grid.Selection.EnableMultiSelection = false;
+            grid.setRowCol(m_pageSize, 2, true, false);
+            grid.setTextAlignment(DevAge.Drawing.ContentAlignment.MiddleCenter);
+            grid.Font = new Font("Microsoft Sans Serif", 12, FontStyle.Bold);
 
-            MOTOR_DELAY[] values = (MOTOR_DELAY[])Enum.GetValues(typeof(MOTOR_DELAY));
+            // 열 너비 비율 설정
+            grid.Columns[0].Width = grid.Width * 65 / 100;
+            grid.Columns[1].Width = grid.Width * 35 / 100;
 
-            setInputGrid(motorNames, motorGrid);
-        }
-
-        // Set Input Grid
-        private void setInputGrid(string[] name, CSourceGrid grid)
-        {
-            for (int i = 0; i < grid.ColumnsCount; i++)
+            // 모든 셀에 클릭 컨트롤러 등록
+            for (int i = 0; i < m_pageSize; i++)
             {
-                grid.setValue(i, 0, name[i].Replace("_", " "));
-                grid.setColors(i, 0, Color.White, Color.Black);
-                grid.setValue(i, 1, $"0.0 Sec");
-
-                for (int j = 1; j < grid.ColumnsCount; j++)
+                for (int j = 0; j < 2; j++)
                 {
                     var controller = new CellClickController();
-                    controller.CellClicked += OnDelayValueGrid_Click;
-                    grid.cell(j, i).AddController(controller);
+                    controller.CellClicked += OnMotorValue_Click;
+                    grid.cell(i, j).AddController(controller);
                 }
             }
         }
 
-        // Delay Value Click
-        private void OnDelayValueGrid_Click(object sender, DataGridViewCellEventArgs e)
+        // Grid Refresh
+        private void refreshGrid()
         {
-            
+            CSourceGrid grid = MotorListGrid;
+            int startIdx = m_currentPage * m_pageSize;
+
+            for (int i = 0; i < m_pageSize; i++)
+            {
+                int dataIdx = startIdx + i;
+
+                if (dataIdx < m_names.Length)
+                {
+                    grid.setValue(i, 0, m_names[dataIdx].Replace("_", " "));
+                    grid.setColors(i, 0, Color.White, Color.Black);
+                    grid.setValue(i, 1, m_delayData[dataIdx].ToString() + " Sec");
+                    grid.setColors(i, 1, Color.White, Color.Black);
+                }
+                else
+                {
+                    grid.setValue(i, 0, "");
+                    grid.setBackColor(i, 0, Color.White);
+                    grid.setValue(i, 1, "");
+                    grid.setBackColor(i, 1, Color.White);
+                }
+            }
+
+            // 페이지 이동 버튼 활성, 비활성
+            PreviouslyButton.Enabled = m_currentPage > 0;
+            NextButton.Enabled = m_currentPage < m_totalPage;
+        }
+
+        // Motor Value Click Event
+        private void OnMotorValue_Click(object sender, DataGridViewCellEventArgs e)
+        {
+            int row = e.RowIndex;
+            int col = e.ColumnIndex;
+
+            if (col != 1) return;
+
+            int dataIdx = m_currentPage * m_pageSize + row;
+            if (dataIdx >= m_names.Length) return;
+
+            // Numpad 팝업
+            string curValue = m_delayData[dataIdx].ToString();
+            FormNumpad dlg = new FormNumpad(curValue, false);
+            DialogResult res = dlg.ShowDialog();
+
+            if (res == DialogResult.OK)
+            {
+                int value = Util.toInt32(dlg.getNewValue());
+                m_delayData[dataIdx] = value;
+                MotorListGrid.setValue(row, 1, value.ToString() + " Sec");
+            }
+        }
+
+        // Next Button Click
+        private void NextButton_Click(object sender, EventArgs e)
+        {
+            if (m_currentPage < m_totalPage)
+            {
+                m_currentPage++;
+                refreshGrid();
+            }
+        }
+
+        // Previously Button Click
+        private void PreviouslyButton_Click(object sender, EventArgs e)
+        {
+            if (m_currentPage > 0)
+            {
+                m_currentPage--;
+                refreshGrid();
+            }
+        }
+
+        // Exit Button Click
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
         // Save Button Click
@@ -74,22 +147,22 @@ namespace bim_base
             CMessageBox.showInfo(MessageText.saveMessage);
         }
 
-        // Exit Button Click
-        private void exitButton_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        //Save
+        // Save
         private void save()
         {
-            
+            for (int i = 0; i < m_values.Length; i++)
+            {
+                Conf.setDelayTime(m_values[i], m_delayData[i]);
+            }
         }
 
         // Load
         private void load()
         {
-            
+            for (int i = 0; i < m_values.Length; i++)
+            {
+                m_delayData[i] = Conf.delayTime(m_values[i]);
+            }
         }
     }
 }
