@@ -144,6 +144,7 @@
             this.BT_ALARM.TabIndex = 1151;
             this.BT_ALARM.Text = "Alarm";
             this.BT_ALARM.UseVisualStyleBackColor = false;
+            this.BT_ALARM.Click += new System.EventHandler(this.BT_ALARM_Click);
             // 
             // BT_MONITOR
             // 

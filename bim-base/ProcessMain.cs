@@ -62,6 +62,7 @@ namespace bim_base
         bool m_isCycleStop = false;
 
         bool m_isAlarm = false;
+        bool m_isLightAlarm = false;
         bool m_isShowInitCheckMsg = false;
 
         bool m_simulation = false;
@@ -435,6 +436,8 @@ namespace bim_base
                 {
                     Debug.debug("ProcessMain::addAlarm alarm:" + alarm + " type:" + type + " desc:" + desc);
 
+                    m_isLightAlarm = true;
+
                     m_lightAlarmList.Add(riseAlarm);
                     writeAlarmLog(riseAlarm);
 
@@ -535,7 +538,7 @@ namespace bim_base
             setOutput(OUTPUT.OP_PANEL_RESET_SW, false);
 
             // Automation.Instance.AlarmReleased(this.m_lastAlarm.code, this.m_lastAlarm.desc);
-
+            m_isLightAlarm = false;
             m_isAlarm = false;
 
             FormMain.inst().clearAlarm();
@@ -1156,6 +1159,7 @@ namespace bim_base
         public bool isAuto() { return m_isAuto; }
         public bool isCycleStop() { return m_isCycleStop; }
         public bool isAlarm() { return m_isAlarm; }
+        public bool isLightAlarm() { return m_isLightAlarm; }
         public void setShowInitCheckMsg(bool value) { m_isShowInitCheckMsg = value; }
         public bool isShowInitCheckMsg() { return m_isShowInitCheckMsg; }
         public bool isSimulation() { return m_simulation; }

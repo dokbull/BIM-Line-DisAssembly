@@ -13,10 +13,9 @@ namespace bim_base
         DATA = 3,
         MONITOR = 4,
         LOG = 5,
-        //VISION = 6,
         MAX,
     }
-
+   
     public partial class FormBottom : Form, IForm
     {
         ProcessMain main;
@@ -29,6 +28,9 @@ namespace bim_base
 
         private readonly Color SELECT_TOP = Color.LightBlue;
         private readonly Color SELECT_BOTTOM = Color.LightBlue;
+
+        int m_selectIndex = 0;
+
         public FormBottom(ProcessMain procMain)
         {
             InitializeComponent();
@@ -62,26 +64,7 @@ namespace bim_base
             {
                 int idx = Convert.ToInt32(button.Tag);
 
-                if (idx >= 0 && idx <= 5)
-                {
-                    if (button == selected)
-                    {
-                        button.GradientTop = SELECT_TOP;
-                        button.GradientBottom = SELECT_BOTTOM;
-                    }
-                    else
-                    {
-                        button.GradientTop = _originColors[button].top;
-                        button.GradientBottom = _originColors[button].bottom;
-                    }
-                }
-                else
-                {
-                    button.GradientTop = _originColors[button].top;
-                    button.GradientBottom = _originColors[button].bottom;
-                }
-
-                button.Invalidate();
+                m_selectIndex = idx;
             }
         }
         private void btnClick(object sender, EventArgs e)
@@ -111,25 +94,7 @@ namespace bim_base
                     return;
                 }
             }
-            //else if (idx == 4 && !main.m_bSetupVS)
-            //{
-            //    string _Password = "";
-            //    FormKeyboard dlg = new FormKeyboard();
-            //    dlg._TYPE = KEYBOARD_TYPE.Password;
-            //    DialogResult res = dlg.ShowDialog();
 
-            //    if (res == DialogResult.OK)
-            //    {
-            //        _Password = dlg.getKeyword();
-            //        if (_Password != main._PassVision) return;
-            //        main._TimSetupVS.StartTimer();
-            //        main.m_bSetupVS = true;
-            //    }
-            //    else
-            //    {
-            //        return;
-            //    }
-            //}
             SetSelectedButton(btn);
             foreach (SUserControls.ColorButton buttonn in m_buttonArg)
             {
@@ -179,6 +144,7 @@ namespace bim_base
             BT_TEACH.Enabled = !state;
             BT_DATA.Enabled = !state;
             BT_MANUAL.Enabled = !state;
+
             try
             {
                 if (m_historyQueue.Count > 0)
@@ -196,6 +162,50 @@ namespace bim_base
                 Debug.debug($"{ex}");
                 Debug.debug("Add messenger to bottom fail logic");
             }
+
+            setButtonColor();
+        }
+
+        void setButtonColor()
+        {
+            for (int i = 0; i < m_buttonArg.Length; i++)
+            {
+                SUserControls.ColorButton button = m_buttonArg[i];
+
+                if (i == m_selectIndex)
+                {
+                    button.GradientTop = SELECT_TOP;
+                    button.GradientBottom = SELECT_BOTTOM;
+                }
+                else
+                {
+                    if (i == 5) // ALARM
+                    {
+                        if (main.isAlarm() == true)
+                        {
+                            BT_ALARM.GradientTop = Color.Red;
+                            BT_ALARM.GradientBottom = Color.Red;
+                        }
+                        else if (main.isLightAlarm() == true)
+                        {
+                            BT_ALARM.GradientTop = Color.Yellow;
+                            BT_ALARM.GradientBottom = Color.Yellow;
+                        }
+                        else
+                        {
+                            button.GradientTop = _originColors[button].top;
+                            button.GradientBottom = _originColors[button].bottom;
+                        }
+                    }
+                    else
+                    {
+                        button.GradientTop = _originColors[button].top;
+                        button.GradientBottom = _originColors[button].bottom;
+                    }
+                }
+
+                button.Invalidate();
+            }
         }
 
         private void FormBottom_Load(object sender, EventArgs e)
@@ -204,6 +214,11 @@ namespace bim_base
         }
 
         private void BT_DATA_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BT_ALARM_Click(object sender, EventArgs e)
         {
 
         }
