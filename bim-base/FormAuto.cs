@@ -511,5 +511,10 @@ namespace bim_base
                 main.frenic().setFrequency(i, 60.0d);
             }
         }
+
+        private void alarmTestButton_Click(object sender, EventArgs e)
+        {
+            main.addAlarm(ALARM.TE_MAIN_COOLING_FAN_ALARM);
+        }
     }
 }

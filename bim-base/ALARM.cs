@@ -7,7 +7,7 @@ namespace bim_base
         NONE = -1,
 
         // COMMUNICATION : CO 
-        CO_SYSTEM_CCIE_COMM_DISCONNECT = 0,
+        CO_MAIN_SYSTEM_CCIE_COMM_DISCONNECT = 0,
         CO_MAIN_SYSTEM_PC_ECAT_DISCONNECT,
 
         // EMO : EM
@@ -138,6 +138,9 @@ namespace bim_base
         SE_BASE_MOLDBASE_ST3_NOT_PRODUCT,
 
         // TEMPERATURE : TE
+        TE_MAIN_COOLING_FAN_ALARM,
+        TE_MAIN_SMOKE_DETECTOR_ALARM,
+        TE_MAIN_SMOKE_DETECTOR_TEMPERATURE,
 
         // UTILITY : UT
 

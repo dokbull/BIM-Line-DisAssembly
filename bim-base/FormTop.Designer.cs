@@ -89,7 +89,7 @@
             this.lbVersion.Location = new System.Drawing.Point(744, 46);
             this.lbVersion.Margin = new System.Windows.Forms.Padding(0);
             this.lbVersion.Name = "lbVersion";
-            this.lbVersion.Size = new System.Drawing.Size(157, 24);
+            this.lbVersion.Size = new System.Drawing.Size(130, 24);
             this.lbVersion.TabIndex = 7;
             this.lbVersion.Text = "(Ver 1.1.0.0 beta)";
             this.lbVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -116,8 +116,8 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 106F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 166F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 123F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
             this.tableLayoutPanel1.Controls.Add(this.BT_BUZZER, 5, 0);
             this.tableLayoutPanel1.Controls.Add(this.lbMessage1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 3, 2);
@@ -157,12 +157,12 @@
             this.BT_BUZZER.GradientBottom = System.Drawing.Color.LightSkyBlue;
             this.BT_BUZZER.GradientTop = System.Drawing.Color.LightSkyBlue;
             this.BT_BUZZER.Image = ((System.Drawing.Image)(resources.GetObject("BT_BUZZER.Image")));
-            this.BT_BUZZER.Location = new System.Drawing.Point(901, 0);
+            this.BT_BUZZER.Location = new System.Drawing.Point(874, 0);
             this.BT_BUZZER.Margin = new System.Windows.Forms.Padding(0);
             this.BT_BUZZER.Name = "BT_BUZZER";
             this.BT_BUZZER.RectCornerRadius = 2;
             this.tableLayoutPanel1.SetRowSpan(this.BT_BUZZER, 3);
-            this.BT_BUZZER.Size = new System.Drawing.Size(123, 70);
+            this.BT_BUZZER.Size = new System.Drawing.Size(150, 70);
             this.BT_BUZZER.TabIndex = 1148;
             this.BT_BUZZER.Text = "BUZZER";
             this.BT_BUZZER.UseVisualStyleBackColor = false;
@@ -275,7 +275,7 @@
             this.lbProjectName.Location = new System.Drawing.Point(744, 0);
             this.lbProjectName.Margin = new System.Windows.Forms.Padding(0);
             this.lbProjectName.Name = "lbProjectName";
-            this.lbProjectName.Size = new System.Drawing.Size(157, 23);
+            this.lbProjectName.Size = new System.Drawing.Size(130, 23);
             this.lbProjectName.TabIndex = 7;
             this.lbProjectName.Text = "COOLINGMC-S-V1";
             this.lbProjectName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -283,8 +283,8 @@
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.21656F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 61.78344F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.46154F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51.53846F));
             this.tableLayoutPanel2.Controls.Add(this.lbEQNo, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -294,7 +294,7 @@
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(157, 23);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(130, 23);
             this.tableLayoutPanel2.TabIndex = 1139;
             // 
             // lbEQNo
@@ -302,10 +302,10 @@
             this.lbEQNo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(233)))), ((int)(((byte)(244)))));
             this.lbEQNo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbEQNo.ForeColor = System.Drawing.Color.Black;
-            this.lbEQNo.Location = new System.Drawing.Point(60, 0);
+            this.lbEQNo.Location = new System.Drawing.Point(63, 0);
             this.lbEQNo.Margin = new System.Windows.Forms.Padding(0);
             this.lbEQNo.Name = "lbEQNo";
-            this.lbEQNo.Size = new System.Drawing.Size(63, 23);
+            this.lbEQNo.Size = new System.Drawing.Size(67, 23);
             this.lbEQNo.TabIndex = 1140;
             this.lbEQNo.Text = "0";
             this.lbEQNo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

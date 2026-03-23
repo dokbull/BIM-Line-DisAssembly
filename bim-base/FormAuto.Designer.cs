@@ -55,6 +55,7 @@
             this.outputStopCheckBox = new System.Windows.Forms.CheckBox();
             this.outOfPPlanCheckBox = new System.Windows.Forms.CheckBox();
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.cvSpeedButton = new System.Windows.Forms.Button();
             this.btnCimTester = new System.Windows.Forms.Button();
             this.a11 = new System.Windows.Forms.Label();
             this.a10 = new System.Windows.Forms.Label();
@@ -108,7 +109,7 @@
             this.towerR = new CStatusLabel();
             this.towerY = new CStatusLabel();
             this.towerG = new CStatusLabel();
-            this.cvSpeedButton = new System.Windows.Forms.Button();
+            this.alarmTestButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.TacTimeLayout.SuspendLayout();
@@ -574,6 +575,7 @@
             this.mainPanel.Controls.Add(this.freq2);
             this.mainPanel.Controls.Add(this.freq1);
             this.mainPanel.Controls.Add(this.simCommButton);
+            this.mainPanel.Controls.Add(this.alarmTestButton);
             this.mainPanel.Controls.Add(this.lastWorkButton);
             this.mainPanel.Controls.Add(this.LBLSTEP5);
             this.mainPanel.Controls.Add(this.LBLSTEP4);
@@ -594,6 +596,16 @@
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(868, 622);
             this.mainPanel.TabIndex = 1;
+            // 
+            // cvSpeedButton
+            // 
+            this.cvSpeedButton.Location = new System.Drawing.Point(107, 231);
+            this.cvSpeedButton.Name = "cvSpeedButton";
+            this.cvSpeedButton.Size = new System.Drawing.Size(193, 46);
+            this.cvSpeedButton.TabIndex = 239;
+            this.cvSpeedButton.Text = "C/V SET SPEED";
+            this.cvSpeedButton.UseVisualStyleBackColor = true;
+            this.cvSpeedButton.Click += new System.EventHandler(this.cvSpeedButton_Click);
             // 
             // btnCimTester
             // 
@@ -1136,15 +1148,15 @@
             this.towerG.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.towerG.DoubleClick += new System.EventHandler(this.tower_DoubleClick);
             // 
-            // cvSpeedButton
+            // alarmTestButton
             // 
-            this.cvSpeedButton.Location = new System.Drawing.Point(107, 231);
-            this.cvSpeedButton.Name = "cvSpeedButton";
-            this.cvSpeedButton.Size = new System.Drawing.Size(193, 46);
-            this.cvSpeedButton.TabIndex = 239;
-            this.cvSpeedButton.Text = "C/V SET SPEED";
-            this.cvSpeedButton.UseVisualStyleBackColor = true;
-            this.cvSpeedButton.Click += new System.EventHandler(this.cvSpeedButton_Click);
+            this.alarmTestButton.Location = new System.Drawing.Point(21, 145);
+            this.alarmTestButton.Name = "alarmTestButton";
+            this.alarmTestButton.Size = new System.Drawing.Size(131, 65);
+            this.alarmTestButton.TabIndex = 203;
+            this.alarmTestButton.Text = "TEST";
+            this.alarmTestButton.UseVisualStyleBackColor = true;
+            this.alarmTestButton.Click += new System.EventHandler(this.alarmTestButton_Click);
             // 
             // FormAuto
             // 
@@ -1252,5 +1264,6 @@
         private System.Windows.Forms.CheckBox outOfPPlanCheckBox;
         private System.Windows.Forms.Button btnCimTester;
         private System.Windows.Forms.Button cvSpeedButton;
+        private System.Windows.Forms.Button alarmTestButton;
     }
 }
