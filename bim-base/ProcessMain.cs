@@ -65,7 +65,8 @@ namespace bim_base
 
         bool m_simulation = false;
 
-        List<AlarmData> m_alarmList = new List<AlarmData>();
+        List<AlarmData> m_lightAlarmList = new List<AlarmData>();
+        List<AlarmData> m_heavyAlarmList = new List<AlarmData>();
 
         bool[] m_input = null;
         bool[] m_output = null;
@@ -390,38 +391,74 @@ namespace bim_base
             riseAlarm.desc = alarm.ToString() + "/" + Alarm.messageEng(alarm, desc);
             riseAlarm.datetime = datetime;
 
-            for (int i = 0; i < m_alarmList.Count; i++)
+            if (type == ALARM_TYPE.HEAVY)
             {
-                AlarmData data = m_alarmList[i];
+                for (int i = 0; i < m_heavyAlarmList.Count; i++)
+                {
+                    AlarmData data = m_heavyAlarmList[i];
 
-                if (data.alarm == riseAlarm.alarm)
-                    return;
+                    if (data.alarm == riseAlarm.alarm)
+                        return;
+                }
+
+                lock (m_heavyAlarmList)
+                {
+                    Debug.debug("ProcessMain::addAlarm alarm:" + alarm + " type:" + type + " desc:" + desc);
+
+                    setAuto(false);
+                    pause();
+                    m_isAlarm = true;
+
+                    m_heavyAlarmList.Add(riseAlarm);
+
+                    writeAlarmLog(riseAlarm);
+                    setBuzzerOn();
+                    writeBottomHistory(Alarm.messageEng(alarm));
+
+                    // TODO CHECK LHJ to HJP : 경알람 추가시 처리 필요
+                    Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.HeavyAlarm, riseAlarm.code, riseAlarm.desc);
+                }
             }
 
-            lock (m_alarmList)
+            if (type == ALARM_TYPE.LIGHT)
             {
-                Debug.debug("ProcessMain::addAlarm alarm:" + alarm + " type:" + type + " desc:" + desc);
+                for (int i = 0; i < m_lightAlarmList.Count; i++)
+                {
+                    AlarmData data = m_lightAlarmList[i];
 
-                setAuto(false);
-                pause();
-                m_isAlarm = true;
+                    if (data.alarm == riseAlarm.alarm)
+                        return;
+                }
 
-                m_alarmList.Add(riseAlarm);
+                lock (m_lightAlarmList)
+                {
+                    Debug.debug("ProcessMain::addAlarm alarm:" + alarm + " type:" + type + " desc:" + desc);
 
-                writeAlarmLog(riseAlarm);
-                setBuzzerOn();
-                writeBottomHistory(Alarm.messageEng(alarm));
+                    m_lightAlarmList.Add(riseAlarm);
+                    writeAlarmLog(riseAlarm);
 
-                // TODO CHECK LHJ to HJP : 경알람 추가시 처리 필요
-                Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.HeavyAlarm, riseAlarm.code, riseAlarm.desc);
+                    setBuzzerOn();
+                    writeBottomHistory(Alarm.messageEng(alarm));
+
+                    // TODO CHECK LHJ to HJP : 경알람 추가시 처리 필요
+                    Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.LightAlarm, riseAlarm.code, riseAlarm.desc);
+                }
             }
         }
 
-        public List<AlarmData> alarmList()
+        public List<AlarmData> lightAlarmList()
         {
-            lock (m_alarmList)
+            lock (m_lightAlarmList)
             {
-                return m_alarmList;
+                return m_lightAlarmList;
+            }
+        }
+
+        public List<AlarmData> heavyAlarmList()
+        {
+            lock (m_heavyAlarmList)
+            {
+                return m_heavyAlarmList;
             }
         }
 
@@ -488,9 +525,9 @@ namespace bim_base
         {
             axisAlarmReset();
 
-            lock (m_alarmList)
+            lock (m_heavyAlarmList)
             {
-                m_alarmList.Clear();
+                m_heavyAlarmList.Clear();
             }
 
             setBuzzerOff();
@@ -507,10 +544,10 @@ namespace bim_base
         {
             int code = -1;
 
-            if (m_alarmList.Count == 0)
+            if (m_heavyAlarmList.Count == 0)
                 return code;
 
-            AlarmData alarm = m_alarmList.Last();
+            AlarmData alarm = m_heavyAlarmList.Last();
             code = alarm.code;
 
             return code;
@@ -521,10 +558,10 @@ namespace bim_base
             string desc = "";
 
 
-            if (m_alarmList.Count == 0)
+            if (m_heavyAlarmList.Count == 0)
                 return desc;
 
-            AlarmData alarm = m_alarmList.Last();
+            AlarmData alarm = m_heavyAlarmList.Last();
             desc = alarm.desc;
 
             return desc;
