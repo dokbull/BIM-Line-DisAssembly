@@ -24,7 +24,6 @@ namespace bim_base
 
         CSerialFRENIC m_frenic = null;
 
-
         // AXIS LIST
         List<ExtAxis> m_axis = new List<ExtAxis>();
         ExtAxis IN_PP_Y, IN_PP_Z;
@@ -55,6 +54,8 @@ namespace bim_base
         ProcessOrg m_procOrg = null;
 
         Thread m_thread = null;
+        Thread m_frenicThread = null;
+
         bool m_stop = false;
 
         bool m_isAuto = false;
@@ -79,8 +80,6 @@ namespace bim_base
         bool m_outOfPPlan = false;
 
         int m_outputCount = 0;
-
-        bool m_firstOutputRefresh = false;
 
         CLogManager m_alarmManager = null;
         CLogManager m_setupLogMgr = null;
@@ -236,6 +235,7 @@ namespace bim_base
             Automation.Instance.GetMonitoringDataEvent += GetFDCData;
 
             m_thread = new Thread(run);
+            m_frenicThread = new Thread(m_frenicRun);
         }
 
         private (Dictionary<INPUT, bool> Inputs,
@@ -366,6 +366,7 @@ namespace bim_base
         public void start()
         {
             m_thread.Start();
+            m_frenicThread.Start();
         }
 
         public void stop()
@@ -584,9 +585,6 @@ namespace bim_base
 
             m_once = true;
 
-            m_frenic = new CSerialFRENIC(FormMain.inst().serialFRENIC, 11);
-            watchFrenic();
-
             m_stopWatch.Start();
 
             while (true)
@@ -639,7 +637,6 @@ namespace bim_base
                 //Automation.Instance.PpidListRequest();
                 //Automation.Instance.PpidChange();
 
-                // watchFrenic();
                 watchEmergency();
                 watchServo();
                 watchSwitch();
@@ -656,9 +653,6 @@ namespace bim_base
             if (m_lib != null) 
                 m_lib.close();
 
-            if (m_frenic != null)
-                m_frenic.stop();
-
             for (int i = 0; i < m_axis.Count; i++)
             { 
                 if (m_axis[i] != null)
@@ -666,6 +660,34 @@ namespace bim_base
             }
 
             Debug.debug("ProcessMain::run END");
+        }
+
+        public void m_frenicRun()
+        {
+            Debug.debug("ProcessMain::frenicRun START");
+
+            m_frenic = new CSerialFRENIC(FormMain.inst().serialFRENIC, 11);
+
+            while (true)
+            {
+                if (m_stop)
+                {
+                    Debug.debug("ProcessMain::frenicRun STOP");
+                    break;
+                }
+
+                if (m_simulation == false)
+                {
+                    watchFrenic();
+                }
+
+                Thread.Sleep(100);
+            }
+
+            if (m_frenic != null)
+                m_frenic.stop();
+
+            Debug.debug("ProcessMain::frenicRun END");
         }
 
         public long scanTime()
