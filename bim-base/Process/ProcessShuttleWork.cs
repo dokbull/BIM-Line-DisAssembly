@@ -43,6 +43,9 @@ namespace bim_base
 
             OPENER_RETRY_FWD,
             CHECK_OPENER_RETRY_FWD,
+            
+            UPPER_GUIDE_BWD,
+            CHECK_UPPER_GUIDE_BWD,
 
             MOVE_STAGE_LEFT,
 
@@ -63,6 +66,8 @@ namespace bim_base
 
         CElaspedTimer m_cylTimeout = new CElaspedTimer(5 * 1000);
         CElaspedTimer m_actDelay = new CElaspedTimer(250);
+
+        CElaspedTimer m_dryRunWaitTimer = new CElaspedTimer(1 * 1000);
 
         int m_retryOpener = 0;
         int m_maxRetryOpener = 3;
@@ -199,8 +204,6 @@ namespace bim_base
                     {
                         setOpenerFwd();
                         setLockBwd();
-
-                        // TODO KGW : Upper Guide Cylinder BWD
                         setUpperGuideBwd();
 
                         m_cylTimeout.start();
@@ -435,11 +438,12 @@ namespace bim_base
                         }
 
                         setLockFwd();
-
-                        // TODO KGW : Upper Guide Cylinder FWD
                         setUpperGuideFwd();
 
                         m_cylTimeout.start();
+
+                        if (isDry == true)
+                            m_dryRunWaitTimer.start();
 
                         m_step = STEP.CHECK_LOCK_PRODUCT;
                     }
@@ -449,8 +453,7 @@ namespace bim_base
                     {
                         if (isDry == false)
                         {
-                            // TODO KGW : Upper Guide Cylinder FWD CHECK
-                            if (isLockFwd() == false && isUpperGuideFwd() == false)
+                            if (isLockFwd() == false)
                             {
                                 if (m_cylTimeout.isElasped() == true)
                                 {
@@ -461,6 +464,23 @@ namespace bim_base
                                 }
                                 return;
                             }
+
+                            if (isUpperGuideFwd() == false)
+                            {
+                                if (m_cylTimeout.isElasped() == true)
+                                {
+                                    addAlarm(ALARM.CY_BASE_MOLDBASE_UPPER_GUIDE_FWD);
+
+                                    m_step = STEP.LOCK_PRDDUCT;
+                                    return;
+                                }
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (m_dryRunWaitTimer.isElasped() == false)
+                                return;
                         }
 
                         if (MOLD_WORK.isWaitShuttleLeft() == true)
@@ -507,7 +527,7 @@ namespace bim_base
                             return;
                         }
 
-                        m_step = STEP.MOVE_STAGE_LEFT;
+                        m_step = STEP.UPPER_GUIDE_BWD;
                     }
                     break;
 
@@ -536,6 +556,35 @@ namespace bim_base
                         }
 
                         m_step = STEP.OPENER_BWD;
+                    }
+                    break;
+
+                case STEP.UPPER_GUIDE_BWD:
+                    {
+                        setUpperGuideBwd();
+
+                        m_cylTimeout.start();
+
+                        m_step = STEP.CHECK_UPPER_GUIDE_BWD;
+                    }
+                    break;
+
+                case STEP.CHECK_UPPER_GUIDE_BWD:
+                    {
+                        if (isUpperGuideBwd() == false)
+                        {
+                            if (m_cylTimeout.isElasped() == true)
+                            {
+                                addAlarm(ALARM.CY_BASE_MOLDBASE_UPPER_GUIDE_BWD);
+
+                                m_step = STEP.UPPER_GUIDE_BWD;
+                                return;
+                            }
+                            return;
+                        }
+
+
+                        m_step = STEP.MOVE_STAGE_LEFT;
                     }
                     break;
 
@@ -589,9 +638,6 @@ namespace bim_base
                             return;
                         }
 
-                        // TODO KGW : Upper Guide Cylinder BWD
-                        setUpperGuideBwd();
-
                         m_actDelay.start();
                         m_cylTimeout.start();
 
@@ -600,20 +646,7 @@ namespace bim_base
                     break;
 
                 case STEP.UNLOCK_PRODUCT:
-                    {
-                        // TODO KGW : Upper Guide Cylinder BWD Time Out CHECK
-                        if (isUpperGuideBwd() == false)
-                        {
-                            if (m_cylTimeout.isElasped() == true)
-                            {
-                                addAlarm(ALARM.CY_BASE_MOLDBASE_UPPER_GUIDE_BWD);
-
-                                m_step = STEP.UNLOCK_PRODUCT;
-                                return;
-                            }
-                            return;
-                        }
-
+                    {                        
                         if (m_actDelay.isElasped() == true)
                             return;
 
@@ -713,12 +746,16 @@ namespace bim_base
         // TODO KGW : Upper Guide Cylinder FWD CHECK
         public bool isUpperGuideFwd()
         {
+            return true;
+
             return input(INPUT.MOLD_SHUTTLE_UPPER_GUIDE_FWD_1) && input(INPUT.MOLD_SHUTTLE_UPPER_GUIDE_FWD_2);
         }
 
         // TODO KGW : Upper Guide Cylinder BWD CHECK
         public bool isUpperGuideBwd()
         {
+            return true;
+
             return input(INPUT.MOLD_SHUTTLE_UPPER_GUIDE_BWD_1) && input(INPUT.MOLD_SHUTTLE_UPPER_GUIDE_BWD_2);
         }
 
