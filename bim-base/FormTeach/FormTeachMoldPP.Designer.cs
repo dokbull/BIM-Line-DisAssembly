@@ -376,7 +376,7 @@
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.jogControl1);
             this.Controls.Add(this.tableLayoutPanel3);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("SamsungOne 800C", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "FormTeachMoldPP";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormTeachPP";

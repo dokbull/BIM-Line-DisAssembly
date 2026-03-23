@@ -15,6 +15,7 @@ public enum TEACH_POS
     PICK_PP_WAIT,
     PICK_PP_PICK,
     PICK_PP_PLACE,
+    PICK_PP_NG_OUT,
 
     MOLD_PP_WAIT,
     MOLD_PP_LEFT,

@@ -40,7 +40,7 @@ namespace bim_base
 
             g.Selection.EnableMultiSelection = false;
 
-            g.setRowCol(5, 5, true, true);
+            g.setRowCol(6, 5, true, true);
             g.setTextAlignment(DevAge.Drawing.ContentAlignment.MiddleCenter);
             g.setHeader(new string[] { "", "MC Y", "TEACH", "MC Z", "TEACH"});
             g.setHeaderColor(Color.Black, Color.White);
@@ -51,6 +51,7 @@ namespace bim_base
             rowList.Add("WAIT");
             rowList.Add("PICK");
             rowList.Add("PLACE");
+            rowList.Add("NG OUT");
 
             int idx = 0;
             foreach (string text in rowList)
@@ -70,10 +71,12 @@ namespace bim_base
             POS WAIT = m_mc.teachData(TEACH_POS.PICK_PP_WAIT);
             POS PICK = m_mc.teachData(TEACH_POS.PICK_PP_PICK);
             POS PLACE = m_mc.teachData(TEACH_POS.PICK_PP_PLACE);
+            POS NG = m_mc.teachData(TEACH_POS.PICK_PP_NG_OUT);
 
             posList.Add(WAIT);
             posList.Add(PICK);
             posList.Add(PLACE);
+            posList.Add(NG);
 
             return posList;
         }
@@ -85,10 +88,12 @@ namespace bim_base
             POS WAIT = m_model.teachData(TEACH_POS.PICK_PP_WAIT);
             POS PICK = m_model.teachData(TEACH_POS.PICK_PP_PICK);
             POS PLACE = m_model.teachData(TEACH_POS.PICK_PP_PLACE);
+            POS NG = m_model.teachData(TEACH_POS.PICK_PP_NG_OUT);
 
             posList.Add(WAIT);
             posList.Add(PICK);
             posList.Add(PLACE);
+            posList.Add(NG);
 
             return posList;
         }
