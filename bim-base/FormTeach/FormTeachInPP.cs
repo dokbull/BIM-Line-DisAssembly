@@ -363,6 +363,16 @@ namespace bim_base
             if (ret == false)
                 return;
 
+            if (input(INPUT.MOLD_IN_REVERSE_RETURN) == false)
+            {
+                if (input(INPUT.MOLD_SHUTTLE_UP) == false)
+                {
+                    CMessageBox error = new CMessageBox(Common.TITLE, "can not ungrip without up", MessageBoxButtons.OK);
+                    error.showDialog();
+                    return;
+                }
+            }
+
             main.setOutput(OUTPUT.MOLD_IN_REVERSE_GRIP, false);
             main.setOutput(OUTPUT.MOLD_IN_REVERSE_UNGRIP, true);
         }
@@ -374,16 +384,16 @@ namespace bim_base
             if (ret == false)
                 return;
 
-            if (main.input(INPUT.MOLD_IN_REVERSE_GRIP) == false)
+            if (main.input(INPUT.MOLD_IN_REVERSE_UNGRIP) == true)
             {
                 CMessageBox error = new CMessageBox(Common.TITLE, "can not turn without grip", MessageBoxButtons.OK);
                 error.showDialog();
                 return;
             }
 
-            if (main.input(INPUT.MOLD_SHUTTLE_UP) == false)
+            if (main.input(INPUT.MOLD_SHUTTLE_DOWN) == false)
             {
-                CMessageBox error = new CMessageBox(Common.TITLE, "can not turn without up", MessageBoxButtons.OK);
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not turn without down", MessageBoxButtons.OK);
                 error.showDialog();
                 return;
             }
@@ -399,9 +409,9 @@ namespace bim_base
             if (ret == false)
                 return;
 
-            if (main.input(INPUT.MOLD_SHUTTLE_UP) == false)
+            if (main.input(INPUT.MOLD_SHUTTLE_DOWN) == false)
             {
-                CMessageBox error = new CMessageBox(Common.TITLE, "can not return without up", MessageBoxButtons.OK);
+                CMessageBox error = new CMessageBox(Common.TITLE, "can not return without down", MessageBoxButtons.OK);
                 error.showDialog();
                 return;
             }
