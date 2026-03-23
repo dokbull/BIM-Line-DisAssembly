@@ -14,7 +14,7 @@ namespace bim_base
 
         string[] m_names = null;
         CYLINDER_DELAY[] m_values = null;
-        int[] m_delayData = null;
+        double[] m_delayData = null;
 
         public FormCylinderDelay(ProcessMain main)
         {
@@ -23,7 +23,7 @@ namespace bim_base
 
             m_names = Enum.GetNames(typeof(CYLINDER_DELAY));
             m_values = (CYLINDER_DELAY[])Enum.GetValues(typeof(CYLINDER_DELAY));
-            m_delayData = new int[m_names.Length];
+            m_delayData = new double[m_names.Length];
 
             m_totalPage = (m_names.Length - 1) / m_pageSize;
 
@@ -102,12 +102,12 @@ namespace bim_base
 
             // Numpad 팝업
             string curValue = m_delayData[dataIdx].ToString();
-            FormNumpad dlg = new FormNumpad(curValue, false);
+            FormNumpad dlg = new FormNumpad(curValue, true);
             DialogResult res = dlg.ShowDialog();
 
             if (res == DialogResult.OK)
             {
-                int value = Util.toInt32(dlg.getNewValue());
+                double value = Util.toDouble(dlg.getNewValue());
                 m_delayData[dataIdx] = value;
                 CylinderListGrid.setValue(row, 1, value.ToString() + " Sec");
             }

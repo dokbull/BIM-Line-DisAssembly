@@ -24,7 +24,7 @@ class Conf
     static double[] m_negLimit = new double[MAX_AXIS];
     static double[] m_posLimit = new double[MAX_AXIS];
 
-    static int[] m_delayTime = new int[512];
+    static double[] m_delayTime = new double[512];
 
     static bool m_productInfoVisible = true;
 
@@ -91,25 +91,25 @@ class Conf
         // DELAY
         foreach (DELAY delayValue in Enum.GetValues(typeof(DELAY)))
         {
-            m_delayTime[(int)delayValue] = m_setting.getValue("DELAY", delayValue.ToString(), 0);
+            m_delayTime[(int)delayValue] = m_setting.getValue("DELAY", delayValue.ToString(), 0.0d);
         }
 
         // MOTOR DELAY
         foreach (MOTOR_DELAY delayValue in Enum.GetValues(typeof(MOTOR_DELAY)))
         {
-            m_delayTime[(int)delayValue] = m_setting.getValue("MOTOR DELAY", delayValue.ToString(), 0);
+            m_delayTime[(int)delayValue] = m_setting.getValue("MOTOR DELAY", delayValue.ToString(), 0.0d);
         }
 
         // CYLINDER DELAY
         foreach (CYLINDER_DELAY delayValue in Enum.GetValues(typeof(CYLINDER_DELAY)))
         {
-            m_delayTime[(int)delayValue] = m_setting.getValue("CYLINDER DELAY", delayValue.ToString(), 0);
+            m_delayTime[(int)delayValue] = m_setting.getValue("CYLINDER DELAY", delayValue.ToString(), 0.0d);
         }
 
         // VACUUM DELAY
         foreach (VACUUM_DELAY delayValue in Enum.GetValues(typeof(VACUUM_DELAY)))
         {
-            m_delayTime[(int)delayValue] = m_setting.getValue("VACUUM DELAY", delayValue.ToString(), 0);
+            m_delayTime[(int)delayValue] = m_setting.getValue("VACUUM DELAY", delayValue.ToString(), 0.0d);
         }
     }
 
@@ -168,52 +168,52 @@ class Conf
     #endregion
 
     // Get Delay Time
-    static public int delayTime(DELAY delayEnum)
+    static public double delayTime(DELAY delayEnum)
     {
         return m_delayTime[(int)delayEnum];
     }
 
     // Get Motor Delay Time
-    static public int delayTime(MOTOR_DELAY delayEnum)
+    static public double delayTime(MOTOR_DELAY delayEnum)
     {
         return m_delayTime[(int)delayEnum];
     }
 
     // Get Cylinder Delay Time
-    static public int delayTime(CYLINDER_DELAY delayEnum)
+    static public double delayTime(CYLINDER_DELAY delayEnum)
     {
         return m_delayTime[(int)delayEnum];
     }
 
     // Get Vacuum Delay Time
-    static public int delayTime(VACUUM_DELAY delayEnum)
+    static public double delayTime(VACUUM_DELAY delayEnum)
     {
         return m_delayTime[(int)delayEnum];
     }
 
     // Set Delay Time
-    static public void setDelayTime(DELAY delayEnum, int time)
+    static public void setDelayTime(DELAY delayEnum, double time)
     {
         m_delayTime[(int)delayEnum] = time;
         m_setting.setValue("DELAY", delayEnum.ToString(), time);
     }
 
     // Set Motor Delay Time
-    static public void setDelayTime(MOTOR_DELAY delayEnum, int time)
+    static public void setDelayTime(MOTOR_DELAY delayEnum, double time)
     {
         m_delayTime[(int)delayEnum] = time;
         m_setting.setValue("MOTOR DELAY", delayEnum.ToString(), time);
     }
 
     // Set Cylinder Delay Time
-    static public void setDelayTime(CYLINDER_DELAY delayEnum, int time)
+    static public void setDelayTime(CYLINDER_DELAY delayEnum, double time)
     {
         m_delayTime[(int)delayEnum] = time;
         m_setting.setValue("CYLINDER DELAY", delayEnum.ToString(), time);
     }
 
     // Set Vacuum Delay Time
-    static public void setDelayTime(VACUUM_DELAY delayEnum, int time)
+    static public void setDelayTime(VACUUM_DELAY delayEnum, double time)
     {
         m_delayTime[(int)delayEnum] = time;
         m_setting.setValue("VACUUM DELAY", delayEnum.ToString(), time);
