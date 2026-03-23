@@ -527,7 +527,7 @@
             this.MinimizeBox = false;
             this.Name = "FormTimer";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "FormSubSystemManager";
+            this.Text = "s";
             this.Load += new System.EventHandler(this.FormSubSystemManager_Load);
             this.tableLayoutPanel6.ResumeLayout(false);
             this.ResumeLayout(false);

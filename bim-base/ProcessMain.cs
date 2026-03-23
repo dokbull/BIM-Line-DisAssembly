@@ -581,8 +581,7 @@ namespace bim_base
                     commDIO();
                     commAIO();
                     // TODO CHECK LHJ : 사전 테스트 끝나고 복구 필요
-                    // Automation.Instance.SyncCommCCIE();
-                    //this.SyncCommCCIE
+                    //Automation.Instance.SyncCommCCIE();
                     foreach (ExtAxis axis in m_axis)
                     {
                         axis.run();

@@ -88,11 +88,28 @@ class Conf
 
     private static void loadDelayVariable()
     {
-        int count = m_delayTime.Length;
-
-        for (int i = 0; i < count; i++)
+        // DELAY
+        foreach (DELAY delayValue in Enum.GetValues(typeof(DELAY)))
         {
-            m_delayTime[i] = m_setting.getValue("DELAY", i.ToString(), 1000);
+            m_delayTime[(int)delayValue] = m_setting.getValue("DELAY", delayValue.ToString(), 0);
+        }
+
+        // MOTOR DELAY
+        foreach (MOTOR_DELAY delayValue in Enum.GetValues(typeof(MOTOR_DELAY)))
+        {
+            m_delayTime[(int)delayValue] = m_setting.getValue("MOTOR DELAY", delayValue.ToString(), 0);
+        }
+
+        // CYLINDER DELAY
+        foreach (CYLINDER_DELAY delayValue in Enum.GetValues(typeof(CYLINDER_DELAY)))
+        {
+            m_delayTime[(int)delayValue] = m_setting.getValue("CYLINDER DELAY", delayValue.ToString(), 0);
+        }
+
+        // VACUUM DELAY
+        foreach (VACUUM_DELAY delayValue in Enum.GetValues(typeof(VACUUM_DELAY)))
+        {
+            m_delayTime[(int)delayValue] = m_setting.getValue("VACUUM DELAY", delayValue.ToString(), 0);
         }
     }
 
@@ -150,17 +167,58 @@ class Conf
     }
     #endregion
 
+    // Get Delay Time
     static public int delayTime(DELAY delayEnum)
     {
         return m_delayTime[(int)delayEnum];
     }
 
+    // Get Motor Delay Time
+    static public int delayTime(MOTOR_DELAY delayEnum)
+    {
+        return m_delayTime[(int)delayEnum];
+    }
+
+    // Get Cylinder Delay Time
+    static public int delayTime(CYLINDER_DELAY delayEnum)
+    {
+        return m_delayTime[(int)delayEnum];
+    }
+
+    // Get Vacuum Delay Time
+    static public int delayTime(VACUUM_DELAY delayEnum)
+    {
+        return m_delayTime[(int)delayEnum];
+    }
+
+    // Set Delay Time
     static public void setDelayTime(DELAY delayEnum, int time)
     {
         m_delayTime[(int)delayEnum] = time;
-        m_setting.setValue("DELAY", ((int)delayEnum).ToString(), time);
+        m_setting.setValue("DELAY", delayEnum.ToString(), time);
     }
-    
+
+    // Set Motor Delay Time
+    static public void setDelayTime(MOTOR_DELAY delayEnum, int time)
+    {
+        m_delayTime[(int)delayEnum] = time;
+        m_setting.setValue("MOTOR DELAY", delayEnum.ToString(), time);
+    }
+
+    // Set Cylinder Delay Time
+    static public void setDelayTime(CYLINDER_DELAY delayEnum, int time)
+    {
+        m_delayTime[(int)delayEnum] = time;
+        m_setting.setValue("CYLINDER DELAY", delayEnum.ToString(), time);
+    }
+
+    // Set Vacuum Delay Time
+    static public void setDelayTime(VACUUM_DELAY delayEnum, int time)
+    {
+        m_delayTime[(int)delayEnum] = time;
+        m_setting.setValue("VACUUM DELAY", delayEnum.ToString(), time);
+    }
+
     static public string PASSWORD
     {
         get { return m_password; }
