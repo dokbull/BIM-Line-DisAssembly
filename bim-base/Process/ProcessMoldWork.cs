@@ -149,7 +149,7 @@ namespace bim_base
                     {
                         if (ST_LEFT_PP.type() == CSTATION.TYPE.COVER)
                         {
-                            if (ST_STAGE_3.type() == CSTATION.TYPE.BASE)
+                            if (isDry == true || ST_STAGE_3.type() == CSTATION.TYPE.BASE)
                             {
                                 m_step = STEP.PLACE_RIGHT_COVER;
                                 return;
