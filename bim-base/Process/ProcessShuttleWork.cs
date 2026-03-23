@@ -285,13 +285,7 @@ namespace bim_base
                     break;
 
                 case STEP.WAIT_REVERSE:
-                    {
-                        if (ST_STAGE_2.type() == CSTATION.TYPE.BASE)
-                        {
-                            // TESTCODE
-                            main.setLastWork(true);
-                        }
-
+                    {                        
                         if (REVERSE.isWaitMold() == true && main.isLastWork() == true)
                         {
                             m_step = STEP.UP_STAGE;
@@ -406,6 +400,8 @@ namespace bim_base
                     {
                         if (MOLD_WORK.isWaitShuttleRight() == true)
                             MOLD_WORK.setShuttleRightCall();
+
+                        m_actDelay.start();
 
                         m_step = STEP.LOCK_PRDDUCT;
                     }

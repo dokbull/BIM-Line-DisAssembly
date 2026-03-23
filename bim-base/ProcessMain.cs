@@ -582,7 +582,6 @@ namespace bim_base
                     commAIO();
                     // TODO CHECK LHJ : 사전 테스트 끝나고 복구 필요
                     //Automation.Instance.SyncCommCCIE();
-                    //this.SyncCommCCIE
                     foreach (ExtAxis axis in m_axis)
                     {
                         axis.run();
@@ -755,7 +754,7 @@ namespace bim_base
 
             m_isAuto = value;
 
-#if true
+#if false
             Automation.Instance.EqControlMode = (this.m_isAuto ? CIMEnumeric.EnumEqControlMode.Auto : CIMEnumeric.EnumEqControlMode.Manual);
             switch (Automation.Instance.EqControlMode)
             {

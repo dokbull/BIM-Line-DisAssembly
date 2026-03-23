@@ -1438,17 +1438,17 @@ namespace bim_base.data.CIM
 
                 // TODO LHJ : Need change PopupUI of ETC Sheet in Scenario Doc
 
-                FormTpmLossCode form = new FormTpmLossCode();
-                form.TopMost = true;
-                form.ShowDialog();
+                //FormTpmLossCode form = new FormTpmLossCode();
+                //form.TopMost = true;
+                //form.ShowDialog();
 
 
-                this.WriteWord(WRITE_W.DEC_2_120F_TMPLossCode, $"{(int)form.SelectedTpCode}");
-                this.WriteWord(WRITE_W.ASCII_20_1211_TMPLossDescp, form.SelectedTpDescription);
-
-                form.Close();
-                form.Dispose();
-                form = null;
+                //this.WriteWord(WRITE_W.DEC_2_120F_TMPLossCode, $"{(int)form.SelectedTpCode}");
+                //this.WriteWord(WRITE_W.ASCII_20_1211_TMPLossDescp, form.SelectedTpDescription);
+                //
+                //form.Close();
+                //form.Dispose();
+                //form = null;
 
                 this.SleepWithDoEvent(200);
 

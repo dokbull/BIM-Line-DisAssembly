@@ -31,11 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCylinderDelay));
             this.saveButton = new SUserControls.ColorButton();
             this.exitButton = new SUserControls.ColorButton();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.colorButton3 = new SUserControls.ColorButton();
             this.colorButton1 = new SUserControls.ColorButton();
-            this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.colorButton2 = new SUserControls.ColorButton();
+            this.NextButton = new SUserControls.ColorButton();
+            this.PreviouslyButton = new SUserControls.ColorButton();
+            this.CylinderListGrid = new CSourceGrid();
             this.SuspendLayout();
             // 
             // saveButton
@@ -47,7 +47,7 @@
             this.saveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold);
             this.saveButton.GradientBottom = System.Drawing.Color.White;
             this.saveButton.GradientTop = System.Drawing.Color.White;
-            this.saveButton.Location = new System.Drawing.Point(508, 481);
+            this.saveButton.Location = new System.Drawing.Point(44, 623);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(210, 79);
             this.saveButton.TabIndex = 1163;
@@ -69,7 +69,7 @@
             this.exitButton.GradientBottom = System.Drawing.Color.White;
             this.exitButton.GradientTop = System.Drawing.Color.White;
             this.exitButton.Image = ((System.Drawing.Image)(resources.GetObject("exitButton.Image")));
-            this.exitButton.Location = new System.Drawing.Point(744, 481);
+            this.exitButton.Location = new System.Drawing.Point(280, 623);
             this.exitButton.Margin = new System.Windows.Forms.Padding(4);
             this.exitButton.Name = "exitButton";
             this.exitButton.RectCornerRadius = 2;
@@ -78,41 +78,6 @@
             this.exitButton.Text = "Exit";
             this.exitButton.UseVisualStyleBackColor = false;
             this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 279F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(45, 97);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(428, 366);
-            this.tableLayoutPanel1.TabIndex = 1168;
-            // 
-            // colorButton3
-            // 
-            this.colorButton3.BorderLineColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
-            this.colorButton3.BorderThickness = 0F;
-            this.colorButton3.Checked = false;
-            this.colorButton3.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
-            this.colorButton3.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.colorButton3.GradientBottom = System.Drawing.Color.Silver;
-            this.colorButton3.GradientTop = System.Drawing.Color.Silver;
-            this.colorButton3.Location = new System.Drawing.Point(31, 87);
-            this.colorButton3.Margin = new System.Windows.Forms.Padding(4);
-            this.colorButton3.Name = "colorButton3";
-            this.colorButton3.Size = new System.Drawing.Size(458, 386);
-            this.colorButton3.TabIndex = 1167;
-            this.colorButton3.UseVisualStyleBackColor = true;
             // 
             // colorButton1
             // 
@@ -123,37 +88,13 @@
             this.colorButton1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.colorButton1.GradientBottom = System.Drawing.Color.Silver;
             this.colorButton1.GradientTop = System.Drawing.Color.Silver;
-            this.colorButton1.Location = new System.Drawing.Point(31, 12);
+            this.colorButton1.Location = new System.Drawing.Point(44, 24);
             this.colorButton1.Margin = new System.Windows.Forms.Padding(4);
             this.colorButton1.Name = "colorButton1";
-            this.colorButton1.Size = new System.Drawing.Size(941, 59);
+            this.colorButton1.Size = new System.Drawing.Size(464, 59);
             this.colorButton1.TabIndex = 1165;
             this.colorButton1.Text = "Cylinder Delay Setting";
             this.colorButton1.UseVisualStyleBackColor = true;
-            // 
-            // tableLayoutPanel6
-            // 
-            this.tableLayoutPanel6.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.tableLayoutPanel6.ColumnCount = 2;
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 320F));
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.Location = new System.Drawing.Point(520, 96);
-            this.tableLayoutPanel6.Name = "tableLayoutPanel6";
-            this.tableLayoutPanel6.RowCount = 11;
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 9.090909F));
-            this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(441, 366);
-            this.tableLayoutPanel6.TabIndex = 1164;
             // 
             // colorButton2
             // 
@@ -164,28 +105,74 @@
             this.colorButton2.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.colorButton2.GradientBottom = System.Drawing.Color.Silver;
             this.colorButton2.GradientTop = System.Drawing.Color.Silver;
-            this.colorButton2.Location = new System.Drawing.Point(508, 87);
+            this.colorButton2.Location = new System.Drawing.Point(44, 99);
             this.colorButton2.Margin = new System.Windows.Forms.Padding(4);
             this.colorButton2.Name = "colorButton2";
             this.colorButton2.Size = new System.Drawing.Size(464, 386);
             this.colorButton2.TabIndex = 1166;
             this.colorButton2.UseVisualStyleBackColor = true;
             // 
+            // NextButton
+            // 
+            this.NextButton.BorderLineColor = System.Drawing.Color.Black;
+            this.NextButton.BorderThickness = 0F;
+            this.NextButton.Checked = false;
+            this.NextButton.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
+            this.NextButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold);
+            this.NextButton.GradientBottom = System.Drawing.Color.White;
+            this.NextButton.GradientTop = System.Drawing.Color.White;
+            this.NextButton.Location = new System.Drawing.Point(375, 503);
+            this.NextButton.Name = "NextButton";
+            this.NextButton.Size = new System.Drawing.Size(133, 48);
+            this.NextButton.TabIndex = 1171;
+            this.NextButton.Text = "Next";
+            this.NextButton.UseVisualStyleBackColor = true;
+            this.NextButton.Click += new System.EventHandler(this.NextButton_Click);
+            // 
+            // PreviouslyButton
+            // 
+            this.PreviouslyButton.BorderLineColor = System.Drawing.Color.Black;
+            this.PreviouslyButton.BorderThickness = 0F;
+            this.PreviouslyButton.Checked = false;
+            this.PreviouslyButton.CheckedButtonColor = System.Drawing.Color.FromArgb(((int)(((byte)(155)))), ((int)(((byte)(53)))), ((int)(((byte)(98)))), ((int)(((byte)(141)))));
+            this.PreviouslyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold);
+            this.PreviouslyButton.GradientBottom = System.Drawing.Color.White;
+            this.PreviouslyButton.GradientTop = System.Drawing.Color.White;
+            this.PreviouslyButton.Location = new System.Drawing.Point(44, 503);
+            this.PreviouslyButton.Name = "PreviouslyButton";
+            this.PreviouslyButton.Size = new System.Drawing.Size(133, 48);
+            this.PreviouslyButton.TabIndex = 1172;
+            this.PreviouslyButton.Text = "Prev";
+            this.PreviouslyButton.UseVisualStyleBackColor = true;
+            this.PreviouslyButton.Click += new System.EventHandler(this.PreviouslyButton_Click);
+            // 
+            // CylinderListGrid
+            // 
+            this.CylinderListGrid.EnableSort = true;
+            this.CylinderListGrid.Location = new System.Drawing.Point(56, 113);
+            this.CylinderListGrid.Name = "CylinderListGrid";
+            this.CylinderListGrid.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
+            this.CylinderListGrid.SelectionMode = SourceGrid.GridSelectionMode.Cell;
+            this.CylinderListGrid.Size = new System.Drawing.Size(439, 361);
+            this.CylinderListGrid.TabIndex = 1170;
+            this.CylinderListGrid.TabStop = true;
+            this.CylinderListGrid.ToolTipText = "";
+            // 
             // FormCylinderDelay
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1003, 567);
+            this.ClientSize = new System.Drawing.Size(551, 726);
             this.ControlBox = false;
+            this.Controls.Add(this.PreviouslyButton);
+            this.Controls.Add(this.NextButton);
+            this.Controls.Add(this.CylinderListGrid);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.exitButton);
-            this.Controls.Add(this.tableLayoutPanel1);
-            this.Controls.Add(this.colorButton3);
             this.Controls.Add(this.colorButton1);
-            this.Controls.Add(this.tableLayoutPanel6);
             this.Controls.Add(this.colorButton2);
             this.Name = "FormCylinderDelay";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "FormCylinderDelay";
+            this.Text = "CylinderDelay";
             this.ResumeLayout(false);
 
         }
@@ -194,10 +181,10 @@
 
         private SUserControls.ColorButton saveButton;
         public SUserControls.ColorButton exitButton;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private SUserControls.ColorButton colorButton3;
         private SUserControls.ColorButton colorButton1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private SUserControls.ColorButton colorButton2;
+        private CSourceGrid CylinderListGrid;
+        private SUserControls.ColorButton NextButton;
+        private SUserControls.ColorButton PreviouslyButton;
     }
 }
