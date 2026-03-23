@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -495,14 +496,34 @@ namespace bim_base
             main.setOutput(OUTPUT.SHUTTLE_MOLD_UNLOCK_FWD, false);
         }
 
+        // TODO KGW : MOLD SHUTTLE UPPER GUIDE FORWARD CYLINDER
         private void coverLockButton_Click(object sender, EventArgs e)
         {
+            // 실린더 동작 안내창
+            bool ret = CMessageBox.showMessage("Do you want to UPPER GUIDE FWD?");
 
+            // 동작 안한다고 하면 return 
+            if (ret == false)
+                return;
+
+            // UPPER GUIDE CYLINDER FWD 동작
+            main.setOutput(OUTPUT.SHUTTLE_UPPER_GUIDE_FWD, true);
+            main.setOutput(OUTPUT.SHUTTLE_UPPER_GUIDE_BWD, false);
         }
 
+        // TODO KGW : MOLD SHUTTLE UPPER GUIDE BACKWARD CYLINDER
         private void coverUnlockButton_Click(object sender, EventArgs e)
         {
+            // 실린더 동작 안내창
+            bool ret = CMessageBox.showMessage("Do you want to UPPER GUIDE BWD ?");
 
+            // 동작 안한다고 하면 return 
+            if (ret == false)
+                return;
+
+            // UPPER GUIDE CYLINDER BWD 동작
+            main.setOutput(OUTPUT.SHUTTLE_UPPER_GUIDE_BWD, true);
+            main.setOutput(OUTPUT.SHUTTLE_UPPER_GUIDE_FWD, false);
         }
     }
 }

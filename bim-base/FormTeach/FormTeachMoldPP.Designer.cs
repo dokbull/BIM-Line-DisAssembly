@@ -48,8 +48,8 @@
             this.holdOffButton = new System.Windows.Forms.Button();
             this.openerFwdButton = new System.Windows.Forms.Button();
             this.openerBwdButton = new System.Windows.Forms.Button();
-            this.coverLockButton = new System.Windows.Forms.Button();
-            this.coverUnlockButton = new System.Windows.Forms.Button();
+            this.upperGuideFwdButton = new System.Windows.Forms.Button();
+            this.upperGuideBwdButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.rightGripOnButton = new System.Windows.Forms.Button();
             this.rightGripOffButton = new System.Windows.Forms.Button();
@@ -159,7 +159,7 @@
             // jogControl1
             // 
             this.jogControl1.BackColor = System.Drawing.Color.White;
-            this.jogControl1.Font = new System.Drawing.Font("SamsungOne 800C", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.jogControl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.jogControl1.Location = new System.Drawing.Point(745, 12);
             this.jogControl1.Name = "jogControl1";
             this.jogControl1.Size = new System.Drawing.Size(246, 350);
@@ -184,8 +184,8 @@
             this.tableLayoutPanel2.Controls.Add(this.holdOffButton, 3, 2);
             this.tableLayoutPanel2.Controls.Add(this.openerFwdButton, 4, 1);
             this.tableLayoutPanel2.Controls.Add(this.openerBwdButton, 4, 2);
-            this.tableLayoutPanel2.Controls.Add(this.coverLockButton, 5, 1);
-            this.tableLayoutPanel2.Controls.Add(this.coverUnlockButton, 5, 2);
+            this.tableLayoutPanel2.Controls.Add(this.upperGuideFwdButton, 5, 1);
+            this.tableLayoutPanel2.Controls.Add(this.upperGuideBwdButton, 5, 2);
             this.tableLayoutPanel2.Controls.Add(this.label1, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.rightGripOnButton, 1, 1);
             this.tableLayoutPanel2.Controls.Add(this.rightGripOffButton, 1, 2);
@@ -294,25 +294,25 @@
             this.openerBwdButton.UseVisualStyleBackColor = true;
             this.openerBwdButton.Click += new System.EventHandler(this.openerBwdButton_Click);
             // 
-            // coverLockButton
+            // upperGuideFwdButton
             // 
-            this.coverLockButton.Location = new System.Drawing.Point(814, 25);
-            this.coverLockButton.Name = "coverLockButton";
-            this.coverLockButton.Size = new System.Drawing.Size(161, 72);
-            this.coverLockButton.TabIndex = 2;
-            this.coverLockButton.Text = "COVER LOCK";
-            this.coverLockButton.UseVisualStyleBackColor = true;
-            this.coverLockButton.Click += new System.EventHandler(this.coverLockButton_Click);
+            this.upperGuideFwdButton.Location = new System.Drawing.Point(814, 25);
+            this.upperGuideFwdButton.Name = "upperGuideFwdButton";
+            this.upperGuideFwdButton.Size = new System.Drawing.Size(161, 72);
+            this.upperGuideFwdButton.TabIndex = 2;
+            this.upperGuideFwdButton.Text = "GUIDE FWD";
+            this.upperGuideFwdButton.UseVisualStyleBackColor = true;
+            this.upperGuideFwdButton.Click += new System.EventHandler(this.coverLockButton_Click);
             // 
-            // coverUnlockButton
+            // upperGuideBwdButton
             // 
-            this.coverUnlockButton.Location = new System.Drawing.Point(814, 104);
-            this.coverUnlockButton.Name = "coverUnlockButton";
-            this.coverUnlockButton.Size = new System.Drawing.Size(161, 73);
-            this.coverUnlockButton.TabIndex = 2;
-            this.coverUnlockButton.Text = "COVER UNLOCK";
-            this.coverUnlockButton.UseVisualStyleBackColor = true;
-            this.coverUnlockButton.Click += new System.EventHandler(this.coverUnlockButton_Click);
+            this.upperGuideBwdButton.Location = new System.Drawing.Point(814, 104);
+            this.upperGuideBwdButton.Name = "upperGuideBwdButton";
+            this.upperGuideBwdButton.Size = new System.Drawing.Size(161, 73);
+            this.upperGuideBwdButton.TabIndex = 2;
+            this.upperGuideBwdButton.Text = "GUIDE BWD";
+            this.upperGuideBwdButton.UseVisualStyleBackColor = true;
+            this.upperGuideBwdButton.Click += new System.EventHandler(this.coverUnlockButton_Click);
             // 
             // label1
             // 
@@ -376,7 +376,7 @@
             this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.jogControl1);
             this.Controls.Add(this.tableLayoutPanel3);
-            this.Font = new System.Drawing.Font("SamsungOne 800C", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "FormTeachMoldPP";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormTeachPP";
@@ -407,8 +407,8 @@
         private System.Windows.Forms.Button holdOffButton;
         private System.Windows.Forms.Button openerFwdButton;
         private System.Windows.Forms.Button openerBwdButton;
-        private System.Windows.Forms.Button coverLockButton;
-        private System.Windows.Forms.Button coverUnlockButton;
+        private System.Windows.Forms.Button upperGuideFwdButton;
+        private System.Windows.Forms.Button upperGuideBwdButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button rightGripOnButton;
         private System.Windows.Forms.Button rightGripOffButton;

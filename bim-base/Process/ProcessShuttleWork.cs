@@ -200,6 +200,9 @@ namespace bim_base
                         setOpenerFwd();
                         setLockBwd();
 
+                        // TODO KGW : Upper Guide Cylinder BWD
+                        setUpperGuideBwd();
+
                         m_cylTimeout.start();
 
                         m_step = STEP.CHECK_CYL_READY;
@@ -225,6 +228,19 @@ namespace bim_base
                             if (m_cylTimeout.isElasped() == true)
                             {
                                 addAlarm(ALARM.CY_BASE_MOLDBASE_HOLD_CYL_BWD);
+
+                                m_step = STEP.CYL_READY;
+                                return;
+                            }
+                            return;
+                        }
+
+                        // TODO KGW : Upper Guide Cylinder BWD Time Out CHECK
+                        if (isUpperGuideBwd() == false)
+                        {
+                            if (m_cylTimeout.isElasped() == true)
+                            {
+                                addAlarm(ALARM.CY_BASE_MOLDBASE_UPPER_GUIDE_BWD);
 
                                 m_step = STEP.CYL_READY;
                                 return;
@@ -420,6 +436,9 @@ namespace bim_base
 
                         setLockFwd();
 
+                        // TODO KGW : Upper Guide Cylinder FWD
+                        setUpperGuideFwd();
+
                         m_cylTimeout.start();
 
                         m_step = STEP.CHECK_LOCK_PRODUCT;
@@ -430,7 +449,8 @@ namespace bim_base
                     {
                         if (isDry == false)
                         {
-                            if (isLockFwd() == false)
+                            // TODO KGW : Upper Guide Cylinder FWD CHECK
+                            if (isLockFwd() == false && isUpperGuideFwd() == false)
                             {
                                 if (m_cylTimeout.isElasped() == true)
                                 {
@@ -569,7 +589,11 @@ namespace bim_base
                             return;
                         }
 
+                        // TODO KGW : Upper Guide Cylinder BWD
+                        setUpperGuideBwd();
+
                         m_actDelay.start();
+                        m_cylTimeout.start();
 
                         m_step = STEP.UNLOCK_PRODUCT;
                     }
@@ -577,6 +601,19 @@ namespace bim_base
 
                 case STEP.UNLOCK_PRODUCT:
                     {
+                        // TODO KGW : Upper Guide Cylinder BWD Time Out CHECK
+                        if (isUpperGuideBwd() == false)
+                        {
+                            if (m_cylTimeout.isElasped() == true)
+                            {
+                                addAlarm(ALARM.CY_BASE_MOLDBASE_UPPER_GUIDE_BWD);
+
+                                m_step = STEP.UNLOCK_PRODUCT;
+                                return;
+                            }
+                            return;
+                        }
+
                         if (m_actDelay.isElasped() == true)
                             return;
 
@@ -649,6 +686,20 @@ namespace bim_base
             setOutput(OUTPUT.SHUTTLE_MOLD_PUSHER_FWD, false);
         }
 
+        // TODO KGW : Upper Guide Cylinder FWD
+        public void setUpperGuideFwd()
+        {
+            setOutput(OUTPUT.SHUTTLE_UPPER_GUIDE_FWD, true);
+            setOutput(OUTPUT.SHUTTLE_UPPER_GUIDE_BWD, false);
+        }
+
+        // TODO KGW : Upper Guide Cylinder BWD
+        public void setUpperGuideBwd()
+        {
+            setOutput(OUTPUT.SHUTTLE_UPPER_GUIDE_BWD, true);
+            setOutput(OUTPUT.SHUTTLE_UPPER_GUIDE_FWD, false);
+        }
+
         public bool isLockFwd()
         {
             return input(INPUT.MOLD_SHUTTLE_PUSHER_FWD_1) && input(INPUT.MOLD_SHUTTLE_PUSHER_FWD_2);
@@ -658,6 +709,19 @@ namespace bim_base
         {
             return input(INPUT.MOLD_SHUTTLE_PUSHER_BWD_1) && input(INPUT.MOLD_SHUTTLE_PUSHER_BWD_2);
         }
+
+        // TODO KGW : Upper Guide Cylinder FWD CHECK
+        public bool isUpperGuideFwd()
+        {
+            return input(INPUT.MOLD_SHUTTLE_UPPER_GUIDE_FWD_1) && input(INPUT.MOLD_SHUTTLE_UPPER_GUIDE_FWD_2);
+        }
+
+        // TODO KGW : Upper Guide Cylinder BWD CHECK
+        public bool isUpperGuideBwd()
+        {
+            return input(INPUT.MOLD_SHUTTLE_UPPER_GUIDE_BWD_1) && input(INPUT.MOLD_SHUTTLE_UPPER_GUIDE_BWD_2);
+        }
+
 
         public void setUp()
         {
