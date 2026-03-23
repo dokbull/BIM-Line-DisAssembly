@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
 
 namespace bim_base
@@ -9,23 +8,22 @@ namespace bim_base
     public partial class FormAlarmList : Form
     {
         ProcessMain main = null;
-        CFileManager m_fileManager = null;
-        Queue<string[]> m_logQueue = new Queue<string[]>();
-        List<AlarmData> lightAlarm = null;
-        List<AlarmData> heavyAlarm = null;
+        CFileManager m_logFile = null;
+        List <AlarmData> m_lightAlarm = null;
+        List<AlarmData> m_heavyAlarm = null;
 
         public FormAlarmList(ProcessMain procMain)
         {
             InitializeComponent();
 
             main = procMain;
-            lightAlarm = new List<AlarmData>();
-            heavyAlarm = new List<AlarmData>();
+            m_lightAlarm = new List<AlarmData>();
+            m_heavyAlarm = new List<AlarmData>();
 
             Init();
         }
 
-        // 초기화
+        // 그리드 헤더 및 열 너비 초기화
         private void Init()
         {
             alarmListGrid.setRowCol(1, 6);
@@ -42,7 +40,7 @@ namespace bim_base
             alarmListGrid.Columns[2].Width = 50; totalWidth -= 50;
             alarmListGrid.Columns[3].Width = 50; totalWidth -= 50;
             alarmListGrid.Columns[4].Width = 70; totalWidth -= 70;
-            alarmListGrid.Columns[5].Width = totalWidth; 
+            alarmListGrid.Columns[5].Width = totalWidth;
 
             alarmListGrid.setTextAlignment(0, 0, DevAge.Drawing.ContentAlignment.MiddleCenter);
             alarmListGrid.setTextAlignment(0, 1, DevAge.Drawing.ContentAlignment.MiddleCenter);
@@ -50,90 +48,92 @@ namespace bim_base
             alarmListGrid.setTextAlignment(0, 3, DevAge.Drawing.ContentAlignment.MiddleCenter);
             alarmListGrid.setTextAlignment(0, 4, DevAge.Drawing.ContentAlignment.MiddleCenter);
             alarmListGrid.setTextAlignment(0, 5, DevAge.Drawing.ContentAlignment.MiddleLeft);
-
-            dateChange();
         }
 
-        private void calendar_DateChanged(object sender, DateRangeEventArgs e)
+        // 알람 로그 파일에서 AlarmData 불러오기
+        private void loadLogData()
         {
-            dateChange();
-        }
+            m_lightAlarm.Clear();
+            m_heavyAlarm.Clear();
 
-        private void dateChange()
-        {
-            DateTime date = DateTime.Now;
+            string logPath = Common.LOG_PATH + "\\alarm\\" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+            m_logFile = new CFileManager(logPath);
+            List<string> lines = m_logFile.readAll(true);
 
-            gridDataClear();
-
-            loadLogData(date);
-        }
-
-        private void loadLogData(DateTime datetime)
-        {
-            if (m_fileManager != null)
-            {
-                m_fileManager = null;
-            }
-
-            m_fileManager = new CFileManager(Common.LOG_PATH + "\\alarm\\" + datetime.ToString("yyyyMMdd") + ".log");
-
-            if (lightAlarm == null || lightAlarm.Count == 0)
-            {
+            if (lines == null || lines.Count == 0)
                 return;
-            }
 
-            for (int i = 0; i < lightAlarm.Count; i++)
+            for (int i = 0; i < lines.Count; i++)
             {
-                int num = (int)lightAlarm[0].alarm;
-                string date = lightAlarm[1].datetime;
-                int code = lightAlarm[3].code;
-                ALARM_TYPE type = lightAlarm[4].type;
-                string text = lightAlarm[5].desc;
+                string[] s = lines[i].Split(',');
+                if (s.Length < 5) continue;
 
-                addLog(num, date, code, type, text, false);
+                AlarmData data = new AlarmData();
+                data.datetime = s[0].Trim() + " " + s[1].Trim();
+                data.code = Util.toInt32(s[2].Trim());
+                data.alarm = (ALARM)data.code;
+                data.desc = s[4].Trim();
+
+                string level = s[3].Trim();
+                if (level == ALARM_TYPE.LIGHT.ToString())
+                {
+                    data.type = ALARM_TYPE.LIGHT;
+                    m_lightAlarm.Add(data);
+                }
+                else
+                {
+                    data.type = ALARM_TYPE.HEAVY;
+                    m_heavyAlarm.Add(data);
+                }
             }
         }
 
-        public void addLog(int num, string date, int code, ALARM_TYPE type, string text, bool useQueue = true)
+        // 알람 데이터를 그리드에 행 단위로 표시
+        private void displayAlarmRows(List<AlarmData> alarms)
         {
-            string[] texts = new string[3];
-
-            texts[0] = num.ToString();
-            texts[1] = date;
-            texts[3] = code.ToString("0000");
-            texts[5] = text;
-
-            if (useQueue)
-                m_logQueue.Enqueue(texts);
-            else
-                addGridRowData(texts);
-        }
-
-        private void addGridRowData(string[] texts)
-        {
-            int row = 1;
-            int colCount = alarmListGrid.ColumnsCount;
-            alarmListGrid.Rows.Insert(row);
-
-            for (int i = 0; i < colCount; i++)
+            for (int i = 0; i < alarms.Count; i++)
             {
-                CCell cell = new CCell();
-                CViewCell viewCell = new CViewCell();
+                AlarmData data = alarms[i];
+                int row = alarmListGrid.RowsCount;
+                alarmListGrid.addRow(1);
 
-                alarmListGrid[row, i] = cell;
-                alarmListGrid[row, i].View = viewCell;
+                alarmListGrid.setValue(row, 0, (i + 1).ToString());
+                alarmListGrid.setValue(row, 1, data.datetime);
+                alarmListGrid.setValue(row, 2, ((int)data.alarm).ToString());
+                alarmListGrid.setValue(row, 3, data.code.ToString("0000"));
+                alarmListGrid.setValue(row, 4, data.type.ToString());
+                alarmListGrid.setValue(row, 5, data.desc);
+
+                alarmListGrid.setTextAlignment(row, 0, DevAge.Drawing.ContentAlignment.MiddleCenter);
+                alarmListGrid.setTextAlignment(row, 1, DevAge.Drawing.ContentAlignment.MiddleCenter);
+                alarmListGrid.setTextAlignment(row, 2, DevAge.Drawing.ContentAlignment.MiddleCenter);
+                alarmListGrid.setTextAlignment(row, 3, DevAge.Drawing.ContentAlignment.MiddleCenter);
+                alarmListGrid.setTextAlignment(row, 4, DevAge.Drawing.ContentAlignment.MiddleCenter);
+                alarmListGrid.setTextAlignment(row, 5, DevAge.Drawing.ContentAlignment.MiddleLeft);
             }
 
-            alarmListGrid[row, 0].Value = texts[0];
-            alarmListGrid[row, 1].Value = texts[1];
-            alarmListGrid[row, 2].Value = texts[2];
-
-            alarmListGrid.setTextAlignment(row, 0, DevAge.Drawing.ContentAlignment.MiddleCenter);
-            alarmListGrid.setTextAlignment(row, 1, DevAge.Drawing.ContentAlignment.MiddleCenter);
-
-            int code = Util.toInt32(texts[1]);
+            descMaximumLength(alarms);
         }
 
+        // 최대 desc 길이에 맞춤
+        private void descMaximumLength(List<AlarmData> alarms)
+        {
+            int maxWidth = 300;
+
+            using (Graphics g = alarmListGrid.CreateGraphics())
+            {
+                for (int i = 0; i < alarms.Count; i++)
+                {
+                    int textWidth = (int)g.MeasureString(alarms[i].desc, alarmListGrid.Font).Width + 20;
+                    if (textWidth > maxWidth)
+                        maxWidth = textWidth;
+                }
+            }
+
+            alarmListGrid.Columns[5].Width = maxWidth;
+        }
+
+        // 그리드 데이터 클리어
         private void gridDataClear()
         {
             int rowCount = alarmListGrid.RowsCount;
@@ -148,119 +148,42 @@ namespace bim_base
             }
         }
 
-        // Current Alarm Button Click
+        // 전체 알람 표시
         private void currentAlarmButton_Click(object sender, EventArgs e)
         {
             gridDataClear();
+            loadLogData();
 
-            // 오늘 날짜의 알람 로그 파일 읽기
-            DateTime today = DateTime.Now;
-            string logPath = Common.LOG_PATH + "\\alarm\\" + today.ToString("yyyyMMdd") + ".log";
-            CFileManager fileMgr = new CFileManager(logPath);
+            List<AlarmData> all = new List<AlarmData>();
+            all.AddRange(m_lightAlarm);
+            all.AddRange(m_heavyAlarm);
 
-            List<string[]> lines = fileMgr.readAll(',');
-            if (lines == null || lines.Count == 0)
-                return;
-
-            for (int i = 0; i < lines.Count; i++)
-            {
-                string[] split = lines[i];
-                if (split.Length < 5)
-                    continue;
-
-                int row = alarmListGrid.RowsCount;
-                int colCount = alarmListGrid.ColumnsCount;
-                alarmListGrid.addRow(1);
-
-                if (split[3].Trim() == "LIGHT")
-                {
-                    // No
-                    alarmListGrid.setValue(row, 0, (i + 1).ToString());
-                    // Occurrence Time
-                    alarmListGrid.setValue(row, 1, split[0] + " " + split[1]);
-                    // I/O
-                    alarmListGrid.setValue(row, 2, split[2].Trim());
-                    // Code
-                    alarmListGrid.setValue(row, 3, split[2].Trim());
-                    // Level
-                    alarmListGrid.setValue(row, 4, split[3].Trim());
-                    // Message
-                    alarmListGrid.setValue(row, 5, split[4].Trim());
-
-                    alarmListGrid.setTextAlignment(row, 0, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 1, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 2, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 3, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 4, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 5, DevAge.Drawing.ContentAlignment.MiddleLeft);
-                }
-
-                else if (split[3].Trim() == "HEAVY")
-                {
-                    // No
-                    alarmListGrid.setValue(row, 0, (i + 1).ToString());
-                    // Occurrence Time
-                    alarmListGrid.setValue(row, 1, split[0] + " " + split[1]);
-                    // I/O
-                    alarmListGrid.setValue(row, 2, split[2].Trim());
-                    // Code
-                    alarmListGrid.setValue(row, 3, split[2].Trim());
-                    // Level
-                    alarmListGrid.setValue(row, 4, split[3].Trim());
-                    // Message
-                    alarmListGrid.setValue(row, 5, split[4].Trim());
-
-                    alarmListGrid.setTextAlignment(row, 0, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 1, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 2, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 3, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 4, DevAge.Drawing.ContentAlignment.MiddleCenter);
-                    alarmListGrid.setTextAlignment(row, 5, DevAge.Drawing.ContentAlignment.MiddleLeft);
-                }
-
-                // Message 열 너비를 최대 desc 길이에 맞춤
-                autoFitMessageColumn(lines);
-            }
+            displayAlarmRows(all);
         }
 
-        // Message 열 너비를 최대 desc 길이에 맞춤
-        private void autoFitMessageColumn(List<string[]> lines)
-        {
-            int maxWidth = 300;
-
-            using (Graphics g = alarmListGrid.CreateGraphics())
-            {
-                for (int i = 0; i < lines.Count; i++)
-                {
-                    if (lines[i].Length < 5) continue;
-
-                    string desc = lines[i][4].Trim();
-                    int textWidth = (int)g.MeasureString(desc, alarmListGrid.Font).Width + 20;
-
-                    if (textWidth > maxWidth)
-                        maxWidth = textWidth;
-                }
-            }
-
-            alarmListGrid.Columns[5].Width = maxWidth;
-        }
-
-        // Heavy Alarm Button Click
+        // Heavy 알람만 표시
         private void heavyAlarmButton_Click(object sender, EventArgs e)
         {
-
+            gridDataClear();
+            loadLogData();
+            displayAlarmRows(m_heavyAlarm);
         }
 
-        // Light Alarm Button Click
+        // Light 알람만 표시
         private void lightAlarmButton_Click(object sender, EventArgs e)
         {
-
+            gridDataClear();
+            loadLogData();
+            displayAlarmRows(m_lightAlarm);
         }
 
-        // Alarm Reset Button Click
+        // 알람 리셋
         private void alarmResetButton_Click(object sender, EventArgs e)
         {
-
+            main.clearAlarm();
+            m_lightAlarm.Clear();
+            m_heavyAlarm.Clear();
+            gridDataClear();
         }
     }
 }

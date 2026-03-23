@@ -25,6 +25,7 @@ namespace bim_base
         FormData m_formData = null;
         FormMonitor m_formMonitor = null;
         FormLog m_formLog = null;
+        FormAlarmList m_formAlarmList = null;
 
         Form m_nowForm = null;
 
@@ -65,10 +66,12 @@ namespace bim_base
             m_formTeach = new FormTeach(main);
             m_formData = new FormData(main);
             m_formMonitor = new FormMonitor(main);
+            m_formAlarmList = new FormAlarmList(main);
+
             m_formLog = new FormLog(main);
 
             m_formMainArg = new Form[] { m_formTop, null, m_formBottom };
-            m_formCenterPageArg = new Form[] { m_formAuto, m_formManual, m_formTeach, m_formData, m_formMonitor, m_formLog };
+            m_formCenterPageArg = new Form[] { m_formAuto, m_formManual, m_formTeach, m_formData, m_formMonitor, m_formAlarmList };
             P_Pos.X = this.Top;
             P_Pos.X = this.Left;
             m_form = this;
