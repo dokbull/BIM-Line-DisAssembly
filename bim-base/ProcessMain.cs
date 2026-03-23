@@ -65,8 +65,7 @@ namespace bim_base
 
         bool m_simulation = false;
 
-        Dictionary<ALARM, AlarmData> m_alarmMap = new Dictionary<ALARM, AlarmData>();
-        AlarmData m_lastAlarm = null;
+        List<AlarmData> m_alarmList = new List<AlarmData>();
 
         bool[] m_input = null;
         bool[] m_output = null;
@@ -378,43 +377,52 @@ namespace bim_base
             addAlarm((ALARM)alarmIdx);
         }
 
-        public void addAlarm(ALARM alarm, ALARM_TYPE type = ALARM_TYPE.NONE, string desc = "", string datetime = "")
+        public void addAlarm(ALARM alarm, ALARM_TYPE type = ALARM_TYPE.HEAVY, string desc = "", string datetime = "")
         {
-            if (m_isAlarm == true)
-                return;
-
-            Debug.debug("ProcessMain::addAlarm alarm:" + alarm + " type:" + type + " desc:" + desc);
-
-            setAuto(false);
-            pause();
-            m_isAlarm = true;
+            AlarmData riseAlarm = new AlarmData();
 
             if (datetime == "")
                 datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            lock (m_alarmMap)
+            riseAlarm.alarm = alarm;
+            riseAlarm.type = type;
+            riseAlarm.code = (int)alarm;
+            riseAlarm.desc = alarm.ToString() + "/" + Alarm.messageEng(alarm, desc);
+            riseAlarm.datetime = datetime;
+
+            for (int i = 0; i < m_alarmList.Count; i++)
             {
-                if (m_alarmMap.ContainsKey(alarm) == true)
+                AlarmData data = m_alarmList[i];
+
+                if (data.alarm == riseAlarm.alarm)
                     return;
-
-                setOutput(OUTPUT.OP_PANEL_RESET_SW, true);
-
-                AlarmData alarmData = new AlarmData();
-                alarmData.code = (int)alarm;
-                alarmData.datetime = datetime;
-                alarmData.type = (int)type;
-                alarmData.desc = alarm.ToString() + "/" + Alarm.messageEng(alarm, desc);
-
-                m_lastAlarm = alarmData;
-                m_alarmMap[alarm] = alarmData;
-
-                writeAlarmLog(alarmData);
-                setBuzzerOn();
-                writeBottomHistory(Alarm.messageEng(alarm));
             }
 
-            // TODO CHECK LHJ to HJP : 경알람 추가시 처리 필요
-            Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.HeavyAlarm, this.m_lastAlarm.code, this.m_lastAlarm.desc);
+            lock (m_alarmList)
+            {
+                Debug.debug("ProcessMain::addAlarm alarm:" + alarm + " type:" + type + " desc:" + desc);
+
+                setAuto(false);
+                pause();
+                m_isAlarm = true;
+
+                m_alarmList.Add(riseAlarm);
+
+                writeAlarmLog(riseAlarm);
+                setBuzzerOn();
+                writeBottomHistory(Alarm.messageEng(alarm));
+
+                // TODO CHECK LHJ to HJP : 경알람 추가시 처리 필요
+                Automation.Instance.AlarmOccured(CIMEnumeric.EnumAlarmLevel.HeavyAlarm, riseAlarm.code, riseAlarm.desc);
+            }
+        }
+
+        public List<AlarmData> alarmList()
+        {
+            lock (m_alarmList)
+            {
+                return m_alarmList;
+            }
         }
 
         private void setBuzzerOn() { setOutput(OUTPUT.BUZZER_1, true); }
@@ -480,9 +488,9 @@ namespace bim_base
         {
             axisAlarmReset();
 
-            lock (m_alarmMap)
+            lock (m_alarmList)
             {
-                m_alarmMap.Clear();
+                m_alarmList.Clear();
             }
 
             setBuzzerOff();
@@ -493,17 +501,17 @@ namespace bim_base
             m_isAlarm = false;
 
             FormMain.inst().clearAlarm();
-            m_lastAlarm = null;
         }
 
         public int lastAlarmCode()
         {
             int code = -1;
 
-            if (m_lastAlarm == null)
+            if (m_alarmList.Count == 0)
                 return code;
 
-            code = m_lastAlarm.code;
+            AlarmData alarm = m_alarmList.Last();
+            code = alarm.code;
 
             return code;
         }
@@ -512,10 +520,12 @@ namespace bim_base
         {
             string desc = "";
 
-            if (m_lastAlarm == null)
+
+            if (m_alarmList.Count == 0)
                 return desc;
 
-            desc = m_lastAlarm.desc;
+            AlarmData alarm = m_alarmList.Last();
+            desc = alarm.desc;
 
             return desc;
         }
@@ -557,7 +567,7 @@ namespace bim_base
                     {
                         if (m_isBoardConnectWait == false)
                         {
-                            addAlarm(ALARM.CO_MAIN_SYSTEM_PC_ECAT_DISCONNECT, ALARM_TYPE.CRITICAL);
+                            addAlarm(ALARM.CO_MAIN_SYSTEM_PC_ECAT_DISCONNECT, ALARM_TYPE.HEAVY);
 
                             m_lib.close();
                             m_lib.open();
@@ -804,7 +814,7 @@ namespace bim_base
             {
                 if (m_showEmergencyAlarm == false)
                 {
-                    addAlarm(ALARM.EM_MAIN_SYSTEM_PLC_EMERGENCY_OFF, ALARM_TYPE.CRITICAL);
+                    addAlarm(ALARM.EM_MAIN_SYSTEM_PLC_EMERGENCY_OFF, ALARM_TYPE.HEAVY);
                     m_showEmergencyAlarm = true;
                 }
             }
@@ -812,7 +822,7 @@ namespace bim_base
             {
                 if (m_showMcAlarm == false)
                 {
-                    addAlarm(ALARM.EM_MAIN_SYSTEM_PLC_MC_OFF, ALARM_TYPE.CRITICAL);
+                    addAlarm(ALARM.EM_MAIN_SYSTEM_PLC_MC_OFF, ALARM_TYPE.HEAVY);
                     m_showMcAlarm = true;
                 }
             }
@@ -852,14 +862,14 @@ namespace bim_base
                 {
                     if (axis.isServoOn() == false)
                     {
-                        addAlarm(ALARM.MO_UNLOADER_UBPP_AXIS_Z_SERVO_OFF + i, ALARM_TYPE.CRITICAL);
+                        addAlarm(ALARM.MO_UNLOADER_UBPP_AXIS_Z_SERVO_OFF + i, ALARM_TYPE.HEAVY);
                         return;
                     }
 
                     if (axis.isAlarm() == true)
                     {
                         string text = "name:" + axis.name() + " code:" + axis.alarmCode();
-                        addAlarm(ALARM.MO_UNLOADER_UBPP_AXIS_Z_SERVO_ALARM + i, ALARM_TYPE.CRITICAL, text);
+                        addAlarm(ALARM.MO_UNLOADER_UBPP_AXIS_Z_SERVO_ALARM + i, ALARM_TYPE.HEAVY, text);
                         return;
                     }
                 }
@@ -870,7 +880,7 @@ namespace bim_base
                         if (axis.isAlarm() == true)
                         {
                             string text = "name:" + axis.name() + " code:" + axis.alarmCode();
-                            addAlarm(ALARM.MO_UNLOADER_UBPP_AXIS_Z_SERVO_ALARM + i, ALARM_TYPE.CRITICAL, text);
+                            addAlarm(ALARM.MO_UNLOADER_UBPP_AXIS_Z_SERVO_ALARM + i, ALARM_TYPE.HEAVY, text);
                             m_servoAlarmRise = true;
                         }
                     }

@@ -246,7 +246,7 @@ namespace bim_base
                         {
                             if (axisList[i].isServoOn() == false)
                             {
-                                addAlarm(ALARM.MO_UNLOADER_UBPP_AXIS_Z_SERVO_OFF + i, ALARM_TYPE.CRITICAL);
+                                addAlarm(ALARM.MO_UNLOADER_UBPP_AXIS_Z_SERVO_OFF + i, ALARM_TYPE.HEAVY);
                                 return;
                             }
                         }

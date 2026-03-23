@@ -171,7 +171,7 @@ namespace bim_base
         public void addLog(AlarmData data)
         {
             DateTime dt = Convert.ToDateTime(data.datetime);
-            addLog(dt.ToString("yyyy-MM-dd"), dt.ToString("HH:mm:ss"), data.code, data.type, data.desc);
+            addLog(dt.ToString("yyyy-MM-dd"), dt.ToString("HH:mm:ss"), data.code, (int)data.type, data.desc);
         }
 
         public void addLog(string date, string time, int code, int type, string text, bool useQueue = true)

@@ -150,17 +150,17 @@ namespace bim_base
     public enum ALARM_TYPE
     {
         NONE = 0,
-        LIGHT,
-        WARNING,
-        CRITICAL
+        HEAVY,
+        LIGHT
     }
 
     public class AlarmData
     {
+        public ALARM alarm = ALARM.NONE;
+        public ALARM_TYPE type = ALARM_TYPE.NONE;
         public int code;
-        public string datetime;
-        public int type;
         public string desc;
+        public string datetime;
     }
 
     public class Alarm
